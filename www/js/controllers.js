@@ -61,7 +61,11 @@ angular.module('SeeAroundMe.controllers', [])
             // center: myLatlng,
             // zoom: 20,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
-            disableDefaultUI: true
+            disableDefaultUI: true,
+            zoomControl: true,
+            zoomControlOptions: {
+              style: google.maps.ZoomControlStyle.SMALL
+            }
         };
 
         // console.log(mapOptions);
