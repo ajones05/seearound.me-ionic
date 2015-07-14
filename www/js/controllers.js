@@ -52,5 +52,54 @@ angular.module('SeeAroundMe.controllers', [])
   ];
 })
 
-.controller('PlaylistCtrl', function($scope, $stateParams) {
+.controller('MapCtrl', function($scope, $stateParams) {
+    $scope.initialise = function() {
+        console.log("In Google.maps.event.addDomListener");
+        var bounds = new google.maps.LatLngBounds();
+
+        var mapOptions = {
+            // center: myLatlng,
+            // zoom: 20,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            disableDefaultUI: true
+        };
+
+        // console.log(mapOptions);
+        var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+        // Show current user position
+        navigator.geolocation.getCurrentPosition(function(pos) {
+            console.log(pos);
+            var position = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+
+            // if (DEV_MODE == 'true') {
+            //     position = new google.maps.LatLng(32.7479, -117.228);
+            //     console.warn('WARN: Using DEV_MODE position: ' + position);
+            // }
+            map.setCenter(position);
+            var myLocation = new google.maps.Marker({
+                position: position,
+                map: map,
+                // animation: google.maps.Animation.BOUNCE,
+                title: "My Location"
+            });
+
+            bounds.extend(position);
+        });
+
+        // Automatically center the map fitting all markers on the screen
+        map.fitBounds(bounds);
+
+        // Override our map zoom level once our fitBounds function runs (Make sure it only runs once)
+        var boundsListener = google.maps.event.addListener((map), 'bounds_changed', function(event) {
+            this.setZoom(14);
+            google.maps.event.removeListener(boundsListener);
+        });
+
+        // }); // End of DiscoverService.getAll() promis
+
+        $scope.map = map;
+    };
+
+    google.maps.event.addDomListener(document.getElementById("map"), 'load', $scope.initialise());
 });

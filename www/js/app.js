@@ -43,7 +43,8 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers'])
     url: "/post/map",
     views: {
       'menuContent': {
-        templateUrl: "templates/post/mapview.html"
+        templateUrl: "templates/post/mapview.html",
+        controller: 'MapCtrl'
       }
     }
   })
