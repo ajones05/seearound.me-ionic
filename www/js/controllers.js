@@ -58,7 +58,29 @@ angular.module('SeeAroundMe.controllers', [])
 .controller('SignupCtrl', function($scope) {
 })
 
-.controller('LoginCtrl', function($scope) {
+.controller('SigninCtrl', function($scope, $http, $ionicLoading, API_URL) {
+
+    $scope.doLogin = function (loginForm) {
+        var url = API_URL + '/index';
+        var data = {email:loginForm.email, password:loginForm.password};
+        console.log(JSON.stringify(data));
+
+        $ionicLoading.show();
+        $http.post(url, data)
+        .success(function (data, status) {
+            $ionicLoading.hide();
+            console.log(data);
+
+            $state.go('app.postmapview')
+        })
+        .error(function (data, status, headers, config) {
+                $ionicLoading.hide();
+                console.log(data);
+
+        });
+    }
+
+
 })
 
 .controller('MapCtrl', function($scope, $stateParams) {

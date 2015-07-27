@@ -20,6 +20,9 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers'])
   });
 })
 
+.constant('$ionicLoadingConfig', { template: 'Loading...'})
+.constant('API_URL','http://www.seearound.me/mobile')
+
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
     $ionicConfigProvider.backButton.previousTitleText(false).text('');
     openFB.init({appId: '755231644585441'});
@@ -57,7 +60,7 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers'])
           views: {
             'menuContent' :{
               templateUrl: "templates/signin.html",
-              controller: 'LoginCtrl'
+              controller: 'SigninCtrl'
             }
           }
         })
