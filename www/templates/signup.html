@@ -1,5 +1,31 @@
 <ion-view view-title="Sign Up">
-  <ion-content>
-    <h1>Sign Up</h1>
-  </ion-content>
+    <ion-content padding="true">
+        <br>
+      <a class="button button-block button-positive" href="#/app/signin">
+          Login with Facebook
+      </a>
+      <div>We'll never post anything without your permission</div>
+      <hr>
+      <br>Or with Email
+      <form>
+          <div class="list">
+              <label class="item item-input">
+                <span class="input-label">Name</span>
+                <input type="text">
+              </label>
+            <label class="item item-input">
+              <span class="input-label">Email</span>
+              <input type="text">
+            </label>
+            <label class="item item-input">
+              <span class="input-label">Password</span>
+              <input type="password">
+            </label>
+          </div>
+          <a class="button button-block button-positive" href="#/" ng-click="doLogin()">
+              Register
+          </a>
+      </form>
+
+    </ion-content>
 </ion-view>

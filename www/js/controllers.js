@@ -52,6 +52,15 @@ angular.module('SeeAroundMe.controllers', [])
   ];
 })
 
+.controller('HomeCtrl', function($scope) {
+})
+
+.controller('SignupCtrl', function($scope) {
+})
+
+.controller('LoginCtrl', function($scope) {
+})
+
 .controller('MapCtrl', function($scope, $stateParams) {
     $scope.initialise = function() {
         console.log("In Google.maps.event.addDomListener");

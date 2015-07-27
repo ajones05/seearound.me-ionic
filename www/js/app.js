@@ -21,62 +21,91 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers'])
 })
 
 .config(function($stateProvider, $urlRouterProvider) {
-  $stateProvider
+    openFB.init({appId: '755231644585441'});
+    $stateProvider
 
-  .state('app', {
+    .state('app', {
     url: "/app",
     abstract: true,
     templateUrl: "templates/menu.html",
     controller: 'AppCtrl'
-  })
+    })
 
-  .state('app.postlistview', {
-    url: "/post/list",
-    views: {
-      'menuContent': {
-        templateUrl: "templates/post/listview.html"
+    .state('app.home', {
+      url: "/home",
+      views: {
+        'menuContent' :{
+          templateUrl: "templates/home.html",
+          controller: 'HomeCtrl'
+        }
       }
-    }
-  })
+    })
 
-  .state('app.postmapview', {
-    url: "/post/map",
-    views: {
-      'menuContent': {
-        templateUrl: "templates/post/mapview.html",
-        controller: 'MapCtrl'
-      }
-    }
-  })
+    .state('app.signup', {
+        url: "/signup",
+        views: {
+          'menuContent' :{
+            templateUrl: "templates/signup.html",
+            controller: 'SignupCtrl'
+          }
+        }
+      })
 
-  .state('app.userprofile', {
-    url: "/user/profile",
-    views: {
-      'menuContent': {
-        templateUrl: "templates/user/profile.html"
-      }
-    }
-  })
+      .state('app.signin', {
+          url: "/signin",
+          views: {
+            'menuContent' :{
+              templateUrl: "templates/signin.html",
+              controller: 'LoginCtrl'
+            }
+          }
+        })
 
-  .state('app.userfollowing', {
-    url: "/user/following",
-    views: {
-      'menuContent': {
-        templateUrl: "templates/user/following.html"
-      }
-    }
-  })
+    .state('app.postlistview', {
+        url: "/post/list",
+        views: {
+          'menuContent': {
+            templateUrl: "templates/post/listview.html"
+          }
+        }
+    })
 
-  .state('app.usermessages', {
-    url: "/user/messages",
-    views: {
-      'menuContent': {
-        templateUrl: "templates/user/messages.html"
-      }
-    }
-  })
+    .state('app.postmapview', {
+        url: "/post/map",
+        views: {
+          'menuContent': {
+            templateUrl: "templates/post/mapview.html",
+            controller: 'MapCtrl'
+          }
+        }
+    })
 
+    .state('app.userprofile', {
+        url: "/user/profile",
+        views: {
+          'menuContent': {
+            templateUrl: "templates/user/profile.html"
+          }
+        }
+    })
 
+    .state('app.userfollowing', {
+        url: "/user/following",
+        views: {
+          'menuContent': {
+            templateUrl: "templates/user/following.html"
+          }
+        }
+    })
+
+    .state('app.usermessages', {
+        url: "/user/messages",
+        views: {
+          'menuContent': {
+            templateUrl: "templates/user/messages.html"
+          }
+        }
+    })
 
   // .state('app.browse', {
   //   url: "/browse",
@@ -106,5 +135,5 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers'])
   //   }
   // });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/post/map');
+  $urlRouterProvider.otherwise('/app/home');
 });
