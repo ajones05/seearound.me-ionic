@@ -20,7 +20,8 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers'])
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+    $ionicConfigProvider.backButton.previousTitleText(false).text('');
     openFB.init({appId: '755231644585441'});
     $stateProvider
 

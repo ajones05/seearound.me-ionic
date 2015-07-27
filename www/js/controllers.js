@@ -86,8 +86,8 @@ angular.module('SeeAroundMe.controllers', [])
             var position = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
 
             // if (DEV_MODE == 'true') {
-            //     position = new google.maps.LatLng(32.7479, -117.228);
-            //     console.warn('WARN: Using DEV_MODE position: ' + position);
+                position = new google.maps.LatLng(37.8088139, -122.26350020000001);
+                console.warn('WARN: Using DEV_MODE position: ' + position);
             // }
             map.setCenter(position);
             var myLocation = new google.maps.Marker({
