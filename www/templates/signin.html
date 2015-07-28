@@ -7,20 +7,20 @@
     <div>We'll never post anything without your permission</div>
     <hr>
     <br>Or with Email
-    <form>
+    <form ng-submit="doLogin()" name="login">
         <div class="list">
           <label class="item item-input">
             <span class="input-label">Email</span>
-            <input type="text" ng-model="loginForm.email" required="required">
+            <input type="text" ng-model="formData.email" required="required">
           </label>
           <label class="item item-input">
             <span class="input-label">Password</span>
-            <input type="password" ng-model="loginForm.password" required="required">
+            <input type="password" ng-model="formData.password" required="required">
           </label>
         </div>
-        <a class="button button-block button-positive" ng-click="doLogin(loginForm)">
+        <button type="submit" class="button button-block button-positive">
             Login
-        </a>
+        </button>
     </form>
 
   </ion-content>

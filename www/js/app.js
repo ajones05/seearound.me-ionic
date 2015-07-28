@@ -23,7 +23,23 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers'])
 .constant('$ionicLoadingConfig', { template: 'Loading...'})
 .constant('API_URL','http://www.seearound.me/mobile')
 
-.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $httpProvider) {
+    // Use x-www-form-urlencoded Content-Type
+    $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
+    $httpProvider.defaults.transformRequest.unshift(function (data, headersGetter) {
+        console.warn('unshift called..................... ');
+        var key, result = [];
+
+        if (typeof data === "string")
+          return data;
+
+        for (key in data) {
+          if (data.hasOwnProperty(key))
+            result.push(encodeURIComponent(key) + "=" + encodeURIComponent(data[key]));
+        }
+        return result.join("&");
+    });
+
     $ionicConfigProvider.backButton.previousTitleText(false).text('');
     openFB.init({appId: '755231644585441'});
     $stateProvider

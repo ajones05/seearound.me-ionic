@@ -58,27 +58,39 @@ angular.module('SeeAroundMe.controllers', [])
 .controller('SignupCtrl', function($scope) {
 })
 
-.controller('SigninCtrl', function($scope, $http, $ionicLoading, API_URL) {
+.controller('SigninCtrl', function($scope, $state, $http, $ionicLoading, API_URL) {
 
-    $scope.doLogin = function (loginForm) {
+    $scope.formData = {};
+    $scope.formData.email = "brandonhere123@gmail.com";
+    $scope.formData.password = "dev12345678";
+
+    $scope.doLogin = function () {
         var url = API_URL + '/index';
-        var data = {email:loginForm.email, password:loginForm.password};
+        // var data = 'email='+ loginForm.email + '&password=' + loginForm.password;
+        var data = {email:$scope.formData.email, password:$scope.formData.password};
         console.log(JSON.stringify(data));
+        console.log(url);
 
         $ionicLoading.show();
-        $http.post(url, data)
-        .success(function (data, status) {
+        $http({
+            method: 'POST',
+            url: url,
+            data: data,
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        })
+        .then(function (res) {
             $ionicLoading.hide();
-            console.log(data);
+            console.log(JSON.stringify(res));
 
             $state.go('app.postmapview')
         })
-        .error(function (data, status, headers, config) {
+        .catch(function (err) {
                 $ionicLoading.hide();
-                console.log(data);
+                console.warn(JSON.stringify(err));
+                // console.log(status);
 
         });
-    }
+    };
 
 
 })
