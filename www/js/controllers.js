@@ -86,6 +86,7 @@ angular.module('SeeAroundMe.controllers', [])
 })
 
 .controller('MapCtrl', function($scope, $stateParams, AppService) {
+    $scope.nearbyPosts = {};
     $scope.initialise = function() {
         console.log("In Google.maps.event.addDomListener");
         var bounds = new google.maps.LatLngBounds();
@@ -102,7 +103,10 @@ angular.module('SeeAroundMe.controllers', [])
         };
 
         var userId = localStorage.getItem('sam_user_id');
-        var nearbyPost = {};
+
+
+        // console.log(mapOptions);
+        var map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
         var data = {
             "latitude" : 37.8088139,
@@ -114,15 +118,27 @@ angular.module('SeeAroundMe.controllers', [])
         };
         AppService.getNearbyPosts(data)
         .success(function (data) {
-            // console.log(JSON.stringify(res));
-            nearbyPost = data.result;
+            console.log(JSON.stringify(data, null, 4));
+            $scope.nearbyPosts = data.result;
+            $scope.nearbyPosts.forEach(function (post) {
+                var marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(post.latitude, post.longitude),
+                    map: map,
+                    // title: post.title,
+                    icon: './img/pin.png'
+                });
+
+                google.maps.event.addListener(marker, 'click', function() {
+                    // infowindow.open(map,marker);
+                    // $state.go('app.offerdetails', {id: offer.id, type: 'discover'});
+                });
+            })
+
         })
         .error(function (err) {
             console.warn(JSON.stringify(err));
         });
 
-        // console.log(mapOptions);
-        var map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
         // Show current user position
         navigator.geolocation.getCurrentPosition(function(pos) {
