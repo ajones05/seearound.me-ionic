@@ -58,44 +58,34 @@ angular.module('SeeAroundMe.controllers', [])
 .controller('SignupCtrl', function($scope) {
 })
 
-.controller('SigninCtrl', function($scope, $state, $http, $ionicLoading, API_URL) {
+.controller('SigninCtrl', function($scope, $state, $ionicLoading, AppService) {
 
     $scope.formData = {};
     $scope.formData.email = "brandonhere123@gmail.com";
     $scope.formData.password = "dev12345678";
 
     $scope.doLogin = function () {
-        var url = API_URL + '/index';
-        // var data = 'email='+ loginForm.email + '&password=' + loginForm.password;
+
         var data = {email:$scope.formData.email, password:$scope.formData.password};
-        console.log(JSON.stringify(data));
-        console.log(url);
 
         $ionicLoading.show();
-        $http({
-            method: 'POST',
-            url: url,
-            data: data,
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-        })
-        .then(function (res) {
+        AppService.login(data)
+        .success(function (data) {
+            localStorage.setItem('sam_user_id',data.result.id);
             $ionicLoading.hide();
-            console.log(JSON.stringify(res));
-
+            console.log(JSON.stringify(data));
             $state.go('app.postmapview')
         })
-        .catch(function (err) {
-                $ionicLoading.hide();
-                console.warn(JSON.stringify(err));
-                // console.log(status);
-
+        .error(function (err) {
+            $ionicLoading.hide();
+            console.warn(JSON.stringify(err));
         });
     };
 
 
 })
 
-.controller('MapCtrl', function($scope, $stateParams) {
+.controller('MapCtrl', function($scope, $stateParams, AppService) {
     $scope.initialise = function() {
         console.log("In Google.maps.event.addDomListener");
         var bounds = new google.maps.LatLngBounds();
@@ -110,6 +100,26 @@ angular.module('SeeAroundMe.controllers', [])
               style: google.maps.ZoomControlStyle.SMALL
             }
         };
+
+        var userId = localStorage.getItem('sam_user_id');
+        var nearbyPost = {};
+
+        var data = {
+            "latitude" : 37.8088139,
+            "longitude" : -122.2635002,
+            "radious" : 0.8,
+            "userId" : userId,
+            "fromPage" : 0,
+            "endPage" : 16
+        };
+        AppService.getNearbyPosts(data)
+        .success(function (data) {
+            // console.log(JSON.stringify(res));
+            nearbyPost = data.result;
+        })
+        .error(function (err) {
+            console.warn(JSON.stringify(err));
+        });
 
         // console.log(mapOptions);
         var map = new google.maps.Map(document.getElementById("map"), mapOptions);

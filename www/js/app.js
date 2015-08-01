@@ -4,7 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers'])
+angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.services'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -27,7 +27,6 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers'])
     // Use x-www-form-urlencoded Content-Type
     $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
     $httpProvider.defaults.transformRequest.unshift(function (data, headersGetter) {
-        console.warn('unshift called..................... ');
         var key, result = [];
 
         if (typeof data === "string")
