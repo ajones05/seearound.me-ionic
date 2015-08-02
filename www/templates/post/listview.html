@@ -1,5 +1,19 @@
-<ion-view view-title="ListView">
+<ion-modal-view>
+    <ion-header-bar>
+      <h1 class="title">List View</h1>
+      <div class="buttons">
+        <button class="button button-clear" ng-click="close()">Close</button>
+      </div>
+    </ion-header-bar>
   <ion-content>
-    <h1>List</h1>
+      <ul class="list">
+        <li class="item" ng-repeat="post in nearbyPosts">
+
+          <img class="prof-img" ng-src="{{post.Profile_image}}" width="100%"/><br>
+          {{post.name}}<br>
+          {{post.news}}<br>
+          <img ng-src="{{post.images}}" width="100%"/>
+      </li>
+    </ul>
   </ion-content>
-</ion-view>
+</ion-modal-view>

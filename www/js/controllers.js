@@ -74,7 +74,7 @@ angular.module('SeeAroundMe.controllers', [])
             localStorage.setItem('sam_user_id',data.result.id);
             $ionicLoading.hide();
             console.log(JSON.stringify(data));
-            $state.go('app.postmapview')
+            $state.go('app.postmapview');
         })
         .error(function (err) {
             $ionicLoading.hide();
@@ -85,7 +85,13 @@ angular.module('SeeAroundMe.controllers', [])
 
 })
 
-.controller('MapCtrl', function($scope, $stateParams, AppService) {
+.controller('MapCtrl', function($scope, $state, $stateParams, $ionicModal, AppService) {
+    $ionicModal.fromTemplateUrl('templates/post/listview.html', {
+      scope: $scope
+    }).then(function(modal) {
+      $scope.modal = modal;
+    });
+
     $scope.nearbyPosts = {};
     $scope.initialise = function() {
         console.log("In Google.maps.event.addDomListener");
@@ -175,4 +181,13 @@ angular.module('SeeAroundMe.controllers', [])
     };
 
     google.maps.event.addDomListener(document.getElementById("map"), 'load', $scope.initialise());
+
+    $scope.showListView = function () {
+        // $state.go('app.postlistview');
+        $scope.modal.show();
+    };
+
+    $scope.close = function() {
+      $scope.modal.hide();
+    };
 });

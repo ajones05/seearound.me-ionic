@@ -84,7 +84,8 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.
         url: "/post/list",
         views: {
           'menuContent': {
-            templateUrl: "templates/post/listview.html"
+            templateUrl: "templates/post/listview.html",
+            controller: 'PostListCtrl'
           }
         }
     })
