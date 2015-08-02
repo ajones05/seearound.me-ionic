@@ -9,10 +9,14 @@
       <ul class="list">
         <li class="item" ng-repeat="post in nearbyPosts">
             <img class="prof-img" ng-src="{{post.Profile_image}}" width="100%"/><br>
-            <div>{{post.Name}}</div>
-            <div>{{post.created_date}}</div>
-            <div class="desc">{{post.news}}</div>
-            <img ng-src="{{post.images}}" width="100%" ng-show="post.images != null"/>
+            <div class="meta">
+                <div class="user-name">{{post.Name}}</div>
+                <div class="created-date">{{post.created_date}}</div>
+            </div>
+            <div class="desc">
+                {{post.news}}
+                <img ng-src="{{post.images}}" width="100%" ng-show="post.images != null"/>
+            </div>
         </li>
     </ul>
   </ion-content>

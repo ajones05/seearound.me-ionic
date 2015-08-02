@@ -7750,5 +7750,19 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   display: inline-block;
   border: 2px solid #FFFFFF; }
 
+.postlistview .meta {
+  width: 100%; }
+  .postlistview .meta .user-name {
+    position: relative;
+    float: left;
+    top: -4rem;
+    left: 4.5rem; }
+  .postlistview .meta .created-date {
+    position: relative;
+    top: -4rem;
+    float: right; }
 .postlistview .desc {
-  white-space: normal; }
+  float: left;
+  white-space: normal;
+  font-family: 'Lato-Light';
+  font-weight: 200; }
