@@ -1,0 +1,27 @@
+// mapview.html
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+.scroll {
+  height: 100%;
+}
+
+.prof-img {
+    background-repeat: no-repeat;
+    background-position: 50%;
+    background-size: contain;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: inline-block;
+    border: 2px solid $light;
+}
+
+.report i {
+  float: right;
+  display: block;
+  margin: 0 0.5rem 0 1rem;
+  font-size: 1.50rem;
+}

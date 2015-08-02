@@ -1,0 +1,48 @@
+// profile.html
+.user-profile {
+
+
+	.user-banner {
+		background-image: url(../img/blurred.jpg);
+		background-size: cover;
+		text-align: center;
+		padding: 2rem;
+
+		h2 {
+			margin-bottom: 2rem;
+		} 
+	}
+
+	.content {
+		margin: 1rem;
+
+		form .item-input {
+			padding-left: 0;
+
+			textarea {
+				height: 4rem;
+				padding: 0.250rem;
+			}
+		}
+
+		.pet {
+			padding: 1rem;
+
+			.prof-img {
+			    background-repeat: no-repeat;
+				background-position: 50%;
+				background-size: contain;
+				border-radius: 50%;
+				width: 70px;
+				height: 70px;
+				float: left;
+				border: 2px solid $light;
+			}
+
+			h3 {
+				padding: 20px;
+			}
+		}
+	}
+ 
+} 

@@ -1,0 +1,25 @@
+// Base
+
+body, html {
+	font-size: 100%;
+}
+
+.scroll {
+	background-color: $light;
+}
+
+.clearboth {
+	clear: both;
+}
+
+
+// need to move to seperate file sometime
+.share-page {
+	.share {
+		text-align: center;
+		padding: 3rem;
+		button {
+			margin-top: 2rem;
+		}
+	}
+}
