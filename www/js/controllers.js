@@ -65,6 +65,7 @@ angular.module('SeeAroundMe.controllers', [])
 })
 
 .controller('MapCtrl', function($scope, $state, $stateParams, $ionicModal, AppService) {
+    $scope.rangeVal = 8;
     $ionicModal.fromTemplateUrl('templates/post/listview.html', {
       scope: $scope
     }).then(function(modal) {
