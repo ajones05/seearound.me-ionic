@@ -27,7 +27,11 @@ angular.module('SeeAroundMe.controllers', [])
   ];
 })
 
-.controller('HomeCtrl', function($scope) {
+.controller('HomeCtrl', function($scope, AppService) {
+    ionic.Platform.ready(function() {
+        console.warn('*** Device is ready to call geolocation****');
+        AppService.getCurrentPosition();
+    });
 })
 
 .controller('SignupCtrl', function($scope) {
@@ -84,19 +88,27 @@ angular.module('SeeAroundMe.controllers', [])
         };
 
         var userId = localStorage.getItem('sam_user_id');
-
+        var location = localStorage.getItem('sam_user_location');
+        if (location) {
+                location = JSON.parse(location);
+                location = {latitude: 37.8088139, longitude: -122.2635002};
+                console.warn('WARN: Using DEV_MODE position: ' + location);
+        }
 
         // console.log(mapOptions);
         var map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
+
         var data = {
-            "latitude" : 37.8088139,
-            "longitude" : -122.2635002,
+            "latitude" : location.latitude,// 37.8088139,
+            "longitude" : location.longitude,//-122.2635002,
             "radious" : 0.8,
             "userId" : userId,
             "fromPage" : 0,
             "endPage" : 16
         };
+
+        console.log(JSON.stringify(data));
         AppService.getNearbyPosts(data)
         .success(function (data) {
             console.log(JSON.stringify(data, null, 4));
