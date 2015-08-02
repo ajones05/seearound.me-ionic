@@ -1,58 +1,55 @@
 // Colors
 // -------------------------------
 $light:            	 				#FFFFFF;
-$positive:            				#EF4123;
-$positive-light:		 			#FF7043;
-$fb:								#3B5998;
-$calm:								#539CBE;
-$balanced:							#49bA6F;
-
-$green:								#018752;
-$yellow:							#FAA635;
-$blue:								#539CBE;
-$red:								#D21245;
-$purple:							#91278D;
-
-$black:								#000000;
-$white:								#FFFFFF;
-$base-color:               			#090201;
-$neutral-dark:						#263238;
-$neutral:							#455A64;
-$neutral-light:						#90A4AE;
-$neutral-lighter:					#CFD8DC;
+$positive:            				#345EC2;
+// $positive-light:		 			#FF7043;
+// $fb:								#3B5998;
+// $calm:								#539CBE;
+// $balanced:							#49bA6F;
+//
+// $green:								#018752;
+// $yellow:							#FAA635;
+// $blue:								#539CBE;
+// $red:								#D21245;
+// $purple:							#91278D;
+//
+// $black:								#000000;
+// $white:								#FFFFFF;
+// $base-color:               			#090201;
+// $neutral-dark:						#263238;
+// $neutral:							#455A64;
+// $neutral-light:						#90A4AE;
+// $neutral-lighter:					#CFD8DC;
 
 $error:								#A94442;
 
 // Base
 // -------------------------------
-$font-family-sans-serif:          	"Roboto", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-$font-family-light-sans-serif:    	"Roboto-Light", "Helvetica Neue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-$font-family-serif:               	"BreeSerif", Georgia, "Times New Roman", Times, serif;
+$font-family-sans-serif:          	"Lato-Bold", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+$font-family-light-sans-serif:    	"Lato-Light", "Helvetica Neue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+$font-family-serif:               	"Lato", Georgia, "Times New Roman", Times, serif;
 
 $headings-font-family:            	$font-family-serif;
 
-$border-radius-brisk:             	50px;
-$small-border-radius:			  	3px;
 
- 
-// Buttons
-// -------------------------------
-$button-border-radius:            	$border-radius-brisk;
-$button-padding:                  	24px;
-
-//// FB btn
-$button-fb-bg:             			$fb;
-$button-fb-text:            		$light;
-$button-fb-border:          		darken($fb, 15%);
-$button-fb-active-bg:       		darken($fb, 15%);
-$button-fb-active-border:   		darken($fb, 15%);
-
-//// Light btn
-$button-light-bg:                 	$light;
-$button-light-text:               	$neutral-lighter;
-$button-light-border:             	$light;
-$button-light-active-bg:          	$neutral-lighter;
-$button-light-active-border:      	$light;
+// // Buttons
+// // -------------------------------
+// $button-border-radius:            	$border-radius-brisk;
+// $button-padding:                  	24px;
+//
+// //// FB btn
+// $button-fb-bg:             			$fb;
+// $button-fb-text:            		$light;
+// $button-fb-border:          		darken($fb, 15%);
+// $button-fb-active-bg:       		darken($fb, 15%);
+// $button-fb-active-border:   		darken($fb, 15%);
+//
+// //// Light btn
+// $button-light-bg:                 	$light;
+// $button-light-text:               	$neutral-lighter;
+// $button-light-border:             	$light;
+// $button-light-active-bg:          	$neutral-lighter;
+// $button-light-active-border:      	$light;
 
 //// Small buttons
 .button-small {
@@ -61,9 +58,9 @@ $button-light-active-border:      	$light;
 
 // Bars
 // -------------------------------
-$bar-positive-bg:                 $positive;
-
-$bar-dark-bg:                     $neutral-dark;
+// $bar-positive-bg:                 $positive;
+//
+// $bar-dark-bg:                     $neutral-dark;
 
 // Mixins
 // -------------------------------
@@ -79,7 +76,3 @@ $bar-dark-bg:                     $neutral-dark;
   background-image:         linear-gradient(top, $fromColor, $toColor);
   filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#{$fromColor}', EndColorStr='#{$toColor}');
 }
-
-
-
-
