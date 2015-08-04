@@ -1,5 +1,23 @@
-<ion-view view-title="Add New Post">
+<ion-modal-view class="addpost">
+    <ion-header-bar>
+        <div class="buttons">
+          <button class="button button-clear" ng-click="close(2)">Close</button>
+        </div>
+      <h1 class="title">Add New Post</h1>
+      <div class="buttons">
+        <button class="button button-clear" ng-click="post()">Post</button>
+      </div>
+    </ion-header-bar>
   <ion-content>
-    <h1>Add Post</h1>
+      <div class="avatar">
+          <img class="prof-img" ng-src="{{formData.Profile_image}}" width="100%"/>
+      </div>
+      <div class="post">
+          <textarea placeholder="Share something from your current location..." ng-model="formData.postText" class="commentbox"></textarea>
+      </div>
+      <div class="camera-button">
+          <button class="button button-icon" ng-click="pickImages()"><i class="icon ion-camera"></i></button>
+      </div>
+
   </ion-content>
-</ion-view>
+</ion-modal-view>

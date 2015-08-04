@@ -50,6 +50,16 @@ angular.module('SeeAroundMe.services', [])
                 data: data,
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
+        },
+
+        addNewPost: function (data) {
+            var url = API_URL + '/addimobinews';
+            return $http({
+                method: 'POST',
+                url: url,
+                data: data,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            });
         }
     };
 

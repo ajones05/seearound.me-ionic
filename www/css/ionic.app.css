@@ -7766,3 +7766,17 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   white-space: normal;
   font-family: 'Lato-Light';
   font-weight: 200; }
+
+.addpost .avatar {
+  float: left;
+  width: 20%; }
+.addpost .post {
+  float: left;
+  width: 80%;
+  height: 10rem; }
+.addpost .commentbox {
+  width: 100%;
+  font-family: 'Lato'; }
+.addpost .camera-button {
+  float: right;
+  margin-right: 0.3rem; }

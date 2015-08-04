@@ -1,0 +1,26 @@
+//post/add.html
+.addpost {
+    .avatar {
+        float: left;
+        width: 20%;
+    }
+
+    .post {
+        float: left;
+        // top:0.30rem;
+        // left: 5.2rem;
+        width: 80%;
+        height: 10rem;
+        // border: 1px solid #000;
+    }
+
+    .commentbox {
+        width: 100%;
+        font-family: 'Lato';
+    }
+
+    .camera-button {
+        float: right;
+        margin-right: 0.3rem;
+    }
+}
