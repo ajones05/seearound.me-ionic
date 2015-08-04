@@ -73,6 +73,7 @@ angular.module('SeeAroundMe.controllers', [])
     var location;
     var userId;
     var userData;
+    var bounds = new google.maps.LatLngBounds();
 
     $ionicModal.fromTemplateUrl('templates/post/listview.html', {
         id: '1',
@@ -89,9 +90,50 @@ angular.module('SeeAroundMe.controllers', [])
     });
 
     $scope.nearbyPosts = {};
+
+    var outerbounds = [ // covers the (mercator projection) world
+        new google.maps.LatLng(85,180),
+        new google.maps.LatLng(85,90),
+        new google.maps.LatLng(85,0),
+        new google.maps.LatLng(85,-90),
+        new google.maps.LatLng(85,-180),
+        new google.maps.LatLng(0,-180),
+        new google.maps.LatLng(-85,-180),
+        new google.maps.LatLng(-85,-90),
+        new google.maps.LatLng(-85,0),
+        new google.maps.LatLng(-85,90),
+        new google.maps.LatLng(-85,180),
+        new google.maps.LatLng(0,180),
+        new google.maps.LatLng(85,180)
+    ];
+
+
+    function drawCircle (point, radius, dir) {
+        var d2r = Math.PI / 180;   // degrees to radians
+        var r2d = 180 / Math.PI;   // radians to degrees
+        var earthsradius = 3963; // 3963 is the radius of the earth in miles
+        var points = 32;
+
+        // find the raidus in lat/lon
+        var rlat = (radius / earthsradius) * r2d;
+        var rlng = rlat / Math.cos(point.lat() * d2r);
+
+        var extp = new Array();
+        if (dir==1) {var start=0;var end=points+1} // one extra here makes sure we connect the ends
+        else {var start=points+1;var end=0}
+
+        for (var i=start; (dir==1 ? i < end : i > end); i=i+dir) {
+            var theta = Math.PI * (i / (points/2));
+            ey = point.lng() + (rlng * Math.cos(theta)); // center a + radius x * cos(theta)
+            ex = point.lat() + (rlat * Math.sin(theta)); // center b + radius y * sin(theta)
+            extp.push(new google.maps.LatLng(ex, ey));
+            bounds.extend(extp[extp.length-1]);
+        }
+        return extp;
+    };
+
     $scope.initialise = function() {
         console.log("In Google.maps.event.addDomListener");
-        var bounds = new google.maps.LatLngBounds();
 
         var mapOptions = {
             // center: myLatlng,
@@ -118,7 +160,6 @@ angular.module('SeeAroundMe.controllers', [])
 
         // console.log(mapOptions);
         var map = new google.maps.Map(document.getElementById("map"), mapOptions);
-
 
         var data = {
             "latitude" : location.latitude,// 37.8088139,
@@ -157,10 +198,10 @@ angular.module('SeeAroundMe.controllers', [])
         // Show current user position
         navigator.geolocation.getCurrentPosition(function(pos) {
             console.log(pos);
-            var position = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+            position = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
 
             // if (DEV_MODE == 'true') {
-                position = new google.maps.LatLng(37.8088139, -122.26350020000001);
+                var position = new google.maps.LatLng(37.8088139, -122.26350020000001);
                 console.warn('WARN: Using DEV_MODE position: ' + position);
             // }
             map.setCenter(position);
@@ -174,12 +215,28 @@ angular.module('SeeAroundMe.controllers', [])
             bounds.extend(position);
         });
 
+        // options for the polygon
+        var center = new google.maps.LatLng(location.latitude, location.longitude);
+    var populationOptions = {
+      strokeColor: '#000000',
+      strokeOpacity: 0.1,
+      strokeWeight: 1,
+      fillColor: '#000000',
+      fillOpacity: 0.35,
+      map: map,
+      paths: [outerbounds,drawCircle(center,0.8,-1)]
+    };
+
+    // Add the circle for this city to the map.
+    var cityCircle = new google.maps.Polygon(populationOptions);
+    // map.fitBounds(bounds);
+
         // Automatically center the map fitting all markers on the screen
         map.fitBounds(bounds);
 
         // Override our map zoom level once our fitBounds function runs (Make sure it only runs once)
         var boundsListener = google.maps.event.addListener((map), 'bounds_changed', function(event) {
-            this.setZoom(12);
+            this.setZoom(13);
             google.maps.event.removeListener(boundsListener);
         });
 
