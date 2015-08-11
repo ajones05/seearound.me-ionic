@@ -66,7 +66,7 @@ angular.module('SeeAroundMe.controllers', [])
 
 .controller('MapCtrl', function($scope, $state, $stateParams, $ionicModal, $ionicLoading,
     $cordovaImagePicker, $ionicPopup, AppService) {
-    $scope.rangeVal = 8;
+    $scope.inputRadius = 8;
     $scope.formData = {};
     $scope.fileName = {};
 
@@ -164,7 +164,7 @@ angular.module('SeeAroundMe.controllers', [])
         var data = {
             "latitude" : location.latitude,// 37.8088139,
             "longitude" : location.longitude,//-122.2635002,
-            "radious" : 0.8,
+            "radious" : $scope.inputRadius/10,
             "userId" : userId,
             "fromPage" : 0,
             "endPage" : 16
@@ -217,15 +217,15 @@ angular.module('SeeAroundMe.controllers', [])
 
         // options for the polygon
         var center = new google.maps.LatLng(location.latitude, location.longitude);
-    var populationOptions = {
-      strokeColor: '#000000',
-      strokeOpacity: 0.1,
-      strokeWeight: 1,
-      fillColor: '#000000',
-      fillOpacity: 0.35,
-      map: map,
-      paths: [outerbounds,drawCircle(center,0.8,-1)]
-    };
+        var populationOptions = {
+          strokeColor: '#000000',
+          strokeOpacity: 0.1,
+          strokeWeight: 1,
+          fillColor: '#000000',
+          fillOpacity: 0.35,
+          map: map,
+          paths: [outerbounds,drawCircle(center,0.8,-1)]
+        };
 
     // Add the circle for this city to the map.
     var cityCircle = new google.maps.Polygon(populationOptions);
@@ -236,7 +236,7 @@ angular.module('SeeAroundMe.controllers', [])
 
         // Override our map zoom level once our fitBounds function runs (Make sure it only runs once)
         var boundsListener = google.maps.event.addListener((map), 'bounds_changed', function(event) {
-            this.setZoom(13);
+            this.setZoom(14);
             google.maps.event.removeListener(boundsListener);
         });
 
