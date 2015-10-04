@@ -1,11 +1,6 @@
 angular.module('SeeAroundMe.controllers', [])
 
 .controller('AppCtrl', function($scope, $rootScope, $state) {
-
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
   //$scope.$on('$ionicView.enter', function(e) {
   //});
 
@@ -16,17 +11,6 @@ angular.module('SeeAroundMe.controllers', [])
 
 })
 
-.controller('PlaylistsCtrl', function($scope) {
-  $scope.playlists = [
-    { title: 'Reggae', id: 1 },
-    { title: 'Chill', id: 2 },
-    { title: 'Dubstep', id: 3 },
-    { title: 'Indie', id: 4 },
-    { title: 'Rap', id: 5 },
-    { title: 'Cowbell', id: 6 }
-  ];
-})
-
 .controller('HomeCtrl', function($scope, AppService) {
     ionic.Platform.ready(function() {
         console.warn('*** Device is ready to call geolocation****');
@@ -34,34 +18,58 @@ angular.module('SeeAroundMe.controllers', [])
     });
 })
 
-.controller('SignupCtrl', function($scope) {
+.controller('SignupCtrl', function($scope, $state, AppService) {
+    console.log('Signup controller called ...');
+    $scope.doSignUp = function(user){
+        console.log('Signup ...');
+        $state.go('app.allowlocation');
+    }
 })
 
-.controller('SigninCtrl', function($scope, $state, $ionicLoading, AppService) {
+.controller('SigninCtrl', function($scope, $state, $ionicLoading, $rootScope, AppService, $ionicModal) {
 
-    $scope.formData = {};
-    $scope.formData.email = "brandonhere123@gmail.com";
-    $scope.formData.password = "dev12345678";
+  $scope.formData = {};
+  $scope.formData.email = "brandonhere123@gmail.com";
+  $scope.formData.password = "dev12345678";
 
-    $scope.doLogin = function () {
+  $scope.doLogin = function () {
 
-        var data = {email:$scope.formData.email, password:$scope.formData.password};
+    var data = {email:$scope.formData.email, password:$scope.formData.password};
 
-        $ionicLoading.show();
-        AppService.login(data)
-        .success(function (data) {
-            localStorage.setItem('sam_user_data', JSON.stringify(data));
-            $ionicLoading.hide();
-            // console.log(JSON.stringify(data, null, 4));
-            $state.go('app.postmapview');
-        })
-        .error(function (err) {
-            $ionicLoading.hide();
-            console.warn(JSON.stringify(err));
-        });
-    };
+    $ionicLoading.show();
+    AppService.login(data)
+    .success(function (data) {
+       localStorage.setItem('sam_user_data', JSON.stringify(data));
+       $ionicLoading.hide();
+       // console.log(JSON.stringify(data, null, 4));
+       $state.go('app.postmapview');
+    })
+    .error(function (err) {
+      $ionicLoading.hide();
+      console.warn(JSON.stringify(err));
+    });
 
+  };
+})
 
+.controller('LocationCtrl', function($scope, $state, $ionicPopup) {
+    $scope.showLocationPopup = function(){
+        console.log('showLocationPopup ...');
+        
+        $ionicPopup.confirm({
+            title: '"SeeAround.me" Would Like to Use Your Current Location',
+            cancelText: "Don't Allow",
+            cancelType: 'button-default',
+            okType: 'button-default'
+        }).then(function(res) {
+         if(res) {
+             console.log('Location allowed. Go to map screen ...');
+             $state.go('app.postmapview');
+         } else {
+            console.log('Popup canceled ...');
+         }
+       });
+    }
 })
 
 .controller('MapCtrl', function($scope, $state, $stateParams, $ionicModal, $ionicLoading,
@@ -152,10 +160,10 @@ angular.module('SeeAroundMe.controllers', [])
         userId = userData.result.id;
         $scope.formData.Profile_image = userData.result.Profile_image;
         location = localStorage.getItem('sam_user_location');
-        if (location) {
+        if (!location) {
                 location = JSON.parse(location);
                 location = {latitude: 37.8088139, longitude: -122.2635002};
-                console.warn('WARN: Using DEV_MODE position: ' + location);
+                console.warn('WARN: Using DEV_MODE position: ' + location);        
         }
 
         // console.log(mapOptions);
@@ -175,19 +183,21 @@ angular.module('SeeAroundMe.controllers', [])
         .success(function (data) {
             // console.log(JSON.stringify(data, null, 4));
             $scope.nearbyPosts = data.result;
-            $scope.nearbyPosts.forEach(function (post) {
-                var marker = new google.maps.Marker({
-                    position: new google.maps.LatLng(post.latitude, post.longitude),
-                    map: map,
-                    // title: post.title,
-                    icon: './img/pin.png'
-                });
+            if($scope.nearbyPosts){
+                $scope.nearbyPosts.forEach(function (post) {
+                    var marker = new google.maps.Marker({
+                        position: new google.maps.LatLng(post.latitude, post.longitude),
+                        map: map,
+                        // title: post.title,
+                        icon: './img/pin.png'
+                    });
 
-                google.maps.event.addListener(marker, 'click', function() {
-                    // infowindow.open(map,marker);
-                    // $state.go('app.offerdetails', {id: offer.id, type: 'discover'});
+                    google.maps.event.addListener(marker, 'click', function() {
+                        // infowindow.open(map,marker);
+                        // $state.go('app.offerdetails', {id: offer.id, type: 'discover'});
+                    });
                 });
-            })
+            }
 
         })
         .error(function (err) {

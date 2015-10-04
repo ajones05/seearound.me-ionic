@@ -1,0 +1,30 @@
+.location_modal{
+  height: 120vh;
+  background: $positive
+}
+.location_modal ion-content .scroll{
+  height: 100vh;
+  background: $positive
+  text-align: center;
+}
+.location_modal ion-content .scroll img{
+  width:25vw;
+  margin-top: 10vh;
+}
+.location_modal ion-content .scroll .text.padding{
+  padding-top: 3vh;
+  color: white;
+  opacity: 0.9;
+  font-size: 1.3rem;
+}
+.location_modal ion-content .scroll .text.padding p{
+  padding: 3vh; 
+  line-height: 1.7rem;
+  width: 80vw;
+  margin: auto;
+}
+.location_modal ion-content .scroll .button.button-block{
+  margin: auto;
+  margin-top: 4vh;
+  width: 80vw;
+}

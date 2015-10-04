@@ -24,7 +24,7 @@ angular.module('SeeAroundMe.services', [])
                     // return mylocation;
                 }, function(err) {
                     // error
-                    console.error('Fail to get current position. Error: ' + JSON.stringify(err));
+                    console.error('Failed to get current position. Error: ' + JSON.stringify(err));
                     deferred.reject(err.message);
                     // return err;
                 });

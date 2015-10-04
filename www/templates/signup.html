@@ -1,31 +1,37 @@
-<ion-view view-title="Sign Up">
-    <ion-content padding="true">
-        <br>
+<ion-view hide-nav-bar="true" class="login">
+  <ion-content padding="true">
+      <div class="spacer100"></div>
       <a class="button button-block button-positive" href="#/app/signin">
-          Login with Facebook
+        Login with Facebook
       </a>
-      <div>We'll never post anything without your permission</div>
-      <hr>
-      <br>Or with Email
+      <p class="small-text">*We'll never post anything without your permission</p>
+      <div class="spacer10"></div>
+      <hr/>
+      <div class="spacer10"></div>
+      <p class="heading"> Or with e-mail </p>
+      <div class="spacer10"></div>
       <form>
           <div class="list">
-              <label class="item item-input">
-                <span class="input-label">Name</span>
-                <input type="text">
-              </label>
             <label class="item item-input">
-              <span class="input-label">Email</span>
-              <input type="text">
+              <input type="text" placeholder="Name...">
             </label>
+             <div class="spacer10"></div> 
             <label class="item item-input">
-              <span class="input-label">Password</span>
-              <input type="password">
+              <input type="text" placeholder="E-mail address...">
             </label>
+              <div class="spacer10"></div>
+            <label class="item item-input">
+              <input type="password" placeholder="Password...">
+            </label>
+              <div class="spacer10"></div>
+            <label class="item item-input">
+              <input type="password" placeholder="Repeat password...">
+            </label>              
           </div>
-          <a class="button button-block button-positive" href="#/" ng-click="doLogin()">
-              Register
-          </a>
+          <div class="spacer60"></div>
+          <button type="submit" class="button button-block button-positive" ng-click="doSignUp()">
+            Register
+          </button>
       </form>
-
-    </ion-content>
+  </ion-content>
 </ion-view>

@@ -1,0 +1,11 @@
+//login.html
+
+.login {
+    .heading{
+        @include centered-heading;
+    }
+
+    .small-text{
+        @include centered-small-text;
+    }
+}

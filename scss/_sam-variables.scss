@@ -2,6 +2,11 @@
 // -------------------------------
 $light:            	 				#FFFFFF;
 $positive:            				#345EC2;
+$base-color:               			#006AA5;
+$smallTextColor:                    #888888;
+$headingTextColor:                  #666666;
+$gray:          #7d7d7d;
+
 // $positive-light:		 			#FF7043;
 // $fb:								#3B5998;
 // $calm:								#539CBE;
@@ -15,7 +20,6 @@ $positive:            				#345EC2;
 //
 // $black:								#000000;
 // $white:								#FFFFFF;
-// $base-color:               			#090201;
 // $neutral-dark:						#263238;
 // $neutral:							#455A64;
 // $neutral-light:						#90A4AE;
@@ -30,7 +34,8 @@ $font-family-light-sans-serif:    	"Lato-Light", "Helvetica Neue-Light", "Helvet
 $font-family-serif:               	"Lato", Georgia, "Times New Roman", Times, serif;
 
 $headings-font-family:            	$font-family-serif;
-
+$smallTextSize:                     .8em;
+$headingTextSize:                   1.2em;
 
 // // Buttons
 // // -------------------------------

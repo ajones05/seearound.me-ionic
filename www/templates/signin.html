@@ -1,27 +1,29 @@
-<ion-view view-title="Sign In">
+<ion-view hide-nav-bar="true" class="login">
   <ion-content padding="true">
-      <br><br>
-    <a class="button button-block button-positive" href="#/app/signin">
+      <div class="spacer100"></div>
+      <a class="button button-block button-positive" href="#/app/signin">
         Login with Facebook
-    </a>
-    <div>We'll never post anything without your permission</div>
-    <hr>
-    <br>Or with Email
-    <form ng-submit="doLogin()" name="login">
-        <div class="list">
-          <label class="item item-input">
-            <span class="input-label">Email</span>
-            <input type="text" ng-model="formData.email" required="required">
-          </label>
-          <label class="item item-input">
-            <span class="input-label">Password</span>
-            <input type="password" ng-model="formData.password" required="required">
-          </label>
-        </div>
-        <button type="submit" class="button button-block button-positive">
+      </a>
+      <p class="small-text">*We'll never post anything without your permission</p>
+      <div class="spacer10"></div>
+      <hr/>
+      <div class="spacer10"></div>
+      <p class="heading"> Or with e-mail </p>
+      <div class="spacer10"></div>
+      <form ng-submit="doLogin()" name="login">
+          <div class="list">
+            <label class="item item-input">
+              <input type="text" placeholder="E-mail address..." ng-model="formData.email" required="required">
+            </label>
+            <div class="spacer10"></div>
+            <label class="item item-input">
+              <input type="password" placeholder="Password..." ng-model="formData.password" required="required">
+            </label>
+          </div>
+          <div class="spacer170"></div>
+          <button type="submit" class="button button-block  button-positive bottom">
             Login
-        </button>
-    </form>
-
+          </button>
+      </form>
   </ion-content>
 </ion-view>

@@ -12,7 +12,6 @@ body, html {
 	clear: both;
 }
 
-
 // need to move to seperate file sometime
 .share-page {
 	.share {
@@ -23,3 +22,90 @@ body, html {
 		}
 	}
 }
+
+.spacer10 {
+    height:10px;
+    width: 100%;
+}
+
+.spacer60 {
+    height: 60px;
+    width: 100%;
+}
+
+.spacer100 {
+    height: 100px;
+    width: 100%;
+}
+
+.spacer170 {
+    height:170px;
+    width: 100%;
+}
+
+.padding{
+    padding: 20px !important;
+}
+
+// Button Style Overrides
+// Outlined buttons
+.button-outline {
+  border-width: 2px !important; 
+  border-color: $base-color !important;
+  color: $base-color !important;
+}
+// make buttons wide
+.button{
+  padding: 2%;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 2px;
+}
+
+// Font overrides
+*{
+  font-family: 'Lato' ;
+}
+
+//Mixins
+@mixin centered-heading {
+    text-align: center;
+    font-family: 'Lato';
+    font-weight: bold;
+    font-size: $headingTextSize;
+    color: $headingTextColor;
+}
+
+@mixin centered-small-text{
+    text-align: center;
+    font-family: 'Lato';
+    font-style: italic;
+    font-size: $smallTextSize;
+    color: $smallTextColor
+}
+
+// Styling input Placeholders
+@mixin input-placeholder($color) {
+  &::-webkit-input-placeholder {
+    color: $color;
+    font-size: 1rem;
+    font-weight: 800;
+    font-family: 'Lato-LightItalic';
+  }
+  &:-moz-placeholder {
+    color: $color;
+    font-style: italic;
+    font-family: 'Lato-LightItalic';
+  }
+  &::-moz-placeholder{ //for newer versions of Firefox 
+    color: $color;
+    font-style: italic;
+    font-family: 'Lato-LightItalic';
+  }
+  &:-ms-input-placeholder {
+    color: $color;
+    font-style: italic;
+    font-family: 'Lato-LightItalic';
+  }
+}
+

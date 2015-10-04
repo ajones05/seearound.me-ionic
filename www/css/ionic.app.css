@@ -2550,7 +2550,7 @@ body, .ionic-body {
   overflow: hidden;
   margin: 0;
   padding: 0;
-  color: #000;
+  color: #006AA5;
   word-wrap: break-word;
   font-size: 14px;
   font-family: "Lato-Bold", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
@@ -2781,7 +2781,7 @@ cite {
   text-align: center; }
 
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-  color: #000;
+  color: #006AA5;
   font-weight: 500;
   font-family: "Lato", Georgia, "Times New Roman", Times, serif;
   line-height: 1.2; }
@@ -6267,7 +6267,6 @@ input[type="radio"][disabled], input[type="checkbox"][disabled], input[type="rad
 .range input {
   display: inline-block;
   overflow: hidden;
-  margin-top: 5px;
   margin-bottom: 5px;
   padding-right: 2px;
   padding-left: 1px;
@@ -7695,6 +7694,33 @@ body, html {
   .share-page .share button {
     margin-top: 2rem; }
 
+.spacer10 {
+  height: 10px;
+  width: 100%; }
+
+.spacer60 {
+  height: 60px;
+  width: 100%; }
+
+.spacer100 {
+  height: 100px;
+  width: 100%; }
+
+.spacer170 {
+  height: 170px;
+  width: 100%; }
+
+.padding {
+  padding: 20px !important; }
+
+.button-outline {
+  border-width: 2px !important;
+  border-color: #006AA5 !important;
+  color: #006AA5 !important; }
+
+* {
+  font-family: 'Lato' !important; }
+
 @font-face {
   font-family: 'Lato';
   src: url('../fonts/Lato-Regular.ttf');
@@ -7732,6 +7758,61 @@ body, html {
 
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-weight: 700; }
+
+* {
+  font-family: 'Lato' !important; }
+
+.location_modal {
+  height: 120vh;
+  background: blue; }
+
+.location_modal ion-content .scroll {
+  height: 100vh;
+  background: blue;
+  text-align: center; }
+
+.location_modal ion-content .scroll img {
+  width: 25vw;
+  margin-top: 10vh; }
+
+.location_modal ion-content .scroll .text.padding {
+  padding-top: 3vh;
+  color: white;
+  opacity: 0.9;
+  font-size: 1.3rem; }
+
+.location_modal ion-content .scroll .text.padding p {
+  padding: 3vh;
+  line-height: 1.7rem;
+  width: 80vw;
+  margin: auto; }
+
+.location_modal ion-content .scroll .button.button-block {
+  margin: auto;
+  margin-top: 4vh;
+  width: 80vw; }
+
+.home .logo {
+  height: 60%;
+  padding-top: 150px;
+  text-align: center; }
+.home .container {
+  height: 100%; }
+.home .bottom {
+  margin-top: 42%; }
+
+.login .heading {
+  text-align: center;
+  font-family: 'Lato';
+  font-weight: bold;
+  font-size: 1.2em;
+  color: #666666; }
+.login .small-text {
+  text-align: center;
+  font-family: 'Lato';
+  font-style: italic;
+  font-size: 0.8em;
+  color: #888888; }
 
 #map {
   width: 100%;
