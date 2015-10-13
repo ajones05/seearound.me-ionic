@@ -7718,9 +7718,6 @@ body, html {
   border-color: #006AA5 !important;
   color: #006AA5 !important; }
 
-* {
-  font-family: 'Lato' !important; }
-
 @font-face {
   font-family: 'Lato';
   src: url('../fonts/Lato-Regular.ttf');
@@ -7759,16 +7756,13 @@ body, html {
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-weight: 700; }
 
-* {
-  font-family: 'Lato' !important; }
-
 .location_modal {
   height: 120vh;
-  background: blue; }
+  background: #345EC2; }
 
 .location_modal ion-content .scroll {
   height: 100vh;
-  background: blue;
+  background: #345EC2;
   text-align: center; }
 
 .location_modal ion-content .scroll img {
@@ -7814,6 +7808,77 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-size: 0.8em;
   color: #888888; }
 
+.full_profile .scroll {
+  background: #e8e8e8; }
+.full_profile .bar.bar-stable {
+  background: white; }
+  .full_profile .bar.bar-stable img {
+    width: 50%;
+    margin: auto; }
+.full_profile .list .item {
+  padding-left: 10%;
+  background: #e8e8e8;
+  font-family: 'Lato-Bold';
+  color: #7d7d7d;
+  border-bottom: 2px solid rgba(144, 144, 144, 0.9);
+  font-size: 0.8rem; }
+  .full_profile .list .item i {
+    float: right;
+    padding-right: 10%;
+    color: black;
+    opacity: 0.4; }
+  .full_profile .list .item p {
+    font-family: "Lato";
+    padding: 5% 0 0 20%; }
+.full_profile .list .item-complex .item-content {
+  background: inherit; }
+.full_profile .list .row.no-top-border {
+  border-top: none; }
+.full_profile .list .row {
+  border-bottom-width: 1px;
+  margin: 5px 0;
+  padding-top: 10px;
+  padding-bottom: 10px; }
+.full_profile .list ion-item.profile_image {
+  padding-left: 16px;
+  text-align: left;
+  width: 100%;
+  height: 100%;
+  color: #345EC2;
+  border-bottom: none; }
+  .full_profile .list ion-item.profile_image img {
+    border: 4px solid #345EC2;
+    opacity: 0.8;
+    border-radius: 100vw;
+    width: 90px;
+    height: 90px;
+    margin: auto;
+    margin: 0 5vw;
+    float: left; }
+.full_profile .list .centered_button {
+  margin-top: 30px; }
+  .full_profile .list .centered_button .custom_btn {
+    padding: 10px 35px; }
+.full_profile .list .col {
+  padding-left: 0;
+  text-align: left; }
+.full_profile .list .col + .col {
+  padding-right: 15%;
+  text-align: right; }
+.full_profile .list .nowrap {
+  white-space: normal;
+  width: 30%;
+  margin-right: 14%;
+  padding-right: 0;
+  text-align: right; }
+
+.custom_btn {
+  background: #345EC2;
+  padding: 10px 20px;
+  border-radius: 3px;
+  color: white;
+  width: 100%; }
+
 #map {
   width: 100%;
   height: 100%; }
@@ -7830,6 +7895,25 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   height: 60px;
   display: inline-block;
   border: 2px solid #FFFFFF; }
+
+.header-buttons {
+  width: 100vw;
+  display: flex;
+  justify-content: space-between; }
+
+.bar-header {
+  align-items: center !important;
+  -webkit-align-items: center !important; }
+
+.bar-footer.range {
+  height: 7vh;
+  border: 0; }
+  .bar-footer.range .title {
+    margin: 0; }
+    .bar-footer.range .title input {
+      margin: 0 0 30px 20px; }
+    .bar-footer.range .title i {
+      margin-bottom: 28px; }
 
 .postlistview .meta {
   width: 100%; }
@@ -7848,16 +7932,180 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-family: 'Lato-Light';
   font-weight: 200; }
 
+.addpost ion-header-bar {
+  border-bottom: 1px solid #7d7d7d; }
+.addpost .icon {
+  font-size: 1.6rem !important; }
+.addpost .button-clear {
+  color: #7d7d7d !important; }
 .addpost .avatar {
-  float: left;
-  width: 20%; }
+  margin: 2%; }
 .addpost .post {
-  float: left;
-  width: 80%;
   height: 10rem; }
+.addpost textarea {
+  height: 100%; }
+.addpost .scroll {
+  width: 100%; }
 .addpost .commentbox {
+  padding: 5%;
   width: 100%;
-  font-family: 'Lato'; }
+  font-family: 'Lato';
+  color: rgba(0, 0, 0, 0.8); }
+.addpost .bar.bar-footer {
+  border-top: 2px solid gray; }
 .addpost .camera-button {
-  float: right;
-  margin-right: 0.3rem; }
+  margin: auto; }
+  .addpost .camera-button i {
+    padding-left: 5px; }
+
+.profile .scroll {
+  background: #e8e8e8; }
+.profile .bar.bar-stable {
+  background: white; }
+  .profile .bar.bar-stable img {
+    width: 50%;
+    margin: auto; }
+.profile .list .item {
+  padding-left: 15%;
+  background: #e8e8e8;
+  font-family: 'Lato-Bold';
+  color: #7d7d7d;
+  border-bottom: 2px solid rgba(144, 144, 144, 0.9);
+  font-size: 0.8rem; }
+  .profile .list .item i {
+    float: right;
+    padding-right: 10%;
+    color: black;
+    opacity: 0.4; }
+  .profile .list .item p {
+    font-family: "Lato";
+    padding: 5% 0 0 20%; }
+.profile .list .item-complex .item-content {
+  background: inherit; }
+.profile .list ion-item:first-child {
+  padding-left: 16px;
+  text-align: center;
+  width: 100%;
+  color: #345EC2; }
+  .profile .list ion-item:first-child img {
+    border: 4px solid #345EC2;
+    opacity: 0.8;
+    border-radius: 100vw;
+    width: 90px;
+    height: 90px;
+    margin: auto; }
+.profile .list .col {
+  padding-left: 0;
+  text-align: left; }
+.profile .list .col + .col {
+  padding-right: 15%;
+  text-align: right; }
+
+.messages {
+  font-family: 'Lato'; }
+  .messages .header-item {
+    font-family: 'Lato-Bold'; }
+  .messages .message:nth-child(2n-1) .item-content {
+    background: #ddd !important; }
+  .messages .message {
+    border-color: #888;
+    padding: 0;
+    overflow: inherit;
+    text-overflow: inherit; }
+    .messages .message .col-10 {
+      display: flex;
+      align-items: center;
+      margin: 5px 15px; }
+    .messages .message .top {
+      color: #345EC2; }
+      .messages .message .top .name {
+        font-style: italic; }
+    .messages .message .avatar {
+      text-align: center;
+      margin: auto;
+      margin-left: 20px; }
+    .messages .message img {
+      height: 60px !important;
+      width: 60px !important;
+      border-radius: 100%;
+      border: 2px solid #345EC2; }
+    .messages .message .row {
+      padding: 0; }
+      .messages .message .row p {
+        padding: 5px;
+        white-space: normal; }
+      .messages .message .row .time {
+        text-align: right;
+        font-size: .8em;
+        font-style: italic; }
+  .messages .item-complex .item-content {
+    padding: 0; }
+
+.chat {
+  font-family: 'Lato'; }
+  .chat .user {
+    display: flex;
+    align-items: center;
+    font-style: italic;
+    padding-right: 5px; }
+    .chat .user .profile_image {
+      width: 8vw;
+      height: 8vw;
+      border: 2px solid #345EC2;
+      border-radius: 100%;
+      margin-left: 10px; }
+  .chat .date {
+    text-align: center;
+    font-style: italic;
+    color: #345EC2; }
+  .chat .chat_msgs {
+    color: black;
+    background: #EEEEEE; }
+    .chat .chat_msgs .scroll {
+      background: #EEEEEE; }
+    .chat .chat_msgs .bubble {
+      position: relative;
+      padding: 15px;
+      margin: 20px;
+      border-radius: 10px;
+      display: inline-block; }
+    .chat .chat_msgs .bubble-left {
+      background: #FFFFFF; }
+    .chat .chat_msgs .bubble-right {
+      background: #345EC2;
+      color: #FFFFFF; }
+    .chat .chat_msgs .bubble-left:after {
+      content: '';
+      position: absolute;
+      border-style: solid;
+      border-width: 7px 50px 18px 15px;
+      border-color: transparent #FFFFFF;
+      display: block;
+      width: 0;
+      z-index: 1;
+      margin-top: -7px;
+      left: -57px;
+      top: 60%; }
+    .chat .chat_msgs .bubble-right:after {
+      content: '';
+      position: absolute;
+      border-style: solid;
+      border-width: 20px 15px 7px 50px;
+      border-color: transparent #345EC2;
+      display: block;
+      width: 0;
+      z-index: 1;
+      margin-top: -7px;
+      right: -57px;
+      top: 60%; }
+  .chat ion-footer-bar {
+    border-top: 2px solid #EEEEEE;
+    padding: 0; }
+    .chat ion-footer-bar input {
+      width: 75%;
+      padding-left: 30px;
+      padding-top: 10px; }
+    .chat ion-footer-bar .button {
+      width: 25%;
+      padding-top: 5px;
+      border-radius: 0; }

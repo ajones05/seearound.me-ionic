@@ -12,32 +12,49 @@
     <ion-nav-view name="menuContent"></ion-nav-view>
   </ion-side-menu-content>
 
-  <ion-side-menu side="left">
+  <ion-side-menu side="left" class="profile">
     <ion-header-bar class="bar-stable">
-      <h1 class="title">SeeAroundMe</h1>
+      <img src="img/seearoundme.png" alt="">
     </ion-header-bar>
     <ion-content>
       <ion-list>
-        <!-- <ion-item menu-close ng-click="openPostList()">
-          View Posts List
-        </ion-item> -->
-        <ion-item menu-close href="#/app/post/map">
-          View Posts Map
+        <ion-item class="profile_image">
+          <div ui-sref="app.userprofile" menu-close>
+            <img src="img/eskimo.jpg" alt="">
+          </div>
+          <div ui-sref="app.userprofile" menu-close>John Smith</div>
         </ion-item>
-        <ion-item menu-close href="#/app/user/messages">
-          Messages
+        <ion-item>
+          View Posts
+          <p ui-sref="app.postmapview" menu-close> Map View <i class="ion-chevron-right"></i> </p>
+          <p> List View <i class="ion-chevron-right"></i></p>
         </ion-item>
-        <ion-item menu-close href="#/app/user/following">
+        <ion-item> 
+          View Posts Map<i class="ion-chevron-right"></i>
+        </ion-item>
+        <ion-item  menu-close>
+          <div ui-sref="app.usermessages">
+            Messages
+            <i class="ion-chevron-right"></i>
+          </div>
+        </ion-item>
+        <ion-item menu-close>
           Following
+          <i class="ion-chevron-right"></i>
         </ion-item>
-        <ion-item menu-close href="#/app/user/profile">
-          Profile
+        <ion-item menu-close>
+          <div ui-sref="app.userprofile">    
+            Profile
+            <i class="ion-chevron-right"></i>
+          </div>
         </ion-item>
-        <ion-item menu-close ng-click="">
+        <ion-item menu-close ng-click="signOut()">
           Signout
+          <i class="ion-chevron-right"></i>
         </ion-item>
-        <ion-item menu-close ng-click="">
-          Terms | About
+        <ion-item menu-close class="row" ng-click="">
+          <span class="col">Terms</span>
+          <span class="col">About</span>
         </ion-item>
       </ion-list>
     </ion-content>

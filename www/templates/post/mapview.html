@@ -1,21 +1,38 @@
-<ion-view hide-back-button="true" view-title="MapView" class="mapview">
-    <ion-nav-buttons side="left">
+<ion-view hide-back-button="true" class="mapview">
+  <ion-nav-buttons>
+    <div class="row bar bar-header">
         <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
-        <button class="button button-icon" ng-click="showModal(2)"><i class="icon ion-ios-compose-outline"></i></button>
-    </ion-nav-buttons>
-    <ion-nav-buttons side="right">
-        <button class="button button-icon" ng-click="showSearch()"><i class="icon ion-ios-search"></i></button>
-        <button class="button button-icon" ng-click="showModal(1)"><i class="icon ion-ios-list-outline"></i></button>
-    </ion-nav-buttons>
+        
+        <div class="col">
+            <button class="button button-icon" ng-click="showModal(2)">
+              <i class="icon ion-ios-compose-outline"></i>
+            </button>
+        </div>
+        <div class="col">    
+          <button class="button button-icon" ><i class="icon ion-ios-camera-outline"></i></button>
+        </div>
+        <div class="col text-center">            
+            <button class="button button-icon" ng-click="showAlerts($event)" >
+              <i class="icon ion-ios-flag-outline"></i>
+            </button>
+        </div>
+        <div class="col">            
+          <button class="button button-icon" ><i class="icon ion-ios-search"></i></button>
+        </div>
+        
+        <button class="button button-icon" ><i class="icon ion-ios-paper-outline"></i></button>
+    </div>
+  </ion-nav-buttons>
   <ion-content>
     <div id="map" data-tap-disabled="true"></div>
   </ion-content>
-    <div class="bar bar-footer bar-light">
+    <div class="bar bar-footer bar-light range">
         <div class="title">
             <div class="list">
               <div class="item range range-positive">
                 <i class="icon ion-navigate"></i>
-                <input type="range" name="volume" min="0" max="150" value="inputRadius" ng-model="inputRadius"> {{inputRadius/10}}
+                <input type="range" name="volume" min="0" max="150" value="inputRadius" ng-model="inputRadius"> 
+                <!-- {{inputRadius/10}} -->
               </div>
             </div>
         </div>

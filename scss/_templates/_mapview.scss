@@ -18,3 +18,28 @@
     display: inline-block;
     border: 2px solid $light;
 }
+
+.header-buttons{
+  width: 100vw;
+  display: flex;
+  justify-content: space-between;
+}
+
+.bar-header{
+    align-items: center !important;
+    -webkit-align-items: center !important;
+}
+
+.bar-footer.range{
+  height: 7vh;
+  border: 0;
+
+  .title{
+    margin: 0;
+
+    input{
+      margin: 0 0 30px 20px;
+    }
+    i{ margin-bottom: 28px; }
+  }
+}

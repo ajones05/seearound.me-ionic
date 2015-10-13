@@ -12,6 +12,7 @@ body, html {
 	clear: both;
 }
 
+
 // need to move to seperate file sometime
 .share-page {
 	.share {
@@ -54,18 +55,11 @@ body, html {
   border-color: $base-color !important;
   color: $base-color !important;
 }
-// make buttons wide
-.button{
-  padding: 2%;
-  font-size: 1.1rem;
-  font-weight: bold;
-  border-radius: 2px;
-}
 
-// Font overrides
-*{
-  font-family: 'Lato' ;
-}
+//Font overrides
+// *{
+//   font-family: 'Lato' !important;
+// }
 
 //Mixins
 @mixin centered-heading {
@@ -84,28 +78,5 @@ body, html {
     color: $smallTextColor
 }
 
-// Styling input Placeholders
-@mixin input-placeholder($color) {
-  &::-webkit-input-placeholder {
-    color: $color;
-    font-size: 1rem;
-    font-weight: 800;
-    font-family: 'Lato-LightItalic';
-  }
-  &:-moz-placeholder {
-    color: $color;
-    font-style: italic;
-    font-family: 'Lato-LightItalic';
-  }
-  &::-moz-placeholder{ //for newer versions of Firefox 
-    color: $color;
-    font-style: italic;
-    font-family: 'Lato-LightItalic';
-  }
-  &:-ms-input-placeholder {
-    color: $color;
-    font-style: italic;
-    font-family: 'Lato-LightItalic';
-  }
-}
+
 

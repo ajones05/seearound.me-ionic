@@ -10,16 +10,6 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.
       StatusBar.styleDefault();
     }
 
-  $rootScope.showLocationPopup = function(close){
-    $ionicPopup.confirm({
-      template: 'SeeAroundMe Would Like to Use Your Current Location'
-    }).then(function(res){
-      if (res){
-        close();
-        $state.go('app.postmapview');
-      }
-    })
-  }
   });
 })
 
@@ -118,7 +108,8 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.
         url: "/user/profile",
         views: {
           'menuContent': {
-            templateUrl: "templates/user/profile.html"
+            templateUrl: "templates/user/profile.html",
+            controller: 'ProfileCtrl'
           }
         }
     })
@@ -136,10 +127,21 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.
         url: "/user/messages",
         views: {
           'menuContent': {
-            templateUrl: "templates/user/messages.html"
+            templateUrl: "templates/user/messages.html",
+            controller: "MessagesCtrl"
           }
         }
-    });
+    })
+    .state('app.userchat', {
+      url: "/user/chat",
+      views: {
+        'menuContent':{
+          templateUrl: "templates/user/chat.html",
+          controller: "ChatCtrl"
+        }
+      }
+    })
+    ;
     
   $urlRouterProvider.otherwise('/app/home');
 });

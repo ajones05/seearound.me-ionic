@@ -1,0 +1,22 @@
+<ion-popover-view class="messages" style="width:90%;height:80%;">
+  <ion-content>
+    <ion-list>
+      <ion-item ng-repeat="alert in alerts" class="message">
+        <div class="row">
+          <div class="avatar">
+            <img src={{alert.profileImage}} alt="Profile Image">
+          </div>
+          <div class="col top">
+            <div class="row">
+              <span class="col name">{{alert.user}}</span>
+              <span class="col time">{{alert.time}}</span>
+            </div>
+            <div class="row">
+              <p class="text"> {{alert.message}} </p>
+            </div>
+          </div>
+        </div>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-popover-view>

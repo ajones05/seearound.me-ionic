@@ -1,26 +1,50 @@
 //post/add.html
 .addpost {
-    .avatar {
-        float: left;
-        width: 20%;
-    }
+  ion-header-bar{
+    border-bottom: 1px solid $gray;
+  }
 
-    .post {
-        float: left;
-        // top:0.30rem;
-        // left: 5.2rem;
-        width: 80%;
-        height: 10rem;
-        // border: 1px solid #000;
-    }
+  .icon{
+    font-size: 1.6rem !important;
+  }
 
-    .commentbox {
-        width: 100%;
-        font-family: 'Lato';
-    }
+  .button-clear{
+    color: $gray !important;
+  }
 
-    .camera-button {
-        float: right;
-        margin-right: 0.3rem;
+  .avatar {
+    margin: 2%;
+  }
+
+  .post {
+    // float: left;
+    height: 10rem;
+  }
+
+  textarea{
+    height: 100%;
+  }
+
+  .scroll{
+    width: 100%;
+  }
+
+  .commentbox {
+    padding: 5%;
+    width: 100%;
+    font-family: 'Lato';
+    color: rgba(0,0,0,0.8);
+  }
+  
+  .bar.bar-footer{
+    border-top: 2px solid gray;
+  }
+
+  .camera-button {
+    margin: auto;
+
+    i{
+      padding-left: 5px;
     }
+  }
 }

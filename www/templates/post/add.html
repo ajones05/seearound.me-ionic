@@ -1,23 +1,31 @@
 <ion-modal-view class="addpost">
-    <ion-header-bar>
-        <div class="buttons">
-          <button class="button button-clear" ng-click="close(2)">Close</button>
-        </div>
-      <h1 class="title">Add New Post</h1>
-      <div class="buttons">
-        <button class="button button-clear" ng-click="post()">Post</button>
+  <ion-header-bar>
+    <div class="buttons">
+      <button class="button button-clear" ng-click="close(2)">
+        <i class="icon ion-ios-arrow-back"></i>
+      </button>
+    </div>
+    <h1 class="title"></h1>
+    <div class="buttons">
+      <button class="button button-clear" ng-click="post()">Post</button>
+    </div>
+  </ion-header-bar>
+  <ion-content >
+    <div class="row">
+      <div class="avatar col col-20">
+        <img class="prof-img" ng-src="{{formData.Profile_image}}" width="100%"/>
       </div>
-    </ion-header-bar>
-  <ion-content>
-      <div class="avatar">
-          <img class="prof-img" ng-src="{{formData.Profile_image}}" width="100%"/>
+      <div class="post col">
+        <textarea placeholder="Write something.." ng-model="formData.postText" class="commentbox"></textarea>
       </div>
-      <div class="post">
-          <textarea placeholder="Share something from your current location..." ng-model="formData.postText" class="commentbox"></textarea>
-      </div>
-      <div class="camera-button">
-          <button class="button button-icon" ng-click="pickImages()"><i class="icon ion-camera"></i></button>
-      </div>
+    </div>
 
   </ion-content>
+  <ion-footer-bar>
+    <div class="camera-button">
+      <button class="button button-icon" ng-click="pickImages()">
+        Add Photo<i class="icon ion-camera"></i>
+      </button>
+    </div>
+  </ion-footer-bar>
 </ion-modal-view>

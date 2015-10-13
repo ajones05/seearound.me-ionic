@@ -8,7 +8,10 @@ angular.module('SeeAroundMe.controllers', [])
       $rootScope.$broadcast('mapview:openlist');
       $state.go('app.postmapview');
   };
-
+    
+  $scope.signOut = function(){
+        $state.go('app.home');
+  }
 })
 
 .controller('HomeCtrl', function($scope, AppService) {
@@ -24,6 +27,12 @@ angular.module('SeeAroundMe.controllers', [])
         console.log('Signup ...');
         $state.go('app.allowlocation');
     }
+})
+
+.controller('ProfileCtrl', function($scope, $state){
+  $scope.goBack =function(){
+    $state.go('app.postmapview');
+  }
 })
 
 .controller('SigninCtrl', function($scope, $state, $ionicLoading, $rootScope, AppService, $ionicModal) {
@@ -72,8 +81,94 @@ angular.module('SeeAroundMe.controllers', [])
     }
 })
 
+.controller('MessagesCtrl', function($scope, $state){
+  $scope.messages = [
+    {
+      user: "Amie Roger",
+      message: "Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet",
+      time: "July 10, 9:15am",
+      profileImage: "img/eskimo.jpg"
+    },
+    {
+      user: "Amie Roger",
+      message: "Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet",
+      time: "July 10, 9:15am",
+      profileImage: "img/eskimo.jpg"
+    },
+
+    {
+      user: "Amie Roger",
+      message: "Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet",
+      time: "July 10, 9:15am",
+      profileImage: "img/eskimo.jpg"
+    },
+    {
+      user: "Amie Roger",
+      message: "Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet",
+      time: "July 10, 9:15am",
+      profileImage: "img/eskimo.jpg"
+    },
+    {
+      user: "Amie Roger",
+      message: "Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet",
+      time: "July 10, 9:15am",
+      profileImage: "img/eskimo.jpg"
+    },
+
+    {
+      user: "Amie Roger",
+      message: "Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet",
+      time: "July 10, 9:15am",
+      profileImage: "img/eskimo.jpg"
+    },
+    {
+      user: "Amie Roger",
+      message: "Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet",
+      time: "July 10, 9:15am",
+      profileImage: "img/eskimo.jpg"
+    },
+    {
+      user: "Amie Roger",
+      message: "Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet",
+      time: "July 10, 9:15am",
+      profileImage: "img/eskimo.jpg"
+    },
+
+    {
+      user: "Amie Roger",
+      message: "Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet",
+      time: "July 10, 9:15am",
+      profileImage: "img/eskimo.jpg"
+    },
+    {
+      user: "Amie Roger",
+      message: "Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet",
+      time: "July 10, 9:15am",
+      profileImage: "img/eskimo.jpg"
+    },
+    {
+      user: "Amie Roger",
+      message: "Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet",
+      time: "July 10, 9:15am",
+      profileImage: "img/eskimo.jpg"
+    },
+
+    {
+      user: "Amie Roger",
+      message: "Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet",
+      time: "July 10, 9:15am",
+      profileImage: "img/eskimo.jpg"
+    },
+
+  ]
+})
+
+.controller('ChatCtrl', function($scope, $state){
+
+})
+
 .controller('MapCtrl', function($scope, $state, $stateParams, $ionicModal, $ionicLoading,
-    $cordovaImagePicker, $ionicPopup, AppService) {
+    $cordovaImagePicker, $ionicPopup, $ionicPopover, AppService) {
     $scope.inputRadius = 8;
     $scope.formData = {};
     $scope.fileName = {};
@@ -189,7 +284,7 @@ angular.module('SeeAroundMe.controllers', [])
                         position: new google.maps.LatLng(post.latitude, post.longitude),
                         map: map,
                         // title: post.title,
-                        icon: './img/pin.png'
+                        icon: 'img/pin-gray.png'
                     });
 
                     google.maps.event.addListener(marker, 'click', function() {
@@ -280,6 +375,7 @@ angular.module('SeeAroundMe.controllers', [])
       console.log('Destroying modals...');
       $scope.modal1.remove();
       $scope.modal2.remove();
+      $scope.popover.remove();
     });
 
     $scope.pickImages = function () {
@@ -329,5 +425,59 @@ angular.module('SeeAroundMe.controllers', [])
 
         })
         // console.log($scope.formData.postText);
+    };
+    
+    //Below is the popover code
+    $ionicPopover.fromTemplateUrl('templates/post/alerts.html', {
+        scope: $scope
+      }).then(function(popover) {
+        $scope.popover = popover;
+    });
+        
+    $scope.showAlerts = function ($event) {
+          console.log('showAlerts called ...');
+
+          $scope.popover.show($event);        
     }
+    
+    $scope.alerts = [
+    {
+      user: "Amie Roger",
+      message: "Lorem Ipsum Dolor Sit Amet",
+      time: "July 10, 9:15am",
+      profileImage: "img/eskimo.jpg"
+    },
+    {
+      user: "Amie Roger",
+      message: "Lorem Ipsum Dolor Sit Amet",
+      time: "July 10, 9:15am",
+      profileImage: "img/eskimo.jpg"
+    },
+
+    {
+      user: "Amie Roger",
+      message: "Lorem Ipsum Dolor Sit Amet",
+      time: "July 10, 9:15am",
+      profileImage: "img/eskimo.jpg"
+    },        
+    {
+      user: "Amie Roger",
+      message: "Lorem Ipsum Dolor Sit Amet",
+      time: "July 10, 9:15am",
+      profileImage: "img/eskimo.jpg"
+    },
+
+    {
+      user: "Amie Roger",
+      message: "Lorem Ipsum Dolor Sit Amet",
+      time: "July 10, 9:15am",
+      profileImage: "img/eskimo.jpg"
+    },
+    {
+      user: "Amie Roger",
+      message: "Lorem Ipsum Dolor Sit Amet",
+      time: "July 10, 9:15am",
+      profileImage: "img/eskimo.jpg"
+    }];
+
 });

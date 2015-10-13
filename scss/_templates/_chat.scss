@@ -1,0 +1,93 @@
+// chat
+
+.chat{
+  font-family: 'Lato';
+  .user{
+    display: flex;
+    align-items: center;
+    font-style: italic;
+    padding-right: 5px;
+
+    .profile_image{
+      width: 8vw;
+      height: 8vw;
+      border: 2px solid $positive;
+      border-radius: 100%;
+      margin-left: 10px;
+    }
+  }
+
+  .date{
+    text-align: center;
+    font-style: italic;
+    color: $positive;
+  }
+
+  .chat_msgs{
+    color: black;
+    background: $lightgray;
+    .scroll{
+      background: $lightgray;
+    }
+
+    .bubble{
+      position: relative;
+      padding: 15px;
+      margin: 20px;
+      border-radius: 10px;
+      display: inline-block;
+    }
+    .bubble-left{
+      background: $light;
+    }
+    .bubble-right{
+      background: $positive;
+      color: $light;
+    }
+    .bubble-left:after{
+      content: '';
+      position: absolute;
+      border-style: solid;
+      border-width: 7px 50px 18px 15px;
+      border-color: transparent $light;
+      display: block;
+      width: 0;
+      z-index: 1;
+      margin-top: -7px;
+      left: -57px;
+      top: 60%;
+    }
+
+    .bubble-right:after{
+      content: '';
+      position: absolute;
+      border-style: solid;
+      // border-width: 7px 0 7px 57px;
+      border-width: 20px 15px 7px 50px;
+      border-color: transparent $positive;
+      display: block;
+      width: 0;
+      z-index: 1;
+      margin-top: -7px;
+      right: -57px;
+      top: 60%;
+    }
+  }
+
+  ion-footer-bar{
+    border-top: 2px solid $lightgray;
+    padding: 0;
+
+    input{ 
+      width: 75%;
+      padding-left: 30px;
+      padding-top: 10px;
+    }
+
+    .button{
+      width: 25%;
+      padding-top: 5px;
+      border-radius: 0;
+    }
+  }
+}

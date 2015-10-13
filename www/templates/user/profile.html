@@ -1,5 +1,60 @@
-<ion-view view-title="Profile">
-  <ion-content>
-    <h1>Profile</h1>
+<ion-view view-title="Profile" hide-nav-bar="true">
+  <ion-header-bar class="bar bar-stable">
+    <button class="button button-icon icon ion-ios-arrow-left" ng-click="goBack()"></button>
+    <div class="h1 title"></div>
+  </ion-header-bar>
+  <ion-content class=" full_profile">
+
+    <ion-list>
+      <ion-item class="profile_image row">
+        <div class="col">
+        <img src="img/eskimo.jpg" alt="">
+        </div>
+        <div class="centered_button col">
+          <span class="custom_btn">Edit Profile</span>
+        </div>
+      </ion-item>
+
+      <ion-item class="row no-top-border">
+        <span class="col">Name</span>
+        <span class="col">John Smith</span>
+      </ion-item>
+
+      <ion-item class="row">
+        <span class="col">Karma</span>
+        <span class="col">40.25</span>
+      </ion-item>
+
+      <ion-item class="row">
+        <span class="col">Email</span>
+        <span class="col">Johnth@gmail.com</span>
+      </ion-item>
+
+      <ion-item class="row">
+        <span class="col">Gender</span>
+        <span class="col">Male</span>
+      </ion-item>
+
+      <ion-item class="row">
+        <span class="col">Age</span>
+        <span class="col">32</span>
+      </ion-item>
+
+      <ion-item class="row">
+        <span class="col">Interests</span>
+        <span class="nowrap">Soccer, Tennis, Movies, Books</span>
+      </ion-item>
+
+      <ion-item class="row">
+        <span class="col">Posts</span>
+        <span class="col">
+        <span class="custom_btn">
+          See Nearby Posts
+        </span>
+        </span>
+      </ion-item>
+
+
+    </ion-list>
   </ion-content>
 </ion-view>

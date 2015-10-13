@@ -1,7 +1,6 @@
 {
-  "name": "SeeAroundMe",
-  "app_id": "63fbc412",
-  
+  "name": "See Around Me",
+  "app_id": "1a06f02e",
   "gulpStartupTasks": [
     "sass",
     "watch"
