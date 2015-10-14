@@ -249,11 +249,11 @@ angular.module('SeeAroundMe.controllers', [])
             }
         };
 
-        userData = JSON.parse(localStorage.getItem('sam_user_data') || '{}');
-        console.warn(JSON.stringify(userData, null, 4));
+        //userData = JSON.parse(localStorage.getItem('sam_user_data') || '{}');
+        //console.warn(JSON.stringify(userData, null, 4));
 
-        userId = userData.result.id;
-        $scope.formData.Profile_image = userData.result.Profile_image;
+        //userId = userData.result.id;
+        //$scope.formData.Profile_image = userData.result.Profile_image;
         location = localStorage.getItem('sam_user_location');
         if (!location) {
                 location = JSON.parse(location);
@@ -263,7 +263,7 @@ angular.module('SeeAroundMe.controllers', [])
 
         // console.log(mapOptions);
         var map = new google.maps.Map(document.getElementById("map"), mapOptions);
-
+/*
         var data = {
             "latitude" : location.latitude,// 37.8088139,
             "longitude" : location.longitude,//-122.2635002,
@@ -275,9 +275,10 @@ angular.module('SeeAroundMe.controllers', [])
 
         console.log(JSON.stringify(data));
         AppService.getNearbyPosts(data)
-        .success(function (data) {
+        .success(function (data) {*/
             // console.log(JSON.stringify(data, null, 4));
-            $scope.nearbyPosts = data.result;
+            $scope.nearbyPosts = [{latitude: 37.8146939, longitude: -122.2643002},
+                                 {latitude: 37.8052035, longitude: -122.2632000}];//data.result;
             if($scope.nearbyPosts){
                 $scope.nearbyPosts.forEach(function (post) {
                     var marker = new google.maps.Marker({
@@ -292,18 +293,18 @@ angular.module('SeeAroundMe.controllers', [])
                         // $state.go('app.offerdetails', {id: offer.id, type: 'discover'});
                     });
                 });
-            }
+            }/*
 
         })
         .error(function (err) {
             console.warn(JSON.stringify(err));
-        });
+        });*/
 
 
         // Show current user position
-        navigator.geolocation.getCurrentPosition(function(pos) {
-            console.log(pos);
-            position = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+        //navigator.geolocation.getCurrentPosition(function(pos) {
+            //console.log(pos);
+            //position = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
 
             // if (DEV_MODE == 'true') {
                 var position = new google.maps.LatLng(37.8088139, -122.26350020000001);
@@ -318,7 +319,7 @@ angular.module('SeeAroundMe.controllers', [])
             });
 
             bounds.extend(position);
-        });
+        //});
 
         // options for the polygon
         var center = new google.maps.LatLng(location.latitude, location.longitude);
@@ -436,48 +437,47 @@ angular.module('SeeAroundMe.controllers', [])
         
     $scope.showAlerts = function ($event) {
           console.log('showAlerts called ...');
+            $scope.alerts = [
+            {
+              user: "Amie Roger",
+              message: "Lorem Ipsum Dolor Sit Amet",
+              time: "July 10, 9:15am",
+              profileImage: "img/eskimo.jpg"
+            },
+            {
+              user: "Amie Roger",
+              message: "Lorem Ipsum Dolor Sit Amet",
+              time: "July 10, 9:15am",
+              profileImage: "img/eskimo.jpg"
+            },
+
+            {
+              user: "Amie Roger",
+              message: "Lorem Ipsum Dolor Sit Amet",
+              time: "July 10, 9:15am",
+              profileImage: "img/eskimo.jpg"
+            },        
+            {
+              user: "Amie Roger",
+              message: "Lorem Ipsum Dolor Sit Amet",
+              time: "July 10, 9:15am",
+              profileImage: "img/eskimo.jpg"
+            },
+
+            {
+              user: "Amie Roger",
+              message: "Lorem Ipsum Dolor Sit Amet",
+              time: "July 10, 9:15am",
+              profileImage: "img/eskimo.jpg"
+            },
+            {
+              user: "Amie Roger",
+              message: "Lorem Ipsum Dolor Sit Amet",
+              time: "July 10, 9:15am",
+              profileImage: "img/eskimo.jpg"
+            }];
 
           $scope.popover.show($event);        
     }
     
-    $scope.alerts = [
-    {
-      user: "Amie Roger",
-      message: "Lorem Ipsum Dolor Sit Amet",
-      time: "July 10, 9:15am",
-      profileImage: "img/eskimo.jpg"
-    },
-    {
-      user: "Amie Roger",
-      message: "Lorem Ipsum Dolor Sit Amet",
-      time: "July 10, 9:15am",
-      profileImage: "img/eskimo.jpg"
-    },
-
-    {
-      user: "Amie Roger",
-      message: "Lorem Ipsum Dolor Sit Amet",
-      time: "July 10, 9:15am",
-      profileImage: "img/eskimo.jpg"
-    },        
-    {
-      user: "Amie Roger",
-      message: "Lorem Ipsum Dolor Sit Amet",
-      time: "July 10, 9:15am",
-      profileImage: "img/eskimo.jpg"
-    },
-
-    {
-      user: "Amie Roger",
-      message: "Lorem Ipsum Dolor Sit Amet",
-      time: "July 10, 9:15am",
-      profileImage: "img/eskimo.jpg"
-    },
-    {
-      user: "Amie Roger",
-      message: "Lorem Ipsum Dolor Sit Amet",
-      time: "July 10, 9:15am",
-      profileImage: "img/eskimo.jpg"
-    }];
-
 });
