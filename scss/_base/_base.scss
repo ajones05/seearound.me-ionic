@@ -78,5 +78,12 @@ body, html {
     color: $smallTextColor
 }
 
+@mixin vbox-layout{
+    height: 100%;
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    -webkit-align-items: stretch;    
+}
+
 
 
