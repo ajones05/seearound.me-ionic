@@ -8,4 +8,12 @@
     .small-text{
         @include centered-small-text;
     }
+    
+    .vbox {
+        @include vbox-layout;
+    }
+    
+    .row {
+        -webkit-flex: 1;
+    }
 }
