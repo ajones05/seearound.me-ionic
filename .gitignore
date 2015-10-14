@@ -11,3 +11,4 @@ plugins/
 .editorconfig
 www.zip
 resources/
+.io-config.json
