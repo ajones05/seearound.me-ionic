@@ -7807,6 +7807,13 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-style: italic;
   font-size: 0.8em;
   color: #888888; }
+.login .vbox {
+  height: 100%;
+  display: -webkit-flex;
+  -webkit-flex-direction: column;
+  -webkit-align-items: stretch; }
+.login .row {
+  -webkit-flex: 1; }
 
 .full_profile .scroll {
   background: #e8e8e8; }
