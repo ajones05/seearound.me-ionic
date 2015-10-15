@@ -29,6 +29,11 @@
     .scroll{
       background: $lightgray;
     }
+  }
+      
+/* ==========================================================================================================
+         SPEECH BUBBLE 
+** ========================================================================================================== */
 
     .bubble{
       position: relative;
@@ -37,44 +42,83 @@
       border-radius: 10px;
       display: inline-block;
     }
+      
     .bubble-left{
       background: $light;
     }
+      
     .bubble-right{
       background: $positive;
       color: $light;
     }
-    .bubble-left:after{
-      content: '';
-      position: absolute;
-      border-style: solid;
-      border-width: 7px 50px 18px 15px;
-      border-color: transparent $light;
-      display: block;
-      width: 0;
-      z-index: 1;
-      margin-top: -7px;
-      left: -57px;
-      top: 60%;
+      
+      
+    /* creates part of the curve */
+    .bubble-left:before{
+        content:"";
+        position:absolute;
+        z-index:10;
+        bottom:10px;
+        left:-20px;
+        width:0;
+        height:20px;
+        border-left:20px solid #fff;
+
+        /* css3 */
+        -webkit-border-bottom-left-radius:100px 70px;
+        border-bottom-left-radius:100px 70px;
     }
 
-    .bubble-right:after{
-      content: '';
-      position: absolute;
-      border-style: solid;
-      // border-width: 7px 0 7px 57px;
-      border-width: 20px 15px 7px 50px;
-      border-color: transparent $positive;
-      display: block;
-      width: 0;
-      z-index: 1;
-      margin-top: -7px;
-      right: -57px;
-      top: 60%;
+    /* creates part of the curved pointy bit */
+    .bubble-left:after {
+        content:"";
+        position:absolute;
+        z-index:10;
+        bottom:20px;
+        left:-20px;
+        width:0;
+        height:20px;
+        border-right:20px solid #eee;
+        background:transparent !important;
+        background-color:transparent !important;
+        /* css3 */
+        -webkit-border-bottom-right-radius:100px 50px; 
+        border-bottom-right-radius:100px 50px; 
     }
-  }
 
-  ion-footer-bar{
+    /* creates part of the curve */
+    .bubble-right:before {
+        content:"";
+        position:absolute;
+        z-index:10;
+        bottom:10px;
+        right:-20px;
+        width:0;
+        height:30px;
+        border-right:20px solid #345EC2;
+
+        -webkit-border-bottom-right-radius:100px 70px;
+        border-bottom-right-radius:100px 70px;
+    }
+
+    /* creates part of the curved pointy bit */
+    .bubble-right:after {
+        content:"";
+        position:absolute;
+        z-index:10;
+        bottom:20px;
+        right:-20px;
+        width:0;
+        height:20px;
+        border-left:20px solid #eee;
+        /* css3 */
+        -webkit-border-bottom-left-radius:100px 50px; 
+        border-bottom-left-radius:100px 50px; 
+    }
+
+/******************************************************************************************************/
+
+  .ion-footer-bar{
     border-top: 2px solid $lightgray;
     padding: 0;
 
