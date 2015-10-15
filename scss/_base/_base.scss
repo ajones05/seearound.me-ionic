@@ -56,6 +56,11 @@ body, html {
   color: $base-color !important;
 }
 
+.button-positive{
+    background: $base-color !important;
+    background-color: $base-color !important;
+}
+
 //Font overrides
 // *{
 //   font-family: 'Lato' !important;
@@ -84,6 +89,3 @@ body, html {
     -webkit-flex-direction: column;
     -webkit-align-items: stretch;    
 }
-
-
-

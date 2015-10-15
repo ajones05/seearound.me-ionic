@@ -19,13 +19,12 @@
         <textarea placeholder="Write something.." ng-model="formData.postText" class="commentbox"></textarea>
       </div>
     </div>
-
+      <ion-footer-bar>
+        <div class="camera-button">
+          <button class="button button-icon" ng-click="pickImages()">
+            Add Photo<i class="icon ion-camera"></i>
+          </button>
+        </div>
+      </ion-footer-bar>
   </ion-content>
-  <ion-footer-bar>
-    <div class="camera-button">
-      <button class="button button-icon" ng-click="pickImages()">
-        Add Photo<i class="icon ion-camera"></i>
-      </button>
-    </div>
-  </ion-footer-bar>
 </ion-modal-view>

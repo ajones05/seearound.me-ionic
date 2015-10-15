@@ -1,23 +1,255 @@
-<ion-modal-view class="postlistview">
-    <ion-header-bar>
-        <div class="buttons">
-          <button class="button button-clear" ng-click="close(1)">Close</button>
+<ion-view class="postlistview">
+  <ion-nav-bar>
+
+    <ion-nav-buttons>
+      <div class="row bar bar-header">
+        <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+
+        <div class="col">
+          <button class="button button-icon" ng-click="showModal(2)">
+            <i class="icon ion-ios-compose-outline"></i>
+          </button>
         </div>
-      <h1 class="title">List View</h1>
-    </ion-header-bar>
+        <div class="col">
+          <button class="button button-icon" ng-click="pickImages()">
+            <i class="icon ion-ios-photos-outline"></i>
+          </button>
+        </div>
+        <div class="col text-center">
+          <button class="button button-icon" ng-click="showAlerts($event)" >
+            <i class="icon ion-ios-flag-outline"></i>
+          </button>
+        </div>
+        <div class="col">
+          <button class="button button-icon" ng-click="toggleSearchBar()">
+              <i class="icon ion-ios-search"></i>
+            </button>
+        </div>
+
+        <button class="button button-icon" ng-click="gotoMap()">
+            <i class="icon ion-map"></i>
+          </button>
+      </div>
+    </ion-nav-buttons>
+  </ion-nav-bar>
+
   <ion-content padding="false">
-      <ul class="list">
-        <li class="item" ng-repeat="post in nearbyPosts">
-            <img class="prof-img" ng-src="{{post.Profile_image}}" width="100%"/><br>
-            <div class="meta">
-                <div class="user-name">{{post.Name}}</div>
-                <div class="created-date">{{post.created_date}}</div>
+
+  <!-- search bar from origin/master mapview -->
+  <div class="row bar bar-header" ng-show="showInputBar">
+    <div class="col-50">
+      <label class="item-input" style="border:1px solid #ccc; height:100%;">
+        <i class="icon ion-search placeholder-icon"></i>
+        <input type="text" placeholder="Search" style="height:100%">
+      </label>
+    </div>
+    <div class="col">    
+      <label class="item item-icon-right">
+        <select class="post-select">
+          <option value="" selected>View all</option>
+          <option value="">One</option>
+          <option value="">Two</option>
+        </select>
+      </label>
+    </div>
+    <div class="col-20">            
+      <button class="button button-block button-positive" >Go</button>
+    </div>
+  </div>
+  <!-- end searchbar -->
+
+    <div class="post_item">
+      <div class="row user">
+        <div class="col col-20">
+          <img src="img/eskimo.jpg" alt="">
+        </div>
+        <div class="col"> 
+          <div class="name">
+            <span >Amie Roger</span>
+            <div class=" date right">
+              <i class="icon ion-ios-location-outline"></i>
+              <div> 2 hours ago </div>
             </div>
-            <div class="desc">
-                {{post.news}}
-                <img ng-src="{{post.images}}" width="100%" ng-show="post.images != null"/>
+          </div>
+          <div class="desc">
+            lorem ipsum llorem ipsum loremorem ipsum lorem ipsum lorem 
+          </div>
+        </div>
+      </div>
+      <img src="img/cars.png" alt="">
+      <div class="share row">
+        <span class="col col-20 chat-bubble" ui-sref="app.postcomments">
+          3
+          <i class="icon ion-ios-chatbubble-outline"></i>
+        </span>
+        <span class="col arrows">
+          <i class="icon ion-arrow-up-a"></i>
+          15
+          <i class="icon ion-arrow-down-a"></i>
+        </span>
+        <span class="col"> Share </span>
+      </div>
+    </div>
+
+    <!-- just repeating the div above -->
+<div class="post_item">
+      <div class="row user">
+        <div class="col col-20">
+          <img src="img/eskimo.jpg" alt="">
+        </div>
+        <div class="col"> 
+          <div class="name">
+            <span >Amie Roger</span>
+            <div class=" date right">
+              <i class="icon ion-ios-location-outline"></i>
+              <div> 2 hours ago </div>
             </div>
-        </li>
-    </ul>
+          </div>
+          <div class="desc">
+            lorem ipsum llorem ipsum loremorem ipsum lorem ipsum lorem 
+          </div>
+        </div>
+      </div>
+      <img src="img/cars.png" alt="">
+      <div class="share row">
+        <span class="col col-20 chat-bubble" ui-sref="app.postcomments">
+          3
+          <i class="icon ion-ios-chatbubble-outline"></i>
+        </span>
+        <span class="col arrows">
+          <i class="icon ion-arrow-up-a"></i>
+          15
+          <i class="icon ion-arrow-down-a"></i>
+        </span>
+        <span class="col"> Share </span>
+      </div>
+    </div><div class="post_item">
+      <div class="row user">
+        <div class="col col-20">
+          <img src="img/eskimo.jpg" alt="">
+        </div>
+        <div class="col"> 
+          <div class="name">
+            <span >Amie Roger</span>
+            <div class=" date right">
+              <i class="icon ion-ios-location-outline"></i>
+              <div> 2 hours ago </div>
+            </div>
+          </div>
+          <div class="desc">
+            lorem ipsum llorem ipsum loremorem ipsum lorem ipsum lorem 
+          </div>
+        </div>
+      </div>
+      <img src="img/cars.png" alt="">
+      <div class="share row">
+        <span class="col col-20 chat-bubble" ui-sref="app.postcomments">
+          3
+          <i class="icon ion-ios-chatbubble-outline"></i>
+        </span>
+        <span class="col arrows">
+          <i class="icon ion-arrow-up-a"></i>
+          15
+          <i class="icon ion-arrow-down-a"></i>
+        </span>
+        <span class="col"> Share </span>
+      </div>
+    </div><div class="post_item">
+      <div class="row user">
+        <div class="col col-20">
+          <img src="img/eskimo.jpg" alt="">
+        </div>
+        <div class="col"> 
+          <div class="name">
+            <span >Amie Roger</span>
+            <div class=" date right">
+              <i class="icon ion-ios-location-outline"></i>
+              <div> 2 hours ago </div>
+            </div>
+          </div>
+          <div class="desc">
+            lorem ipsum llorem ipsum loremorem ipsum lorem ipsum lorem 
+          </div>
+        </div>
+      </div>
+      <img src="img/cars.png" alt="">
+      <div class="share row">
+        <span class="col col-20 chat-bubble" ui-sref="app.postcomments">
+          3
+          <i class="icon ion-ios-chatbubble-outline"></i>
+        </span>
+        <span class="col arrows">
+          <i class="icon ion-arrow-up-a"></i>
+          15
+          <i class="icon ion-arrow-down-a"></i>
+        </span>
+        <span class="col"> Share </span>
+      </div>
+    </div><div class="post_item">
+      <div class="row user">
+        <div class="col col-20">
+          <img src="img/eskimo.jpg" alt="">
+        </div>
+        <div class="col"> 
+          <div class="name">
+            <span >Amie Roger</span>
+            <div class=" date right">
+              <i class="icon ion-ios-location-outline"></i>
+              <div> 2 hours ago </div>
+            </div>
+          </div>
+          <div class="desc">
+            lorem ipsum llorem ipsum loremorem ipsum lorem ipsum lorem 
+          </div>
+        </div>
+      </div>
+      <img src="img/cars.png" alt="">
+      <div class="share row">
+        <span class="col col-20 chat-bubble" ui-sref="app.postcomments">
+          3
+          <i class="icon ion-ios-chatbubble-outline"></i>
+        </span>
+        <span class="col arrows">
+          <i class="icon ion-arrow-up-a"></i>
+          15
+          <i class="icon ion-arrow-down-a"></i>
+        </span>
+        <span class="col"> Share </span>
+      </div>
+    </div><div class="post_item">
+      <div class="row user">
+        <div class="col col-20">
+          <img src="img/eskimo.jpg" alt="">
+        </div>
+        <div class="col"> 
+          <div class="name">
+            <span >Amie Roger</span>
+            <div class=" date right">
+              <i class="icon ion-ios-location-outline"></i>
+              <div> 2 hours ago </div>
+            </div>
+          </div>
+          <div class="desc">
+            lorem ipsum llorem ipsum loremorem ipsum lorem ipsum lorem 
+          </div>
+        </div>
+      </div>
+      <img src="img/cars.png" alt="">
+      <div class="share row">
+        <span class="col col-20 chat-bubble" ui-sref="app.postcomments">
+          3
+          <i class="icon ion-ios-chatbubble-outline"></i>
+        </span>
+        <span class="col arrows">
+          <i class="icon ion-arrow-up-a"></i>
+          15
+          <i class="icon ion-arrow-down-a"></i>
+        </span>
+        <span class="col"> Share </span>
+      </div>
+    </div>
+
+    <!-- repeat end -->
+
   </ion-content>
-</ion-modal-view>
+</ion-view>

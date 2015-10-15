@@ -2,38 +2,65 @@
   <ion-nav-buttons>
     <div class="row bar bar-header">
         <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
-        
+
         <div class="col">
             <button class="button button-icon" ng-click="showModal(2)">
               <i class="icon ion-ios-compose-outline"></i>
             </button>
         </div>
-        <div class="col">    
+        <div class="col">
             <button class="button button-icon" ng-click="pickImages()">
               <i class="icon ion-ios-camera-outline"></i>
             </button>
         </div>
-        <div class="col text-center">            
+        <div class="col text-center">
             <button class="button button-icon" ng-click="showAlerts($event)" >
               <i class="icon ion-ios-flag-outline"></i>
             </button>
         </div>
-        <div class="col">            
-          <button class="button button-icon" ><i class="icon ion-ios-search"></i></button>
+        <div class="col">
+            <button class="button button-icon" ng-click="toggleSearch()">
+              <i class="icon ion-ios-search"></i>
+            </button>
         </div>
-        
-        <button class="button button-icon" ><i class="icon ion-ios-paper-outline"></i></button>
+
+        <button class="button button-icon" ui-sref="app.postlistview">
+            <i class="icon ion-ios-paper-outline"></i>
+        </button>
     </div>
   </ion-nav-buttons>
   <ion-content>
+    <div class="row bar bar-header" ng-show="showSearch">
+        <div class="col-50">
+            <label class="item-input" style="border:1px solid #ccc; height:100%;">
+                <i class="icon ion-search placeholder-icon"></i>
+                <input type="text" placeholder="Search" style="height:100%">
+            </label>
+         </div>
+        <div class="col">    
+            <label class="item item-icon-right">
+              <select class="post-select">
+                <option value="" selected>View all</option>
+                  <option value="">One</option>
+                  <option value="">Two</option>
+              </select>
+              <!--i class="icon ion-ios-arrow-down"></i -->
+            </label>
+           </div>
+        <div class="col-20">            
+          <button class="button button-block button-positive" >Go</button>
+        </div>
+    </div>
+      
     <div id="map" data-tap-disabled="true"></div>
+       
   </ion-content>
     <div class="bar bar-footer bar-light range">
         <div class="title">
             <div class="list">
               <div class="item range range-positive">
                 <i class="icon ion-navigate"></i>
-                <input type="range" name="volume" min="0" max="150" value="inputRadius" ng-model="inputRadius"> 
+                <input type="range" name="volume" min="0" max="150" value="inputRadius" ng-model="inputRadius">
                 <!-- {{inputRadius/10}} -->
               </div>
             </div>

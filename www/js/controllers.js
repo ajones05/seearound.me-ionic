@@ -21,6 +21,10 @@ angular.module('SeeAroundMe.controllers', [])
     });
 })
 
+.controller('CommentsCtrl', function($scope, AppService) {
+})
+
+
 .controller('SignupCtrl', function($scope, $state, AppService) {
     console.log('Signup controller called ...');
     $scope.doSignUp = function(user){
@@ -81,7 +85,30 @@ angular.module('SeeAroundMe.controllers', [])
     }
 })
 
-.controller('MessagesCtrl', function($scope, $state){
+.controller('MessagesCtrl', function($scope, $ionicModal){
+
+    //Compose message view modal
+    $ionicModal.fromTemplateUrl('templates/post/add.html', {
+        scope: $scope
+    }).then(function(modal) {
+        $scope.composeModal = modal;
+    });
+      
+    $scope.$on('$destroy', function() {
+      $scope.composeModal.remove();
+    });
+      
+    
+    $scope.showCompose = function(){
+      //console.log('showCompose called ...');
+        $scope.composeModal.show();
+    };
+    
+    $scope.close = function(){
+      //console.log('showCompose called ...');
+        $scope.composeModal.hide();
+    };
+  
   $scope.messages = [
     {
       user: "Amie Roger",
@@ -160,15 +187,58 @@ angular.module('SeeAroundMe.controllers', [])
       profileImage: "img/eskimo.jpg"
     },
 
-  ]
+  ];
 })
 
 .controller('ChatCtrl', function($scope, $state){
 
 })
 
-.controller('MapCtrl', function($scope, $state, $stateParams, $ionicModal, $ionicLoading,
-    $cordovaImagePicker, $ionicPopup, $ionicPopover, AppService) {
+.controller('PostListCtrl', function($scope, $rootScope, $state, $ionicModal){
+  // TODO: remove all the modals and turn them into view in next phase
+    $ionicModal.fromTemplateUrl('templates/post/add.html', {
+        scope: $scope
+    }).then(function(modal) {
+        $scope.modal = modal;
+    });
+    $scope.showModal = function () {
+      $scope.modal.show();
+    };
+
+    $scope.close = function(id) {
+      $scope.modal.hide();
+    };
+
+    $scope.$on('$destroy', function() {
+      console.log('Destroying modals...');
+      $scope.modal.remove();
+    });
+
+    $scope.gotoMap = function(){
+        $state.go('app.postmapview');
+    };
+    
+    $scope.showAlerts = function(event){
+        //console.log(event);
+        //$rootScope.$broadcast('showalerts', event);
+    }
+})
+
+.controller('MapModalCtrl', function($scope, $rootScope){
+    
+    $scope.viewMode = 'half-view';
+    
+    $scope.showFullView = function(){
+        $scope.viewMode = 'full-view';
+    };
+    
+    $scope.hideModal = function(){
+        $scope.viewMode = 'half-view';
+        $rootScope.$broadcast('hidemapmodal');
+    };
+})
+
+.controller('MapCtrl', function($scope, $rootScope, $state, $stateParams, $ionicModal, $ionicLoading, $cordovaImagePicker, $ionicPopup, $ionicPopover, AppService) {
     $scope.inputRadius = 8;
     $scope.formData = {};
     $scope.fileName = {};
@@ -178,19 +248,21 @@ angular.module('SeeAroundMe.controllers', [])
     var userData;
     var bounds = new google.maps.LatLngBounds();
 
-    $ionicModal.fromTemplateUrl('templates/post/listview.html', {
-        id: '1',
-        scope: $scope
-    }).then(function(modal) {
-        $scope.modal1 = modal;
-    });
-
+    //Compose message view modal
     $ionicModal.fromTemplateUrl('templates/post/add.html', {
         id: '2',
         scope: $scope
     }).then(function(modal) {
         $scope.modal2 = modal;
     });
+    
+    $ionicModal.fromTemplateUrl('templates/post/mapmodal.html', {
+        id: '3',
+        scope: $scope
+    }).then(function(modal) {
+        $scope.modal3 = modal;
+    });
+    
 
     $scope.nearbyPosts = {};
 
@@ -249,11 +321,11 @@ angular.module('SeeAroundMe.controllers', [])
             }
         };
 
-        //userData = JSON.parse(localStorage.getItem('sam_user_data') || '{}');
-        //console.warn(JSON.stringify(userData, null, 4));
+        userData = JSON.parse(localStorage.getItem('sam_user_data') || '{}');
+        console.warn(JSON.stringify(userData, null, 4));
 
-        //userId = userData.result.id;
-        //$scope.formData.Profile_image = userData.result.Profile_image;
+        userId = userData.result.id;
+        $scope.formData.Profile_image = userData.result.Profile_image;
         location = localStorage.getItem('sam_user_location');
         if (!location) {
                 location = JSON.parse(location);
@@ -263,7 +335,7 @@ angular.module('SeeAroundMe.controllers', [])
 
         // console.log(mapOptions);
         var map = new google.maps.Map(document.getElementById("map"), mapOptions);
-/*
+
         var data = {
             "latitude" : location.latitude,// 37.8088139,
             "longitude" : location.longitude,//-122.2635002,
@@ -275,10 +347,9 @@ angular.module('SeeAroundMe.controllers', [])
 
         console.log(JSON.stringify(data));
         AppService.getNearbyPosts(data)
-        .success(function (data) {*/
+        .success(function (data) {
             // console.log(JSON.stringify(data, null, 4));
-            $scope.nearbyPosts = [{latitude: 37.8146939, longitude: -122.2643002},
-                                 {latitude: 37.8052035, longitude: -122.2632000}];//data.result;
+            $scope.nearbyPosts = data.result;
             if($scope.nearbyPosts){
                 $scope.nearbyPosts.forEach(function (post) {
                     var marker = new google.maps.Marker({
@@ -290,21 +361,21 @@ angular.module('SeeAroundMe.controllers', [])
 
                     google.maps.event.addListener(marker, 'click', function() {
                         // infowindow.open(map,marker);
-                        // $state.go('app.offerdetails', {id: offer.id, type: 'discover'});
+                        $scope.showModal(3);
                     });
                 });
-            }/*
+            }
 
         })
         .error(function (err) {
             console.warn(JSON.stringify(err));
-        });*/
+        });
 
 
         // Show current user position
-        //navigator.geolocation.getCurrentPosition(function(pos) {
+        // navigator.geolocation.getCurrentPosition(function(pos) {
             //console.log(pos);
-            //position = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+            // position = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
 
             // if (DEV_MODE == 'true') {
                 var position = new google.maps.LatLng(37.8088139, -122.26350020000001);
@@ -319,7 +390,7 @@ angular.module('SeeAroundMe.controllers', [])
             });
 
             bounds.extend(position);
-        //});
+        // });
 
         // options for the polygon
         var center = new google.maps.LatLng(location.latitude, location.longitude);
@@ -359,6 +430,8 @@ angular.module('SeeAroundMe.controllers', [])
             $scope.modal1.show();
         else if (id == 2)
             $scope.modal2.show();
+        else if (id == 3)
+            $scope.modal3.show();
     };
 
     $scope.close = function(id) {
@@ -366,16 +439,23 @@ angular.module('SeeAroundMe.controllers', [])
             $scope.modal1.hide();
         else if (id == 2)
             $scope.modal2.hide();
+        else if (id == 3)
+            $scope.modal3.hide();        
     };
 
     $scope.$on("mapview:openlist", function(event,data) {
         $scope.showModal(1);
     });
-
+    
+    $scope.$on("hidemapmodal", function(event,data) {
+        $scope.close(3);
+    });  
+    
     $scope.$on('$destroy', function() {
       console.log('Destroying modals...');
       $scope.modal1.remove();
       $scope.modal2.remove();
+      $scope.modal3.remove();
       $scope.popover.remove();
     });
 
@@ -436,48 +516,55 @@ angular.module('SeeAroundMe.controllers', [])
     });
         
     $scope.showAlerts = function ($event) {
-          console.log('showAlerts called ...');
-            $scope.alerts = [
-            {
-              user: "Amie Roger",
-              message: "Lorem Ipsum Dolor Sit Amet",
-              time: "July 10, 9:15am",
-              profileImage: "img/eskimo.jpg"
-            },
-            {
-              user: "Amie Roger",
-              message: "Lorem Ipsum Dolor Sit Amet",
-              time: "July 10, 9:15am",
-              profileImage: "img/eskimo.jpg"
-            },
+      console.log('showAlerts called ...');
+      $scope.alerts = [
+        {
+          user: "Amie Roger",
+          message: "Lorem Ipsum Dolor Sit Amet",
+          time: "July 10, 9:15am",
+          profileImage: "img/eskimo.jpg"
+        },
+        {
+          user: "Amie Roger",
+          message: "Lorem Ipsum Dolor Sit Amet",
+          time: "July 10, 9:15am",
+          profileImage: "img/eskimo.jpg"
+        },
 
-            {
-              user: "Amie Roger",
-              message: "Lorem Ipsum Dolor Sit Amet",
-              time: "July 10, 9:15am",
-              profileImage: "img/eskimo.jpg"
-            },        
-            {
-              user: "Amie Roger",
-              message: "Lorem Ipsum Dolor Sit Amet",
-              time: "July 10, 9:15am",
-              profileImage: "img/eskimo.jpg"
-            },
+        {
+          user: "Amie Roger",
+          message: "Lorem Ipsum Dolor Sit Amet",
+          time: "July 10, 9:15am",
+          profileImage: "img/eskimo.jpg"
+        },        
+        {
+          user: "Amie Roger",
+          message: "Lorem Ipsum Dolor Sit Amet",
+          time: "July 10, 9:15am",
+          profileImage: "img/eskimo.jpg"
+        },
 
-            {
-              user: "Amie Roger",
-              message: "Lorem Ipsum Dolor Sit Amet",
-              time: "July 10, 9:15am",
-              profileImage: "img/eskimo.jpg"
-            },
-            {
-              user: "Amie Roger",
-              message: "Lorem Ipsum Dolor Sit Amet",
-              time: "July 10, 9:15am",
-              profileImage: "img/eskimo.jpg"
-            }];
+        {
+          user: "Amie Roger",
+          message: "Lorem Ipsum Dolor Sit Amet",
+          time: "July 10, 9:15am",
+          profileImage: "img/eskimo.jpg"
+        },
+        {
+          user: "Amie Roger",
+          message: "Lorem Ipsum Dolor Sit Amet",
+          time: "July 10, 9:15am",
+          profileImage: "img/eskimo.jpg"
+        }];
 
-          $scope.popover.show($event);        
+        $scope.popover.show($event);        
     }
     
+    $scope.toggleSearch = function(){
+        
+        if($scope.showSearch == true)
+            $scope.showSearch = false;
+        else
+            $scope.showSearch = true;
+    }
 });

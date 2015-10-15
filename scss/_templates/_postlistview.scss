@@ -1,32 +1,145 @@
 //listview.html
 
 .postlistview {
-
-    .meta {
-        width: 100%;
-        // position: relative;
-
-        .user-name {
-            position: relative;
-            float: left;
-            top: -4.00rem;
-            left: 4.5rem;
-        }
-
-        .created-date {
-            position: relative;
-            top: -4.00rem;
-            float: right;
-
-        }
+    
+    .half-view {
+        height: 220px;
+        max-height: 220px;
+        background: $light;
     }
-
+    
+    .full-view {
+        background: $light;
+        height: auto;
+        /* max-height is the secret to animation -- don't remove it*/
+        max-height: 400px;        
+        -webkit-transition: max-height .5s ease-in-out;
+        transition: max-height .5s ease-in-out;        
+    }
+    
+  .post_item{
+    border-bottom: 1px solid lightgray;
+  }
+    
+  .bar-header{
+    padding: 5px !important;
+    font-family: 'Lato-Bold';
+    .ion-ios-arrow-left{
+      font-size: 2rem;
+    }
+  }
+    
+  .row{
+    padding: 0;
+  }
+    
+  font-family: 'Lato';
+    
+  img{
+    width: 100%;
+    height: auto;
+  }
+    
+  .user{
+    border-bottom: 1px solid lightgray;
+    img{
+      padding: 2%;
+      margin: 0.7vh 0 0 2vh;
+      height: 14vw;
+      width: 14vw;
+      border-radius: 100%;
+      border: 3px solid $positive;
+    }
     .desc{
-        float: left;
-        white-space: normal;
-        // padding: 0.1rem 0.1rem;
-        font-family: 'Lato-Light';
-        font-weight: 200;
-        // font-size: 120%;
+      color: black;
+      font-family: 'Lato-Light';
     }
+    .name{
+      margin-top: 1vh;
+      font-style: italic;
+      font-weight: bold;
+      .date{
+        font-size: .8rem;
+        font-weight: normal;
+        float: right;
+
+        i{ 
+          font-size:1.5rem ;
+          float: right;
+        }
+
+        div {
+          margin: 0 10px;
+          width: 20vw;
+        }
+      }
+    }
+  }
+  .share{
+    display: flex;
+    align-items: center;
+    padding: 5px 20px;
+    .chat-bubble {
+      display: flex;
+      align-items: center;
+      i{ 
+        margin-left: 5px;
+        font-size: 1.4rem; 
+      } 
+    }
+
+    .arrows{
+      display: flex;
+      align-items: center;
+      i{
+        font-size: 2rem;
+        font-weight: 800;
+        padding: 0 10px;
+      }
+    }
+
+    .col:last-child{
+      text-align: right;
+      font-family: 'Lato-Bold';
+    }
+  }
+
+  ion-footer-bar{
+    border-top: 2px solid $lightgray;
+    padding: 0;
+
+    input{ 
+      font-family:'Lato-Italic';
+      width: 75%;
+      padding-left: 30px;
+      padding-top: 10px;
+    }
+
+    .button{
+      width: 25%;
+      padding-top: 5px;
+      border-radius: 0;
+    }
+  }
+}
+
+.search.bar{
+  select{
+    margin: 0 10px;
+    background: white;
+    border: 2px solid $gray;
+  }
+  button{
+    width: 90%;
+    border-radius: 0;
+  }
+  .col.input{
+    display: inline-flex;
+    border: 2px solid $gray;
+    input{
+      height: inherit;
+      padding: 0 10px;
+      width: 100%;
+    }
+  }
 }

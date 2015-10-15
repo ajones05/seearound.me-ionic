@@ -9,6 +9,10 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+    $rootScope.showInputBar = false;
+    $rootScope.toggleSearchBar = function(){
+        $rootScope.showInputBar = !$rootScope.showInputBar;
+    }
 
   });
 })
@@ -92,6 +96,17 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.
             controller: 'PostListCtrl'
           }
         }
+    })
+
+    .state('app.postcomments', {
+      url: "/post/comments",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/post/comments.html",
+          controller: 'CommentsCtrl'
+        }
+      }
+
     })
 
     .state('app.postmapview', {

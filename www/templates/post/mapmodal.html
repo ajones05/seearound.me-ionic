@@ -1,0 +1,38 @@
+    <ion-modal-view class="vbox postlistview" style="background:transparent;width:100%" ng-controller="MapModalCtrl">
+        <div class="row" ng-click="hideModal()"></div>
+        
+        <div class="post_item" on-swipe-up="showFullView()" ng-class="viewMode">
+          <div class="row user">
+            <div class="col col-20">
+              <img src="img/eskimo.jpg" alt="">
+            </div>
+            <div class="col"> 
+              <div class="name">
+                <span >Amie Roger</span>
+                <div class=" date right">
+                  <div> 2 hours ago </div>
+                </div>
+              </div>
+              <div class="desc">
+                lorem ipsum llorem ipsum loremorem ipsum lorem ipsum lorem 
+              </div>
+            </div>
+            <div style="width:20px;">
+              <a class="icon ion-close" ng-click="hideModal()"></a>
+            </div>              
+          </div>
+          <img src="img/cars.png" alt="">
+          <div class="share row">
+            <span class="col col-20 chat-bubble" ui-sref="app.postcomments" ng-click="hideModal()">
+              3
+              <i class="icon ion-ios-chatbubble-outline"></i>
+            </span>
+            <span class="col arrows">
+              <i class="icon ion-arrow-up-a"></i>
+              15
+              <i class="icon ion-arrow-down-a"></i>
+            </span>
+            <span class="col"> Share </span>
+          </div>
+        </div>
+    </ion-modal-view>
