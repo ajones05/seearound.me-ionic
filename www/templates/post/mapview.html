@@ -5,53 +5,50 @@
 
         <div class="col">
             <button class="button button-icon" ng-click="showModal(2)">
-              <i class="icon ion-ios-compose-outline"></i>
+              <img src="img/newpost_off.png" width="22px" alt="">
             </button>
         </div>
         <div class="col">
             <button class="button button-icon" ng-click="pickImages()">
-              <i class="icon ion-ios-camera-outline"></i>
+                <img src="img/camera_off.png" style="margin-top:2px" width="28px" alt="">
             </button>
         </div>
         <div class="col text-center">
             <button class="button button-icon" ng-click="showAlerts($event)" >
-              <i class="icon ion-ios-flag-outline"></i>
+              <img src="img/alerts_off.png" style="margin-top:2px" width="22px" alt="">
             </button>
         </div>
         <div class="col">
             <button class="button button-icon" ng-click="toggleSearch()">
-              <i class="icon ion-ios-search"></i>
+              <img src="img/search_off.png" style="margin-top:2px" width="22px" alt="">
             </button>
         </div>
 
         <button class="button button-icon" ui-sref="app.postlistview">
-            <i class="icon ion-ios-paper-outline"></i>
+            <img src="img/list_off.png" width="25px" alt="">
         </button>
     </div>
   </ion-nav-buttons>
-  <ion-content>
-    <div class="row bar bar-header" ng-show="showSearch">
+    <div class="row bar bar-subheader" ng-show="showSearch">
         <div class="col-50">
-            <label class="item-input" style="border:1px solid #ccc; height:100%;">
+            <label class="item-input" style="border:1px solid #ddd; height:100%;">
                 <i class="icon ion-search placeholder-icon"></i>
                 <input type="text" placeholder="Search" style="height:100%">
             </label>
          </div>
         <div class="col">    
-            <label class="item item-icon-right">
-              <select class="post-select">
-                <option value="" selected>View all</option>
-                  <option value="">One</option>
-                  <option value="">Two</option>
-              </select>
-              <!--i class="icon ion-ios-arrow-down"></i -->
-            </label>
+            <a class="item item-icon-right" ng-click="showSelect($event)">
+                <label class="post-select">
+                  {{selected}}
+                  <i class="icon ion-ios-arrow-down"></i>
+                </label>             
+            </a>
            </div>
         <div class="col-20">            
           <button class="button button-block button-positive" >Go</button>
         </div>
-    </div>
-      
+    </div>          
+  <ion-content>
     <div id="map" data-tap-disabled="true"></div>
        
   </ion-content>

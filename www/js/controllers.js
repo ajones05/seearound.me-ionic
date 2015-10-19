@@ -194,34 +194,117 @@ angular.module('SeeAroundMe.controllers', [])
 
 })
 
-.controller('PostListCtrl', function($scope, $rootScope, $state, $ionicModal){
+.controller('PostListCtrl', function($scope, $rootScope, $state, $ionicModal, $ionicPopover){
+  $scope.formData = {};
+  $scope.checkInput = function(){
+    $scope.blueButton = '';
+    if ($scope.formData.postText){
+      ($scope.formData.postText.length > 0) ? $scope.blueButton = 'blue' : $scope.blueButton = '';
+    }
+  }
   // TODO: remove all the modals and turn them into view in next phase
-    $ionicModal.fromTemplateUrl('templates/post/add.html', {
+  $ionicModal.fromTemplateUrl('templates/post/add.html', {
+    scope: $scope
+  }).then(function(modal) {
+    $scope.modal = modal;
+  });
+  $scope.showModal = function () {
+    $scope.modal.show();
+  };
+
+  $scope.close = function(id) {
+    $scope.modal.hide();
+  };
+
+  $scope.$on('$destroy', function() {
+    console.log('Destroying modals...');
+    $scope.modal.remove();
+    $scope.alertsPopover.remove();
+    $scope.selectPopover.remove();
+  });
+
+  $scope.gotoMap = function(){
+    $state.go('app.postmapview');
+  };
+    
+    //Below is the popover code
+    $ionicPopover.fromTemplateUrl('templates/post/alerts.html', {
         scope: $scope
-    }).then(function(modal) {
-        $scope.modal = modal;
+      }).then(function(popover) {
+        $scope.alertsPopover = popover;
     });
-    $scope.showModal = function () {
-      $scope.modal.show();
-    };
+        
+    $scope.showAlerts = function ($event) {
+      console.log('showAlerts called ...');
+      $scope.alerts = [
+        {
+          user: "Amie Roger",
+          message: "Lorem Ipsum Dolor Sit Amet",
+          time: "July 10, 9:15am",
+          profileImage: "img/eskimo.jpg"
+        },
+        {
+          user: "Amie Roger",
+          message: "Lorem Ipsum Dolor Sit Amet",
+          time: "July 10, 9:15am",
+          profileImage: "img/eskimo.jpg"
+        },
 
-    $scope.close = function(id) {
-      $scope.modal.hide();
-    };
+        {
+          user: "Amie Roger",
+          message: "Lorem Ipsum Dolor Sit Amet",
+          time: "July 10, 9:15am",
+          profileImage: "img/eskimo.jpg"
+        },        
+        {
+          user: "Amie Roger",
+          message: "Lorem Ipsum Dolor Sit Amet",
+          time: "July 10, 9:15am",
+          profileImage: "img/eskimo.jpg"
+        },
 
-    $scope.$on('$destroy', function() {
-      console.log('Destroying modals...');
-      $scope.modal.remove();
-    });
+        {
+          user: "Amie Roger",
+          message: "Lorem Ipsum Dolor Sit Amet",
+          time: "July 10, 9:15am",
+          profileImage: "img/eskimo.jpg"
+        },
+        {
+          user: "Amie Roger",
+          message: "Lorem Ipsum Dolor Sit Amet",
+          time: "July 10, 9:15am",
+          profileImage: "img/eskimo.jpg"
+        }];
 
-    $scope.gotoMap = function(){
-        $state.go('app.postmapview');
+        $scope.alertsPopover.show($event);        
     };
     
-    $scope.showAlerts = function(event){
-        //console.log(event);
-        //$rootScope.$broadcast('showalerts', event);
-    }
+    
+    //Below is the select popover code
+    $ionicPopover.fromTemplateUrl('templates/post/select.html', {
+        scope: $scope
+      }).then(function(popover) {
+        $scope.selectPopover = popover;
+    });
+    
+    $scope.selected = 'View all';
+    $scope.options = ['View all', 'One', 'Two'];
+    $scope.showSelect = function($event){
+       $scope.selectPopover.show($event);
+    };
+    
+    $scope.setOption = function(option){
+        $scope.selected = option;
+        $scope.selectPopover.hide();
+    };
+    
+    $scope.toggleSearch = function(){
+        
+        if($scope.showSearch == true)
+            $scope.showSearch = false;
+        else
+            $scope.showSearch = true;
+    };
 })
 
 .controller('MapModalCtrl', function($scope, $rootScope){
@@ -315,21 +398,21 @@ angular.module('SeeAroundMe.controllers', [])
             // zoom: 20,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             disableDefaultUI: true,
-            zoomControl: true,
-            zoomControlOptions: {
-              style: google.maps.ZoomControlStyle.SMALL
-            }
+            zoomControl: false//,
+            //zoomControlOptions: {
+              //style: google.maps.ZoomControlStyle.SMALL
+            //}
         };
 
         userData = JSON.parse(localStorage.getItem('sam_user_data') || '{}');
         console.warn(JSON.stringify(userData, null, 4));
 
-        userId = userData.result.id;
+        userId = userData.result.id || 0;
         $scope.formData.Profile_image = userData.result.Profile_image;
         location = localStorage.getItem('sam_user_location');
         if (!location) {
                 location = JSON.parse(location);
-                location = {latitude: 37.8088139, longitude: -122.2635002};
+                location = {latitude: 37.8088139, longitude: -122.2660002};
                 console.warn('WARN: Using DEV_MODE position: ' + location);        
         }
 
@@ -356,7 +439,10 @@ angular.module('SeeAroundMe.controllers', [])
                         position: new google.maps.LatLng(post.latitude, post.longitude),
                         map: map,
                         // title: post.title,
-                        icon: 'img/pin-gray.png'
+                        icon: {
+                            url:'img/pin-gray.png',
+                            size: new google.maps.Size(24, 33)
+                        }
                     });
 
                     google.maps.event.addListener(marker, 'click', function() {
@@ -378,13 +464,17 @@ angular.module('SeeAroundMe.controllers', [])
             // position = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
 
             // if (DEV_MODE == 'true') {
-                var position = new google.maps.LatLng(37.8088139, -122.26350020000001);
+                var position = new google.maps.LatLng(37.8088139, -122.26650020000001);
                 console.warn('WARN: Using DEV_MODE position: ' + position);
             // }
             map.setCenter(position);
             var myLocation = new google.maps.Marker({
                 position: position,
                 map: map,
+                icon: {
+                    url:'img/pin-blue.png',
+                    size: new google.maps.Size(30, 41)
+                },
                 // animation: google.maps.Animation.BOUNCE,
                 title: "My Location"
             });
@@ -453,10 +543,11 @@ angular.module('SeeAroundMe.controllers', [])
     
     $scope.$on('$destroy', function() {
       console.log('Destroying modals...');
-      $scope.modal1.remove();
+      //$scope.modal1.remove();
       $scope.modal2.remove();
       $scope.modal3.remove();
       $scope.popover.remove();
+      $scope.selectPopover.remove();        
     });
 
     $scope.pickImages = function () {
@@ -473,11 +564,21 @@ angular.module('SeeAroundMe.controllers', [])
             //     console.log('Image URI: ' + results[i]);
             //   }
             console.log('Image URI: ' + results[0]);
-            $scope.fileName = results[0];
+            $scope.imgUri = results[0];
+            $scope.showModal(2);
         }, function(error) {
             // error getting photos
             console.log('Error: ' + error);
         });
+    }
+
+    // set post button to blue when typing
+    $scope.checkInput = function(){
+      $scope.blueButton = '';
+      if ($scope.formData.postText){
+        console.log($scope.formData.postText);
+        ($scope.formData.postText.length > 0) ? $scope.blueButton = 'blue' : $scope.blueButton = '';
+      }
     }
 
     $scope.post = function () {
@@ -558,7 +659,25 @@ angular.module('SeeAroundMe.controllers', [])
         }];
 
         $scope.popover.show($event);        
-    }
+    };
+    
+    //Below is the select popover code
+    $ionicPopover.fromTemplateUrl('templates/post/select.html', {
+        scope: $scope
+      }).then(function(popover) {
+        $scope.selectPopover = popover;
+    });
+    
+    $scope.selected = 'View all';
+    $scope.options = ['View all', 'One', 'Two'];
+    $scope.showSelect = function($event){
+       $scope.selectPopover.show($event);
+    };
+    
+    $scope.setOption = function(option){
+        $scope.selected = option;
+        $scope.selectPopover.hide();
+    };
     
     $scope.toggleSearch = function(){
         
@@ -566,5 +685,5 @@ angular.module('SeeAroundMe.controllers', [])
             $scope.showSearch = false;
         else
             $scope.showSearch = true;
-    }
+    };
 });

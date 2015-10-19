@@ -7,18 +7,26 @@
     </div>
     <h1 class="title"></h1>
     <div class="buttons">
-      <button class="button button-clear" ng-click="post()">Post</button>
+      <button 
+        class="button button-clear" 
+        ng-click="post()"
+        ng-class="blueButton"
+        >
+        Post
+      </button>
+      <!-- <button class="button button&#45;clear"  ng&#45;if="!blueButton" >Post</button> -->
     </div>
   </ion-header-bar>
   <ion-content >
     <div class="row">
       <div class="avatar col col-20">
-        <img class="prof-img" ng-src="{{formData.Profile_image}}" width="100%"/>
+        <img class="prof-img" src="img/eskimo.jpg" width="100%"/>
       </div>
       <div class="post col">
-        <textarea placeholder="Write something.." ng-model="formData.postText" class="commentbox"></textarea>
-      </div>
+        <textarea ng-change="checkInput()" placeholder="Write something.." ng-model="formData.postText" class="commentbox"></textarea>
+      </div>        
     </div>
+      <img src="{{imgUri}}" alt="">      
       <ion-footer-bar>
         <div class="camera-button">
           <button class="button button-icon" ng-click="pickImages()">

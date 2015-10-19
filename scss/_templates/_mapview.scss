@@ -25,7 +25,7 @@
   justify-content: space-between;
 }
 
-.bar-header{
+.bar-header, .bar-subheader{
     align-items: center !important;
     -webkit-align-items: center !important;
 }
@@ -49,11 +49,12 @@
     height:100%; 
     padding:0;
     border:0; 
-    background: #fff;
+    background: #fff !important;
     position:absolute; 
     top:0; 
     left:0; 
-    z-index:0
+    padding:6px !important;
+    color:#666 !important;        
 }
 
 .vbox {

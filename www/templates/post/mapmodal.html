@@ -3,7 +3,7 @@
         
         <div class="post_item" on-swipe-up="showFullView()" ng-class="viewMode">
           <div class="row user">
-            <div class="col col-20">
+            <div class="col col-20 avatar">
               <img src="img/eskimo.jpg" alt="">
             </div>
             <div class="col"> 
@@ -13,9 +13,9 @@
                   <div> 2 hours ago </div>
                 </div>
               </div>
-              <div class="desc">
-                lorem ipsum llorem ipsum loremorem ipsum lorem ipsum lorem 
-              </div>
+              <p class="desc">
+                Hi, look at this text. How do you think it looks? Looks nice, doesn't it?
+              </p>
             </div>
             <div style="width:20px;">
               <a class="icon ion-close" ng-click="hideModal()"></a>
@@ -25,14 +25,16 @@
           <div class="share row">
             <span class="col col-20 chat-bubble" ui-sref="app.postcomments" ng-click="hideModal()">
               3
-              <i class="icon ion-ios-chatbubble-outline"></i>
+              <img src="img/chat.png" alt="">
             </span>
             <span class="col arrows">
-              <i class="icon ion-arrow-up-a"></i>
+              <img src="img/upvote.png" alt="">
               15
-              <i class="icon ion-arrow-down-a"></i>
+              <img src="img/downvote.png" alt="">
             </span>
             <span class="col"> Share </span>
           </div>
+        </div>
+            
         </div>
     </ion-modal-view>

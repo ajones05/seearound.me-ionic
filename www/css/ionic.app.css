@@ -7822,9 +7822,19 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   margin: auto; }
   .addpost .camera-button i {
     padding-left: 5px; }
+.addpost .blue {
+  color: #345EC2 !important; }
 
 .chat {
-  font-family: 'Lato'; }
+  font-family: 'Lato';
+  /* ==========================================================================================================
+         SPEECH BUBBLE 
+** ========================================================================================================== */
+  /* creates part of the curve */
+  /* creates part of the curved pointy bit */
+  /* creates part of the curve */
+  /* creates part of the curved pointy bit */
+  /******************************************************************************************************/ }
   .chat .user {
     display: flex;
     align-items: center;
@@ -7845,49 +7855,74 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     background: #EEEEEE; }
     .chat .chat_msgs .scroll {
       background: #EEEEEE; }
-    .chat .chat_msgs .bubble {
-      position: relative;
-      padding: 15px;
-      margin: 20px;
-      border-radius: 10px;
-      display: inline-block; }
-    .chat .chat_msgs .bubble-left {
-      background: #FFFFFF; }
-    .chat .chat_msgs .bubble-right {
-      background: #345EC2;
-      color: #FFFFFF; }
-    .chat .chat_msgs .bubble-left:after {
-      content: '';
-      position: absolute;
-      border-style: solid;
-      border-width: 7px 50px 18px 15px;
-      border-color: transparent #FFFFFF;
-      display: block;
-      width: 0;
-      z-index: 1;
-      margin-top: -7px;
-      left: -57px;
-      top: 60%; }
-    .chat .chat_msgs .bubble-right:after {
-      content: '';
-      position: absolute;
-      border-style: solid;
-      border-width: 20px 15px 7px 50px;
-      border-color: transparent #345EC2;
-      display: block;
-      width: 0;
-      z-index: 1;
-      margin-top: -7px;
-      right: -57px;
-      top: 60%; }
-  .chat ion-footer-bar {
+  .chat .bubble {
+    position: relative;
+    padding: 15px;
+    margin: 20px;
+    border-radius: 10px;
+    display: inline-block; }
+  .chat .bubble-left {
+    background: #FFFFFF; }
+  .chat .bubble-right {
+    background: #345EC2;
+    color: #FFFFFF; }
+  .chat .bubble-left:before {
+    content: "";
+    position: absolute;
+    z-index: 10;
+    bottom: 10px;
+    left: -20px;
+    width: 0;
+    height: 20px;
+    border-left: 20px solid #fff;
+    /* css3 */
+    -webkit-border-bottom-left-radius: 100px 70px;
+    border-bottom-left-radius: 100px 70px; }
+  .chat .bubble-left:after {
+    content: "";
+    position: absolute;
+    z-index: 10;
+    bottom: 20px;
+    left: -20px;
+    width: 0;
+    height: 20px;
+    border-right: 20px solid #eee;
+    background: transparent !important;
+    background-color: transparent !important;
+    /* css3 */
+    -webkit-border-bottom-right-radius: 100px 50px;
+    border-bottom-right-radius: 100px 50px; }
+  .chat .bubble-right:before {
+    content: "";
+    position: absolute;
+    z-index: 10;
+    bottom: 10px;
+    right: -20px;
+    width: 0;
+    height: 30px;
+    border-right: 20px solid #345EC2;
+    -webkit-border-bottom-right-radius: 100px 70px;
+    border-bottom-right-radius: 100px 70px; }
+  .chat .bubble-right:after {
+    content: "";
+    position: absolute;
+    z-index: 10;
+    bottom: 20px;
+    right: -20px;
+    width: 0;
+    height: 20px;
+    border-left: 20px solid #eee;
+    /* css3 */
+    -webkit-border-bottom-left-radius: 100px 50px;
+    border-bottom-left-radius: 100px 50px; }
+  .chat .ion-footer-bar {
     border-top: 2px solid #EEEEEE;
     padding: 0; }
-    .chat ion-footer-bar input {
+    .chat .ion-footer-bar input {
       width: 75%;
-      padding-left: 30px;
+      padding-left: 35px !important;
       padding-top: 10px; }
-    .chat ion-footer-bar .button {
+    .chat .ion-footer-bar .button {
       width: 25%;
       padding-top: 5px;
       border-radius: 0; }
@@ -7901,6 +7936,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 .home .bottom {
   margin-top: 42%; }
 
+.login hr {
+  width: 100%; }
 .login .heading {
   text-align: center;
   font-family: 'Lato';
@@ -7943,7 +7980,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   display: flex;
   justify-content: space-between; }
 
-.bar-header {
+.bar-header, .bar-subheader {
   align-items: center !important;
   -webkit-align-items: center !important; }
 
@@ -7962,11 +7999,12 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   height: 100%;
   padding: 0;
   border: 0;
-  background: #fff;
+  background: #fff !important;
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 0; }
+  padding: 6px !important;
+  color: #666 !important; }
 
 .vbox {
   height: 100%;
@@ -8051,7 +8089,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
       padding: 0; }
       .messages .message .row p {
         padding: 5px;
-        white-space: normal; }
+        white-space: normal;
+        color: #777777; }
       .messages .message .row .time {
         text-align: right;
         font-size: .8em;
@@ -8074,11 +8113,6 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     transition: max-height .5s ease-in-out; }
   .postlistview .post_item {
     border-bottom: 1px solid lightgray; }
-  .postlistview .bar-header {
-    padding: 5px !important;
-    font-family: 'Lato-Bold'; }
-    .postlistview .bar-header .ion-ios-arrow-left {
-      font-size: 2rem; }
   .postlistview .row {
     padding: 0; }
   .postlistview img {
@@ -8087,15 +8121,18 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   .postlistview .user {
     border-bottom: 1px solid lightgray; }
     .postlistview .user img {
-      padding: 2%;
-      margin: 0.7vh 0 0 2vh;
-      height: 14vw;
-      width: 14vw;
+      height: 60px !important;
+      width: 60px !important;
       border-radius: 100%;
-      border: 3px solid #345EC2; }
+      border: 2px solid #345EC2; }
+    .postlistview .user .avatar {
+      text-align: center;
+      margin: auto; }
     .postlistview .user .desc {
-      color: black;
-      font-family: 'Lato-Light'; }
+      color: #777777;
+      /*font-family: 'Lato-Light';*/
+      font-family: 'Lato';
+      font-size: .9rem !important; }
     .postlistview .user .name {
       margin-top: 1vh;
       font-style: italic;
@@ -8112,17 +8149,25 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
           width: 20vw; }
   .postlistview .share {
     display: flex;
+    display: -webkit-flex;
     align-items: center;
     padding: 5px 20px; }
     .postlistview .share .chat-bubble {
       display: flex;
+      display: -webkit-flex;
       align-items: center; }
-      .postlistview .share .chat-bubble i {
+      .postlistview .share .chat-bubble img {
         margin-left: 5px;
-        font-size: 1.4rem; }
+        font-size: 1.4rem;
+        height: 20px;
+        width: 20px; }
     .postlistview .share .arrows {
       display: flex;
+      display: -webkit-flex;
       align-items: center; }
+      .postlistview .share .arrows img {
+        width: 20px;
+        margin: 0 10px; }
       .postlistview .share .arrows i {
         font-size: 2rem;
         font-weight: 800;
@@ -8142,21 +8187,16 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
       width: 25%;
       padding-top: 5px;
       border-radius: 0; }
+  .postlistview .post-select {
+    background: white; }
 
-.search.bar select {
-  margin: 0 10px;
-  background: white;
-  border: 2px solid #7d7d7d; }
-.search.bar button {
-  width: 90%;
-  border-radius: 0; }
-.search.bar .col.input {
-  display: inline-flex;
-  border: 2px solid #7d7d7d; }
-  .search.bar .col.input input {
-    height: inherit;
-    padding: 0 10px;
-    width: 100%; }
+.left-buttons {
+  display: flex;
+  display: -webkit-flex;
+  width: 100vw;
+  justify-content: space-between; }
+  .left-buttons img {
+    padding-top: 4px; }
 
 .full_profile .scroll {
   background: #e8e8e8; }
@@ -8188,7 +8228,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   border-bottom-width: 1px;
   margin: 5px 0;
   padding-top: 10px;
-  padding-bottom: 10px; }
+  padding-bottom: 10px;
+  border-top: none; }
 .full_profile .list ion-item.profile_image {
   padding-left: 16px;
   text-align: left;

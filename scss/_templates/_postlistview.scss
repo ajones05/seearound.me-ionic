@@ -1,58 +1,55 @@
 //listview.html
 
 .postlistview {
-    
-    .half-view {
-        height: 220px;
-        max-height: 220px;
-        background: $light;
-    }
-    
-    .full-view {
-        background: $light;
-        height: auto;
-        /* max-height is the secret to animation -- don't remove it*/
-        max-height: 400px;        
-        -webkit-transition: max-height .5s ease-in-out;
-        transition: max-height .5s ease-in-out;        
-    }
-    
+
+  .half-view {
+    height: 220px;
+    max-height: 220px;
+    background: $light;
+  }
+
+  .full-view {
+    background: $light;
+    height: auto;
+    /* max-height is the secret to animation -- don't remove it*/
+    max-height: 400px;
+    -webkit-transition: max-height .5s ease-in-out;
+    transition: max-height .5s ease-in-out;
+  }
+
   .post_item{
     border-bottom: 1px solid lightgray;
   }
-    
-  .bar-header{
-    padding: 5px !important;
-    font-family: 'Lato-Bold';
-    .ion-ios-arrow-left{
-      font-size: 2rem;
-    }
-  }
-    
+
+
   .row{
     padding: 0;
   }
-    
+
   font-family: 'Lato';
-    
+
   img{
     width: 100%;
     height: auto;
   }
-    
+
   .user{
     border-bottom: 1px solid lightgray;
     img{
-      padding: 2%;
-      margin: 0.7vh 0 0 2vh;
-      height: 14vw;
-      width: 14vw;
+      height: 60px !important;
+      width: 60px !important;
       border-radius: 100%;
-      border: 3px solid $positive;
+      border: 2px solid $positive;
     }
+    .avatar{
+        text-align: center;
+        margin: auto;
+    }      
     .desc{
-      color: black;
-      font-family: 'Lato-Light';
+      color: $messageTextColor;
+      /*font-family: 'Lato-Light';*/
+      font-family: 'Lato';
+      font-size: .9rem !important;
     }
     .name{
       margin-top: 1vh;
@@ -63,7 +60,7 @@
         font-weight: normal;
         float: right;
 
-        i{ 
+        i{
           font-size:1.5rem ;
           float: right;
         }
@@ -76,21 +73,27 @@
     }
   }
   .share{
-    display: flex;
+    display: flex; display: -webkit-flex;
     align-items: center;
     padding: 5px 20px;
     .chat-bubble {
-      display: flex;
+      display: flex; display: -webkit-flex;
       align-items: center;
-      i{ 
+      img{
         margin-left: 5px;
-        font-size: 1.4rem; 
-      } 
+        font-size: 1.4rem;
+        height: 20px;
+        width: 20px;
+      }
     }
 
     .arrows{
-      display: flex;
+      display: flex; display: -webkit-flex;
       align-items: center;
+      img{
+        width: 20px;
+        margin: 0 10px;
+      }
       i{
         font-size: 2rem;
         font-weight: 800;
@@ -108,7 +111,7 @@
     border-top: 2px solid $lightgray;
     padding: 0;
 
-    input{ 
+    input{
       font-family:'Lato-Italic';
       width: 75%;
       padding-left: 30px;
@@ -121,25 +124,17 @@
       border-radius: 0;
     }
   }
+  .post-select{
+    background: white;
+  }
 }
 
-.search.bar{
-  select{
-    margin: 0 10px;
-    background: white;
-    border: 2px solid $gray;
-  }
-  button{
-    width: 90%;
-    border-radius: 0;
-  }
-  .col.input{
-    display: inline-flex;
-    border: 2px solid $gray;
-    input{
-      height: inherit;
-      padding: 0 10px;
-      width: 100%;
+  .left-buttons{
+    display: flex; display: -webkit-flex;
+    width: 100vw;
+    justify-content: space-between;
+    img{
+      padding-top: 4px;
     }
   }
-}
+

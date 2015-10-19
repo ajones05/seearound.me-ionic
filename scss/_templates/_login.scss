@@ -1,19 +1,22 @@
 //login.html
 
 .login {
-    .heading{
-        @include centered-heading;
-    }
+  hr{
+    width: 100%;
+  }
+  .heading{
+    @include centered-heading;
+  }
 
-    .small-text{
-        @include centered-small-text;
-    }
-    
-    .vbox {
-        @include vbox-layout;
-    }
-    
-    .row {
-        -webkit-flex: 1;
-    }
+  .small-text{
+    @include centered-small-text;
+  }
+
+  .vbox {
+    @include vbox-layout;
+  }
+
+  .row {
+    -webkit-flex: 1;
+  }
 }
