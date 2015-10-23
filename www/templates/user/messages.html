@@ -1,12 +1,13 @@
-<ion-view view-title="Messages" class="messages">
-  <ion-nav-bar>
-    <ion-nav-buttons side="left">
-      <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
-    </ion-nav-buttons>
-    <ion-nav-buttons side="right">
-      <button class="button button-icon icon ion-ios-compose-outline" ng-click="showCompose()"></button>
-    </ion-nav-buttons>
-  </ion-nav-bar>
+<ion-view view-title="Messages" class="messages" hide-nav-bar="true">
+    <ion-header-bar class="bar bar-header">
+        <button menu-toggle="left" class="button button-icon">
+            <img src="img/menu_off.png" height="18"/>
+        </button>
+        <h1 class="title">Messages</h1>
+        <button class="button button-icon" ng-click="showCompose()">
+          <img src="img/newpost_off.png" height="22"/>
+        </button>                
+    </ion-header-bar>    
   <ion-content>
     <ion-list>
       <ion-item ui-sref="app.userchat" ng-repeat="m in messages" class="message">

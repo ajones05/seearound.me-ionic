@@ -7680,7 +7680,8 @@ a.button {
   transition-duration: 0s; }
 
 body, html {
-  font-size: 100%; }
+  font-size: 100%;
+  font-family: 'Lato'; }
 
 .scroll {
   background-color: #FFFFFF; }
@@ -7696,6 +7697,10 @@ body, html {
 
 .spacer10 {
   height: 10px;
+  width: 100%; }
+
+.spacer20 {
+  height: 20px;
   width: 100%; }
 
 .spacer60 {
@@ -7801,8 +7806,6 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   border-bottom: 1px solid #7d7d7d; }
 .addpost .icon {
   font-size: 1.6rem !important; }
-.addpost .button-clear {
-  color: #7d7d7d !important; }
 .addpost .avatar {
   margin: 2%; }
 .addpost .post {
@@ -7824,6 +7827,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     padding-left: 5px; }
 .addpost .blue {
   color: #345EC2 !important; }
+.addpost .gray {
+  color: #7d7d7d !important; }
 
 .chat {
   font-family: 'Lato';
@@ -7838,6 +7843,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   .chat .user {
     display: flex;
     align-items: center;
+    -webkit-display: flex;
+    -webkit-align-items: center;
     font-style: italic;
     padding-right: 5px; }
     .chat .user .profile_image {
@@ -7927,6 +7934,16 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
       padding-top: 5px;
       border-radius: 0; }
 
+.discliamer {
+  text-align: center;
+  display: flex;
+  display: -webkit-flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  font-family: 'Lato';
+  color: #7d7d7d; }
+
 .home .logo {
   height: 60%;
   padding-top: 150px;
@@ -7943,12 +7960,12 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-family: 'Lato';
   font-weight: bold;
   font-size: 1.2em;
-  color: #666666; }
+  color: #888888; }
 .login .small-text {
   text-align: center;
   font-family: 'Lato';
   font-style: italic;
-  font-size: 0.8em;
+  font-size: 0.65em;
   color: #888888; }
 .login .vbox {
   height: 100%;
@@ -7995,6 +8012,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
       margin-bottom: 28px; }
 
 .post-select {
+  font-family: 'Lato';
   width: 100%;
   height: 100%;
   padding: 0;
@@ -8004,7 +8022,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   top: 0;
   left: 0;
   padding: 6px !important;
-  color: #666 !important; }
+  color: #999 !important; }
 
 .vbox {
   height: 100%;
@@ -8114,15 +8132,15 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   .postlistview .post_item {
     border-bottom: 1px solid lightgray; }
   .postlistview .row {
-    padding: 0; }
+    padding: 5px; }
   .postlistview img {
     width: 100%;
     height: auto; }
   .postlistview .user {
     border-bottom: 1px solid lightgray; }
     .postlistview .user img {
-      height: 60px !important;
-      width: 60px !important;
+      height: 50px !important;
+      width: 50px !important;
       border-radius: 100%;
       border: 2px solid #345EC2; }
     .postlistview .user .avatar {
@@ -8132,17 +8150,18 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
       color: #777777;
       /*font-family: 'Lato-Light';*/
       font-family: 'Lato';
-      font-size: .9rem !important; }
+      font-size: .8rem !important; }
     .postlistview .user .name {
       margin-top: 1vh;
+      font-size: .9rem;
       font-style: italic;
       font-weight: bold; }
       .postlistview .user .name .date {
-        font-size: .8rem;
+        font-size: .7rem;
         font-weight: normal;
         float: right; }
         .postlistview .user .name .date i {
-          font-size: 1.5rem;
+          font-size: 1.4rem;
           float: right; }
         .postlistview .user .name .date div {
           margin: 0 10px;
@@ -8155,7 +8174,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     .postlistview .share .chat-bubble {
       display: flex;
       display: -webkit-flex;
-      align-items: center; }
+      align-items: center;
+      font-size: .7rem; }
       .postlistview .share .chat-bubble img {
         margin-left: 5px;
         font-size: 1.4rem;
@@ -8164,6 +8184,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     .postlistview .share .arrows {
       display: flex;
       display: -webkit-flex;
+      font-size: .7rem;
       align-items: center; }
       .postlistview .share .arrows img {
         width: 20px;
@@ -8174,7 +8195,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
         padding: 0 10px; }
     .postlistview .share .col:last-child {
       text-align: right;
-      font-family: 'Lato-Bold'; }
+      font-family: 'Lato';
+      font-size: .8rem; }
   .postlistview ion-footer-bar {
     border-top: 2px solid #EEEEEE;
     padding: 0; }
@@ -8188,7 +8210,16 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
       padding-top: 5px;
       border-radius: 0; }
   .postlistview .post-select {
-    background: white; }
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: #fff !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 6px !important;
+    color: #999 !important; }
 
 .left-buttons {
   display: flex;

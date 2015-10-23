@@ -1,7 +1,7 @@
     <ion-modal-view class="vbox postlistview" style="background:transparent;width:100%" ng-controller="MapModalCtrl">
         <div class="row" ng-click="hideModal()"></div>
         
-        <div class="post_item" on-swipe-up="showFullView()" ng-class="viewMode">
+        <div class="post_item" on-swipe-up="showFullView()" on-swipe-down="hideModal()" ng-class="viewMode">
           <div class="row user">
             <div class="col col-20 avatar">
               <img src="img/eskimo.jpg" alt="">
@@ -18,7 +18,7 @@
               </p>
             </div>
             <div style="width:20px;">
-              <a class="icon ion-close" ng-click="hideModal()"></a>
+              <a class="icon ion-close" style="font-size:.8em;" ng-click="hideModal()"></a>
             </div>              
           </div>
           <img src="img/cars.png" alt="">

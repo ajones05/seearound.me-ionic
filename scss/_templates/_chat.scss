@@ -5,6 +5,8 @@
   .user{
     display: flex;
     align-items: center;
+    -webkit-display: flex;
+    -webkit-align-items: center;      
     font-style: italic;
     padding-right: 5px;
 

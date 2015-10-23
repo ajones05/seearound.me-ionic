@@ -118,6 +118,16 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.
           }
         }
     })
+    
+    .state('app.editprofile', {
+      url: "/edit",
+      views:{
+        'menuContent':{
+          templateUrl: "templates/user/edit_profile.html",
+          controller: 'EditProfileCtrl'
+        }
+      }
+    })
 
     .state('app.userprofile', {
         url: "/user/profile",
@@ -156,7 +166,24 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.
         }
       }
     })
-    ;
+    
+    .state('app.terms', {
+      url: "/terms",
+      views:{
+        'menuContent':{
+          templateUrl: "templates/terms.html"
+        }
+      }
+    })
+    
+    .state('app.about', {
+      url: "/about",
+      views:{
+        'menuContent':{
+          templateUrl: "templates/about.html"
+        }
+      }
+    });
     
   $urlRouterProvider.otherwise('/app/home');
 });

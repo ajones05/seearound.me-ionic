@@ -8,10 +8,6 @@
     font-size: 1.6rem !important;
   }
 
-  .button-clear{
-    color: $gray !important;
-  }
-
   .avatar {
     margin: 2%;
   }
@@ -51,4 +47,8 @@
   .blue{
     color: $positive !important;
   }
+    
+  .gray {
+    color: $gray !important;
+  }    
 }

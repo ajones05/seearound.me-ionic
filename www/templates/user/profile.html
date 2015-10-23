@@ -1,9 +1,11 @@
 <ion-view view-title="Profile" hide-nav-bar="true">
-  <ion-header-bar class="bar bar-stable">
-    <button class="button button-icon icon ion-ios-arrow-left" ng-click="goBack()"></button>
-    <div class="h1 title"></div>
-  </ion-header-bar>
-  <ion-content class=" full_profile">
+    <ion-header-bar class="bar bar-header">
+        <button menu-toggle="left" class="button button-icon">
+            <img src="img/menu_off.png" height="18"/>
+        </button>
+        <h1 class="title">Profile</h1>        
+    </ion-header-bar>    
+  <ion-content class="full_profile">
 
     <ion-list>
       <ion-item class="profile_image row">
@@ -11,7 +13,7 @@
         <img src="img/eskimo.jpg" alt="">
         </div>
         <div class="centered_button col">
-          <span class="custom_btn">Edit Profile</span>
+          <span ui-sref="app.editprofile" class="custom_btn">Edit Profile</span>
         </div>
       </ion-item>
 
@@ -48,9 +50,9 @@
       <ion-item class="row">
         <span class="col">Posts</span>
         <span class="col">
-        <span class="custom_btn">
-          See Nearby Posts
-        </span>
+          <span ui-sref="app.postmapview" class="custom_btn">
+            See Nearby Posts
+          </span>
         </span>
       </ion-item>
 

@@ -39,6 +39,12 @@ angular.module('SeeAroundMe.controllers', [])
   }
 })
 
+.controller('EditProfileCtrl', function($scope, $state){
+  $scope.goToProfile = function(){
+    $state.go('app.userprofile');
+  }
+})
+
 .controller('SigninCtrl', function($scope, $state, $ionicLoading, $rootScope, AppService, $ionicModal) {
 
   $scope.formData = {};
@@ -85,8 +91,9 @@ angular.module('SeeAroundMe.controllers', [])
     }
 })
 
-.controller('MessagesCtrl', function($scope, $ionicModal){
+.controller('MessagesCtrl', function($scope, $ionicModal, $cordovaImagePicker){
 
+    $scope.formData = {};
     //Compose message view modal
     $ionicModal.fromTemplateUrl('templates/post/add.html', {
         scope: $scope
@@ -188,20 +195,47 @@ angular.module('SeeAroundMe.controllers', [])
     },
 
   ];
+    
+    // set post button to blue when typing
+    $scope.checkInput = function(){
+      $scope.textColor = '';
+      if ($scope.formData.postText){
+        //console.log($scope.formData.postText);
+        ($scope.formData.postText.length > 0) ? $scope.textColor = 'blue' : $scope.textColor = 'gray';
+      }
+    }; 
+    
+    $scope.imgUri = 'img/icon.png';
+
+    $scope.pickImages = function () {
+        var options = {
+           maximumImagesCount: 1,
+           width: 800,
+           height: 800,
+           quality: 80
+        };
+
+        $cordovaImagePicker.getPictures(options)
+            .then(function (results) {
+            //   for (var i = 0; i < results.length; i++) {
+            //     console.log('Image URI: ' + results[i]);
+            //   }
+            console.log('Image URI: ' + results[0]);
+            $scope.imgUri = results[0];
+            $scope.showModal(2);
+        }, function(error) {
+            // error getting photos
+            console.log('Error: ' + error);
+        });
+    };        
 })
 
 .controller('ChatCtrl', function($scope, $state){
 
 })
 
-.controller('PostListCtrl', function($scope, $rootScope, $state, $ionicModal, $ionicPopover){
+.controller('PostListCtrl', function($scope, $rootScope, $state, $ionicModal, $ionicPopover, $cordovaImagePicker){
   $scope.formData = {};
-  $scope.checkInput = function(){
-    $scope.blueButton = '';
-    if ($scope.formData.postText){
-      ($scope.formData.postText.length > 0) ? $scope.blueButton = 'blue' : $scope.blueButton = '';
-    }
-  }
   // TODO: remove all the modals and turn them into view in next phase
   $ionicModal.fromTemplateUrl('templates/post/add.html', {
     scope: $scope
@@ -305,6 +339,39 @@ angular.module('SeeAroundMe.controllers', [])
         else
             $scope.showSearch = true;
     };
+    
+    // set post button to blue when typing
+    $scope.checkInput = function(){
+      $scope.textColor = '';
+      if ($scope.formData.postText){
+        //console.log($scope.formData.postText);
+        ($scope.formData.postText.length > 0) ? $scope.textColor = 'blue' : $scope.textColor = 'gray';
+      }
+    } 
+    
+    $scope.imgUri = 'img/icon.png';
+
+    $scope.pickImages = function () {
+        var options = {
+           maximumImagesCount: 1,
+           width: 800,
+           height: 800,
+           quality: 80
+        };
+
+        $cordovaImagePicker.getPictures(options)
+            .then(function (results) {
+            //   for (var i = 0; i < results.length; i++) {
+            //     console.log('Image URI: ' + results[i]);
+            //   }
+            console.log('Image URI: ' + results[0]);
+            $scope.imgUri = results[0];
+            $scope.showModal(2);
+        }, function(error) {
+            // error getting photos
+            console.log('Error: ' + error);
+        });
+    }    
 })
 
 .controller('MapModalCtrl', function($scope, $rootScope){
@@ -409,9 +476,9 @@ angular.module('SeeAroundMe.controllers', [])
 
         userId = userData.result.id || 0;
         $scope.formData.Profile_image = userData.result.Profile_image;
-        location = localStorage.getItem('sam_user_location');
+        location = {latitude: userData.result.latitude, longitude: userData.result.longitude};
+        //localStorage.getItem('sam_user_location');
         if (!location) {
-                location = JSON.parse(location);
                 location = {latitude: 37.8088139, longitude: -122.2660002};
                 console.warn('WARN: Using DEV_MODE position: ' + location);        
         }
@@ -431,7 +498,7 @@ angular.module('SeeAroundMe.controllers', [])
         console.log(JSON.stringify(data));
         AppService.getNearbyPosts(data)
         .success(function (data) {
-            // console.log(JSON.stringify(data, null, 4));
+            console.log(JSON.stringify(data, null, 4));
             $scope.nearbyPosts = data.result;
             if($scope.nearbyPosts){
                 $scope.nearbyPosts.forEach(function (post) {
@@ -441,7 +508,7 @@ angular.module('SeeAroundMe.controllers', [])
                         // title: post.title,
                         icon: {
                             url:'img/pin-gray.png',
-                            size: new google.maps.Size(24, 33)
+                            size: new google.maps.Size(18, 25)
                         }
                     });
 
@@ -464,7 +531,7 @@ angular.module('SeeAroundMe.controllers', [])
             // position = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
 
             // if (DEV_MODE == 'true') {
-                var position = new google.maps.LatLng(37.8088139, -122.26650020000001);
+                var position = new google.maps.LatLng(location.latitude, location.longitude);
                 console.warn('WARN: Using DEV_MODE position: ' + position);
             // }
             map.setCenter(position);
@@ -473,7 +540,7 @@ angular.module('SeeAroundMe.controllers', [])
                 map: map,
                 icon: {
                     url:'img/pin-blue.png',
-                    size: new google.maps.Size(30, 41)
+                    size: new google.maps.Size(22, 30)
                 },
                 // animation: google.maps.Animation.BOUNCE,
                 title: "My Location"
@@ -549,6 +616,8 @@ angular.module('SeeAroundMe.controllers', [])
       $scope.popover.remove();
       $scope.selectPopover.remove();        
     });
+    
+    $scope.imgUri = 'img/icon.png';
 
     $scope.pickImages = function () {
         var options = {
@@ -574,10 +643,10 @@ angular.module('SeeAroundMe.controllers', [])
 
     // set post button to blue when typing
     $scope.checkInput = function(){
-      $scope.blueButton = '';
+      $scope.textColor = '';
       if ($scope.formData.postText){
-        console.log($scope.formData.postText);
-        ($scope.formData.postText.length > 0) ? $scope.blueButton = 'blue' : $scope.blueButton = '';
+        //console.log($scope.formData.postText);
+        ($scope.formData.postText.length > 0) ? $scope.textColor = 'blue' : $scope.textColor = 'gray';
       }
     }
 

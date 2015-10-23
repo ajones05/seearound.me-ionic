@@ -1,0 +1,60 @@
+<ion-view view-title="Edit Profile">
+  <ion-nav-bar >
+    <ion-nav-back-button class="button-clear">
+      <i class="icon ion-ios-arrow-left"></i>
+    </ion-nav-back-button>
+    <ion-nav-title >Edit Profile</ion-nav-title>
+  </ion-nav-bar>
+  <ion-content class=" full_profile">
+
+    <ion-list>
+      <ion-item style="visibility: hidden" class="profile_image row">
+        <div class="col">
+          <h1>Edit Profile</h1>
+        </div>
+        <div class="centered_button col">
+          <span class="custom_btn">Edit Profile</span>
+        </div>
+      </ion-item>
+
+      <ion-item class="row no-top-border">
+        <span class="col">Name</span>
+        <input class="col" type="text" placeholder="John Smith" autofocus>
+      </ion-item>
+
+      <ion-item class="row">
+        <span class="col">Karma</span>
+        <input class="col" type="text" placeholder="40.25">
+      </ion-item>
+
+      <ion-item class="row">
+        <span class="col">Email</span>
+        <input class="col" type="email" placeholder="Johnth@gmail.com">
+      </ion-item>
+
+      <ion-item class="row">
+        <span class="col">Gender</span>
+        <!-- TODO: change this to dropdown -->
+        <select class="col" style="background: transparent">
+          <option selected>Male</option>
+          <option>Female</option>
+          <option>Other</option>
+        </select>
+      </ion-item>
+
+      <ion-item class="row">
+        <span class="col">Age</span>
+        <input class="col" type="number" placeholder="32">
+      </ion-item>
+
+      <ion-item class="row">
+        <span class="col">Interests</span>
+        <textarea class="col" type="text" placeholder="Soccer, Tennis, Movies, Books"></textarea>
+      </ion-item>
+    </ion-list>
+        <div class="spacer20"></div>
+        <div class="text-center">
+          <span ui-sref="app.userprofile" class="custom_btn">Save</span>
+        </div>      
+  </ion-content>
+</ion-view>

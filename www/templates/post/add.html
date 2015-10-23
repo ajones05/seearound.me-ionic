@@ -2,19 +2,14 @@
   <ion-header-bar>
     <div class="buttons">
       <button class="button button-clear" ng-click="close(2)">
-        <i class="icon ion-ios-arrow-back"></i>
+        <i class="icon ion-ios-arrow-left"></i>
       </button>
     </div>
     <h1 class="title"></h1>
     <div class="buttons">
-      <button 
-        class="button button-clear" 
-        ng-click="post()"
-        ng-class="blueButton"
-        >
-        Post
+      <button class="button button-clear" ng-click="post()">
+          <p ng-class="textColor">Post</p>
       </button>
-      <!-- <button class="button button&#45;clear"  ng&#45;if="!blueButton" >Post</button> -->
     </div>
   </ion-header-bar>
   <ion-content >
@@ -26,7 +21,9 @@
         <textarea ng-change="checkInput()" placeholder="Write something.." ng-model="formData.postText" class="commentbox"></textarea>
       </div>        
     </div>
-      <img src="{{imgUri}}" alt="">      
+      <div class="item item-image">
+        <img src="{{imgUri}}" alt="Add an image ..."/>
+      </div>      
       <ion-footer-bar>
         <div class="camera-button">
           <button class="button button-icon" ng-click="pickImages()">
