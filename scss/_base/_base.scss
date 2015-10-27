@@ -81,6 +81,13 @@ body, html {
     color: $headingTextColor;
 }
 
+@mixin centered-medium-text{
+    text-align: center;
+    font-family: 'Lato';
+    font-size: .55em;
+    color: $smallTextColor
+}
+
 @mixin centered-small-text{
     text-align: center;
     font-family: 'Lato';

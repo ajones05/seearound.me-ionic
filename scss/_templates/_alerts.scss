@@ -1,0 +1,72 @@
+// post/alerts.html
+.alerts{
+    font-family: 'Lato';
+    width:86%;
+    height:80%;
+    border-radius: 0 !important;
+    position: absolute !important;
+    left:7% !important;
+    
+    .header-item{
+        font-family: 'Lato-Bold'
+    }
+    
+    .alert:nth-child(2n-1){
+      .item-content{
+          background: #ddd !important;
+      }
+    }
+    
+    .alert{
+        border-color: #888;
+        padding: 0;
+        overflow: inherit;
+        text-overflow: inherit;
+
+        .col-10{
+          display: flex;
+          align-items: center;
+          margin: 5px 15px;
+        }
+
+        .top{
+            color: $positive;
+            .name{
+                font-style: italic;
+            }
+        }
+
+        .avatar{
+            text-align: center;
+            margin: auto;
+            margin-left: 20px;
+        }
+
+        img{
+          height: 50px !important;
+          width: 50px !important;
+          border-radius: 100%;
+          border: 2px solid $positive;
+        }
+
+        .row{
+          padding: 0;
+          p{
+            padding: 5px;
+            white-space: normal;
+            color: $messageTextColor;
+          }
+          .time{
+            text-align: right;
+            font-size: .8em;
+            font-style: italic;          
+          }
+        }
+    }
+    
+  .item-complex{
+    .item-content{
+      padding: 0;
+    }
+  }
+}

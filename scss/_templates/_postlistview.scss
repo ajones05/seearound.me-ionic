@@ -23,7 +23,7 @@
 
 
   .row{
-    padding: 5px;
+    padding: 4px !important;
   }
 
   font-family: 'Lato';
@@ -44,34 +44,29 @@
     .avatar{
         text-align: center;
         margin: auto;
-    }      
-    .desc{
-      color: $messageTextColor;
-      /*font-family: 'Lato-Light';*/
-      font-family: 'Lato';
-      font-size: .8rem !important;
-    }
+    }     
+      
     .name{
-      margin-top: 1vh;
-      font-size: .9rem;
+      /*margin-top: 1vh;*/
+      font-size: .8rem;
       font-style: italic;
       font-weight: bold;
-      .date{
+    }
+      
+    .date{
         font-size: .7rem;
         font-weight: normal;
         float: right;
-
-        i{
-          font-size:1.4rem ;
-          float: right;
-        }
-
-        div {
-          margin: 0 10px;
-          width: 20vw;
-        }
-      }
+        margin-right: 10px;
     }
+            
+    .desc{
+      color: $messageTextColor;
+      /*font-family: 'Lato-Light';*/    
+      font-family: 'Lato';
+      font-size: .8rem !important;
+      line-height: 1em;
+    }      
   }
   .share{
     display: flex; display: -webkit-flex;

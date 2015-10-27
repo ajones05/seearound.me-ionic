@@ -183,6 +183,13 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.
           templateUrl: "templates/about.html"
         }
       }
+    }).state('app.privacy', {
+      url: "/privacy",
+      views:{
+        'menuContent':{
+          templateUrl: "templates/privacy.html"
+        }
+      }
     });
     
   $urlRouterProvider.otherwise('/app/home');

@@ -3,6 +3,8 @@ angular.module('SeeAroundMe.controllers', [])
 .controller('AppCtrl', function($scope, $rootScope, $state) {
   //$scope.$on('$ionicView.enter', function(e) {
   //});
+    
+  $rootScope.isBeforeSignUp = false;
 
   $scope.openPostList = function () {
       $rootScope.$broadcast('mapview:openlist');
@@ -21,16 +23,28 @@ angular.module('SeeAroundMe.controllers', [])
     });
 })
 
-.controller('CommentsCtrl', function($scope, AppService) {
+.controller('CommentsCtrl', function($scope) {
 })
 
 
-.controller('SignupCtrl', function($scope, $state, AppService) {
+.controller('SignupCtrl', function($scope, $rootScope, $state) {
     console.log('Signup controller called ...');
     $scope.doSignUp = function(user){
         console.log('Signup ...');
         $state.go('app.allowlocation');
-    }
+    };
+    
+    $scope.openTerms = function(){
+        console.log('openTerms ...');
+        $rootScope.isBeforeSignUp = true;
+        $state.go('app.terms');
+    };
+    
+    $scope.openPrivacy = function(){
+        console.log('openPrivacy ...');
+        $rootScope.isBeforeSignUp = true;
+        $state.go('app.privacy');
+    }            
 })
 
 .controller('ProfileCtrl', function($scope, $state){
@@ -45,7 +59,7 @@ angular.module('SeeAroundMe.controllers', [])
   }
 })
 
-.controller('SigninCtrl', function($scope, $state, $ionicLoading, $rootScope, AppService, $ionicModal) {
+.controller('SigninCtrl', function($scope, $rootScope, $state, $ionicLoading, $rootScope, AppService, $ionicModal) {
 
   $scope.formData = {};
   $scope.formData.email = "brandonhere123@gmail.com";
@@ -60,6 +74,7 @@ angular.module('SeeAroundMe.controllers', [])
     .success(function (data) {
        localStorage.setItem('sam_user_data', JSON.stringify(data));
        $ionicLoading.hide();
+       $rootScope.isBeforeSignUp = false;
        // console.log(JSON.stringify(data, null, 4));
        $state.go('app.postmapview');
     })
@@ -67,11 +82,10 @@ angular.module('SeeAroundMe.controllers', [])
       $ionicLoading.hide();
       console.warn(JSON.stringify(err));
     });
-
   };
 })
 
-.controller('LocationCtrl', function($scope, $state, $ionicPopup) {
+.controller('LocationCtrl', function($scope, $rootScope, $state, $ionicPopup) {
     $scope.showLocationPopup = function(){
         console.log('showLocationPopup ...');
         
@@ -82,6 +96,7 @@ angular.module('SeeAroundMe.controllers', [])
             okType: 'button-default'
         }).then(function(res) {
          if(res) {
+             $rootScope.isBeforeSignUp = false;
              console.log('Location allowed. Go to map screen ...');
              $state.go('app.postmapview');
          } else {
@@ -91,31 +106,25 @@ angular.module('SeeAroundMe.controllers', [])
     }
 })
 
-.controller('MessagesCtrl', function($scope, $ionicModal, $cordovaImagePicker){
+.controller('MessagesCtrl', function($scope, ModalService, AppService){
 
     $scope.formData = {};
     //Compose message view modal
-    $ionicModal.fromTemplateUrl('templates/post/add.html', {
-        scope: $scope
-    }).then(function(modal) {
-        $scope.composeModal = modal;
-    });
-      
-    $scope.$on('$destroy', function() {
-      $scope.composeModal.remove();
-    });
-      
+    $scope.modal = function() {
+        ModalService.init('templates/post/add.html', $scope).then(function(modal) {
+            modal.show();
+        });
+    };
     
     $scope.showCompose = function(){
       //console.log('showCompose called ...');
-        $scope.composeModal.show();
+        $scope.modal();
     };
     
-    $scope.close = function(){
-      //console.log('showCompose called ...');
-        $scope.composeModal.hide();
-    };
-  
+    $scope.close = function(id) {
+        $scope.closeModal();
+    };    
+      
   $scope.messages = [
     {
       user: "Amie Roger",
@@ -205,57 +214,151 @@ angular.module('SeeAroundMe.controllers', [])
       }
     }; 
     
-    $scope.imgUri = 'img/icon.png';
-
+    $scope.imgUri = null;
+    
+    //Image selector called from camera icon in compose view
     $scope.pickImages = function () {
-        var options = {
-           maximumImagesCount: 1,
-           width: 800,
-           height: 800,
-           quality: 80
-        };
-
-        $cordovaImagePicker.getPictures(options)
-            .then(function (results) {
-            //   for (var i = 0; i < results.length; i++) {
-            //     console.log('Image URI: ' + results[i]);
-            //   }
-            console.log('Image URI: ' + results[0]);
-            $scope.imgUri = results[0];
-            $scope.showModal(2);
-        }, function(error) {
-            // error getting photos
-            console.log('Error: ' + error);
-        });
-    };        
+        
+        AppService.pickImage($scope);
+    };
+            
+    $scope.closeImage = function(){
+        $scope.imgUri = null;
+    };
 })
 
 .controller('ChatCtrl', function($scope, $state){
 
 })
 
-.controller('PostListCtrl', function($scope, $rootScope, $state, $ionicModal, $ionicPopover, $cordovaImagePicker){
+.controller('PostListCtrl', function($scope, $rootScope, $state, $ionicPopup, $ionicPopover, $compile, $ionicLoading, AppService, ModalService){
   $scope.formData = {};
-  // TODO: remove all the modals and turn them into view in next phase
-  $ionicModal.fromTemplateUrl('templates/post/add.html', {
-    scope: $scope
-  }).then(function(modal) {
-    $scope.modal = modal;
-  });
-  $scope.showModal = function () {
-    $scope.modal.show();
+    
+    $scope.modal2 = function() {
+        ModalService.init('templates/post/add.html', $scope).then(function(modal) {
+            modal.show();
+        });
+    };
+    
+  $scope.showModal = function (id) {
+      
+    if (id == 4){
+
+        $scope.close(2);
+
+        $scope.modal4 = function() {
+            ModalService.init('templates/post/chooselocation.html', $scope, 'slide-in-right').then(function(modal) {
+                modal.show();
+            });
+        };    
+
+        $scope.modal4();  
+        setTimeout(function(){
+            $scope.showMap();
+        },500);
+    }        
+    else  
+        $scope.modal2();
   };
 
-  $scope.close = function(id) {
-    $scope.modal.hide();
-  };
+    $scope.close = function(id) {
+        if(id == 1){
+            $scope.modal1.hide();            
+        }
+        else if(id == 4){
+            $scope.closeModal();
+            setTimeout(function(){
+                $scope.modal.remove();
+                $scope.showModal(2);
+            },500);
+        }            
+        else
+            $scope.closeModal();
+    };
 
   $scope.$on('$destroy', function() {
     console.log('Destroying modals...');
-    $scope.modal.remove();
     $scope.alertsPopover.remove();
     $scope.selectPopover.remove();
   });
+    
+    $scope.showMap = function(){
+        //var position = AppService.getCurrentPosition();
+
+        //var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        
+        //if (!position) {
+            var latLng = new google.maps.LatLng(37.8088139, -122.2660002);
+        //}
+        
+
+        var mapOptions = {
+            center: latLng,
+            zoom: 15,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            disableDefaultUI: true,
+            zoomControl: false//,
+            //zoomControlOptions: {
+              //style: google.maps.ZoomControlStyle.SMALL
+            //}
+        };
+
+        var map = new google.maps.Map(document.getElementById("cmap"), mapOptions);
+        
+        var marker = new google.maps.Marker({
+            position: latLng,
+            map: map,
+            icon: {
+                url:'img/pin-blue.png',
+                size: new google.maps.Size(22, 30)
+            },
+            // animation: google.maps.Animation.BOUNCE,
+            title: "My Location"
+        }); 
+        
+        //This is to make possible the click on the button in info window    
+        var compiled = $compile('<button ng-click="post()" class="button icon-right ion-chevron-right button-positive">Post from here</button>')($scope);
+        
+        var infoWindow = new google.maps.InfoWindow({
+            content: compiled[0]
+        });
+        
+        google.maps.event.addListener(marker, 'click', function() {
+            
+            infoWindow.open(map, marker);
+            //$scope.post();
+        });
+
+    };    
+    
+    $scope.post = function () {
+        $ionicLoading.show();
+
+        var data = {
+            "news" : 'Test',
+            "user_id" : '59',
+            "latitude" : 37.8088139,
+            "longitude" : -122.2660002,
+            "address" : null
+        };
+
+        AppService.addNewPost(data)
+        .then(function (res) {
+            //$scope.initialise();
+            $ionicLoading.hide();
+            $ionicPopup.alert({title: 'New Post', template: 'Status updated'})
+            .then(function () {
+                $scope.close(4);
+            });
+        })
+        .catch(function (err) {
+            console.warn(err);
+            $ionicLoading.hide();
+
+        })
+        //console.log($scope.formData.postText);
+    };
+    
 
   $scope.gotoMap = function(){
     $state.go('app.postmapview');
@@ -273,39 +376,39 @@ angular.module('SeeAroundMe.controllers', [])
       $scope.alerts = [
         {
           user: "Amie Roger",
-          message: "Lorem Ipsum Dolor Sit Amet",
+          message: "This is a test message to see how it looks like.",
           time: "July 10, 9:15am",
           profileImage: "img/eskimo.jpg"
         },
         {
           user: "Amie Roger",
-          message: "Lorem Ipsum Dolor Sit Amet",
+          message: " This is a test message. This indeed is a test.",
           time: "July 10, 9:15am",
           profileImage: "img/eskimo.jpg"
         },
 
         {
           user: "Amie Roger",
-          message: "Lorem Ipsum Dolor Sit Amet",
+          message: "This is a different test message. It is a bit longer. It will tell you how longer messages will look like. That should be enough.",
           time: "July 10, 9:15am",
           profileImage: "img/eskimo.jpg"
         },        
         {
           user: "Amie Roger",
-          message: "Lorem Ipsum Dolor Sit Amet",
+          message: "This is very short.",
           time: "July 10, 9:15am",
           profileImage: "img/eskimo.jpg"
         },
 
         {
           user: "Amie Roger",
-          message: "Lorem Ipsum Dolor Sit Amet",
+          message: "This is just more than short.",
           time: "July 10, 9:15am",
           profileImage: "img/eskimo.jpg"
         },
         {
           user: "Amie Roger",
-          message: "Lorem Ipsum Dolor Sit Amet",
+          message: "This is a long message but not that long.",
           time: "July 10, 9:15am",
           profileImage: "img/eskimo.jpg"
         }];
@@ -349,46 +452,26 @@ angular.module('SeeAroundMe.controllers', [])
       }
     } 
     
-    $scope.imgUri = 'img/icon.png';
-
+    $scope.imgUri = null;
+    
+    //Image selector called from camera icon in map view
+    $scope.getImages = function () {
+        
+        AppService.getImage($scope);
+    };
+    
+    //Image selector called from camera icon in compose view
     $scope.pickImages = function () {
-        var options = {
-           maximumImagesCount: 1,
-           width: 800,
-           height: 800,
-           quality: 80
-        };
-
-        $cordovaImagePicker.getPictures(options)
-            .then(function (results) {
-            //   for (var i = 0; i < results.length; i++) {
-            //     console.log('Image URI: ' + results[i]);
-            //   }
-            console.log('Image URI: ' + results[0]);
-            $scope.imgUri = results[0];
-            $scope.showModal(2);
-        }, function(error) {
-            // error getting photos
-            console.log('Error: ' + error);
-        });
-    }    
-})
-
-.controller('MapModalCtrl', function($scope, $rootScope){
-    
-    $scope.viewMode = 'half-view';
-    
-    $scope.showFullView = function(){
-        $scope.viewMode = 'full-view';
+        
+        AppService.pickImage($scope);
     };
-    
-    $scope.hideModal = function(){
-        $scope.viewMode = 'half-view';
-        $rootScope.$broadcast('hidemapmodal');
+            
+    $scope.closeImage = function(){
+        $scope.imgUri = null;
     };
 })
 
-.controller('MapCtrl', function($scope, $rootScope, $state, $stateParams, $ionicModal, $ionicLoading, $cordovaImagePicker, $ionicPopup, $ionicPopover, AppService) {
+.controller('MapCtrl', function($scope, $rootScope, $state, $stateParams, $timeout, $ionicLoading, $ionicPopup, $ionicPopover, $cordovaGeolocation, $compile, AppService, ModalService) {
     $scope.inputRadius = 8;
     $scope.formData = {};
     $scope.fileName = {};
@@ -397,23 +480,7 @@ angular.module('SeeAroundMe.controllers', [])
     var userId;
     var userData;
     var bounds = new google.maps.LatLngBounds();
-
-    //Compose message view modal
-    $ionicModal.fromTemplateUrl('templates/post/add.html', {
-        id: '2',
-        scope: $scope
-    }).then(function(modal) {
-        $scope.modal2 = modal;
-    });
     
-    $ionicModal.fromTemplateUrl('templates/post/mapmodal.html', {
-        id: '3',
-        scope: $scope
-    }).then(function(modal) {
-        $scope.modal3 = modal;
-    });
-    
-
     $scope.nearbyPosts = {};
 
     var outerbounds = [ // covers the (mercator projection) world
@@ -580,24 +647,121 @@ angular.module('SeeAroundMe.controllers', [])
     };
 
     google.maps.event.addDomListener(document.getElementById("map"), 'load', $scope.initialise());
+    
+    $scope.showMap = function(){
+        //var position = AppService.getCurrentPosition();
+
+        //var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        
+        //if (!position) {
+            var latLng = new google.maps.LatLng(37.8088139, -122.2660002);
+        //}
+        
+
+        var mapOptions = {
+            center: latLng,
+            zoom: 15,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            disableDefaultUI: true,
+            zoomControl: false//,
+            //zoomControlOptions: {
+              //style: google.maps.ZoomControlStyle.SMALL
+            //}
+        };
+
+        var map = new google.maps.Map(document.getElementById("cmap"), mapOptions);
+        
+        var marker = new google.maps.Marker({
+            position: latLng,
+            map: map,
+            icon: {
+                url:'img/pin-blue.png',
+                size: new google.maps.Size(22, 30)
+            },
+            // animation: google.maps.Animation.BOUNCE,
+            title: "My Location"
+        }); 
+        
+        //This is to make possible the click on the button in info window    
+        var compiled = $compile('<button ng-click="post()" class="button icon-right ion-chevron-right button-positive">Post from here</button>')($scope);
+        
+        var infoWindow = new google.maps.InfoWindow({
+            content: compiled[0]
+        });
+        
+        google.maps.event.addListener(marker, 'click', function() {
+            
+            infoWindow.open(map, marker);
+            //$scope.post();
+        });
+
+    };
 
     $scope.showModal = function (id) {
         // $state.go('app.postlistview');
         if(id == 1)
             $scope.modal1.show();
-        else if (id == 2)
-            $scope.modal2.show();
-        else if (id == 3)
-            $scope.modal3.show();
-    };
+        else if (id == 2){
+            $scope.modal2 = function() {
+                ModalService.init('templates/post/add.html', $scope).then(function(modal) {
+                    modal.show();
+                });
+            };
+            
+            $scope.modal2();
+        }
+        else if (id == 3){
+            $scope.modal3 = function() {
+                ModalService.init('templates/post/mapmodal.html', $scope).then(function(modal) {
+                    modal.show();                    
+                });
+            };    
+            
+            $scope.modal3();
+        }
+        else if (id == 4){
+            
+            $scope.close(2);
 
+            $scope.modal4 = function() {
+                ModalService.init('templates/post/chooselocation.html', $scope, 'slide-in-right').then(function(modal) {
+                    modal.show();
+                });
+            };    
+            
+            $scope.modal4();  
+            setTimeout(function(){
+                $scope.showMap();
+            },500);
+        }        
+    };
+    
+    $scope.viewMode = 'half-view';
+    
+    $scope.showFullView = function(){
+        $scope.viewMode = 'full-view';
+    };
+    
+    $scope.hideModal = function(){
+        $scope.viewMode = 'half-view';
+        $scope.closeModal();
+    };
+    
     $scope.close = function(id) {
-        if(id == 1)
-            $scope.modal1.hide();
-        else if (id == 2)
-            $scope.modal2.hide();
-        else if (id == 3)
-            $scope.modal3.hide();        
+        if(id == 1){
+            $scope.modal1.hide();            
+        }
+        if(id == 4){
+            $scope.closeModal();
+            setTimeout(function(){
+                $scope.modal.remove();
+                $scope.showModal(2);
+            },500);
+        }            
+        else{
+            $scope.closeModal();
+            $scope.modal.remove();
+        }
     };
 
     $scope.$on("mapview:openlist", function(event,data) {
@@ -611,35 +775,27 @@ angular.module('SeeAroundMe.controllers', [])
     $scope.$on('$destroy', function() {
       console.log('Destroying modals...');
       //$scope.modal1.remove();
-      $scope.modal2.remove();
-      $scope.modal3.remove();
       $scope.popover.remove();
-      $scope.selectPopover.remove();        
+      $scope.selectPopover.remove();  
     });
     
-    $scope.imgUri = 'img/icon.png';
-
+    $scope.imgUri = null;
+    
+    //Image selector called from camera icon in map view
+    $scope.getImages = function () {
+        
+        AppService.getImage($scope);
+    };
+    
+    //Image selector called from camera icon in compose view
     $scope.pickImages = function () {
-        var options = {
-           maximumImagesCount: 1,
-           width: 800,
-           height: 800,
-           quality: 80
-        };
-
-        $cordovaImagePicker.getPictures(options)
-            .then(function (results) {
-            //   for (var i = 0; i < results.length; i++) {
-            //     console.log('Image URI: ' + results[i]);
-            //   }
-            console.log('Image URI: ' + results[0]);
-            $scope.imgUri = results[0];
-            $scope.showModal(2);
-        }, function(error) {
-            // error getting photos
-            console.log('Error: ' + error);
-        });
-    }
+        
+        AppService.pickImage($scope);
+    };
+    
+    $scope.closeImage = function(){
+        $scope.imgUri = null;
+    };
 
     // set post button to blue when typing
     $scope.checkInput = function(){
@@ -648,7 +804,7 @@ angular.module('SeeAroundMe.controllers', [])
         //console.log($scope.formData.postText);
         ($scope.formData.postText.length > 0) ? $scope.textColor = 'blue' : $scope.textColor = 'gray';
       }
-    }
+    };
 
     $scope.post = function () {
         $ionicLoading.show();
@@ -675,7 +831,7 @@ angular.module('SeeAroundMe.controllers', [])
             $ionicLoading.hide();
 
         })
-        // console.log($scope.formData.postText);
+        //console.log($scope.formData.postText);
     };
     
     //Below is the popover code
@@ -690,39 +846,39 @@ angular.module('SeeAroundMe.controllers', [])
       $scope.alerts = [
         {
           user: "Amie Roger",
-          message: "Lorem Ipsum Dolor Sit Amet",
+          message: "This is a test message to see how it looks like.",
           time: "July 10, 9:15am",
           profileImage: "img/eskimo.jpg"
         },
         {
           user: "Amie Roger",
-          message: "Lorem Ipsum Dolor Sit Amet",
+          message: " This is a test message. This indeed is a test.",
           time: "July 10, 9:15am",
           profileImage: "img/eskimo.jpg"
         },
 
         {
           user: "Amie Roger",
-          message: "Lorem Ipsum Dolor Sit Amet",
+          message: "This is a different test message. It is a bit longer. It will tell you how longer messages will look like. That should be enough.",
           time: "July 10, 9:15am",
           profileImage: "img/eskimo.jpg"
         },        
         {
           user: "Amie Roger",
-          message: "Lorem Ipsum Dolor Sit Amet",
+          message: "This is very short.",
           time: "July 10, 9:15am",
           profileImage: "img/eskimo.jpg"
         },
 
         {
           user: "Amie Roger",
-          message: "Lorem Ipsum Dolor Sit Amet",
+          message: "This is just more than short.",
           time: "July 10, 9:15am",
           profileImage: "img/eskimo.jpg"
         },
         {
           user: "Amie Roger",
-          message: "Lorem Ipsum Dolor Sit Amet",
+          message: "This is a long message but not that long.",
           time: "July 10, 9:15am",
           profileImage: "img/eskimo.jpg"
         }];
@@ -755,4 +911,15 @@ angular.module('SeeAroundMe.controllers', [])
         else
             $scope.showSearch = true;
     };
+})
+
+.directive('focusMe', function($timeout) {
+  return {
+    link: function(scope, element, attrs) {
+
+      $timeout(function() {
+        element[0].focus(); 
+      });
+    }
+  };
 });

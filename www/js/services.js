@@ -1,9 +1,53 @@
 angular.module('SeeAroundMe.services', [])
 
-.factory('AppService', function($http, $q, $cordovaGeolocation, API_URL) {
+.factory('AppService', function($http, $q, $cordovaGeolocation, $cordovaCapture, $cordovaImagePicker, API_URL) {
 
     var service = {
-        getCurrentPosition: function () {
+        
+        pickImage: function(scope){
+            
+            var options = {
+               maximumImagesCount: 1,
+               width: 800,
+               height: 800,
+               quality: 80
+            };
+
+            $cordovaImagePicker.getPictures(options)
+                .then(function (results) {
+                //   for (var i = 0; i < results.length; i++) {
+                //     console.log('Image URI: ' + results[i]);
+                //   }
+                //console.log('Image URI: ' + results[0]);
+                scope.imgUri = results[0];
+            }, function(error) {
+              // An error occurred. Show a message to the user
+                // error
+                console.error('Failed to get image. Error: ' + JSON.stringify(error));
+            });
+        },
+        
+        getImage: function(scope){
+            
+            var options = { limit: 3 };
+
+            $cordovaCapture.captureImage(options).then(function(imageData) {
+                console.log(imageData[0]);
+                
+                //Set the image
+                scope.imgUri = imageData[0].fullPath;                
+                
+                //Show compose screen (modal)
+                scope.showModal(2);
+                
+            }, function(err) {
+              // An error occurred. Show a message to the user
+                // error
+                console.error('Failed to get image. Error: ' + JSON.stringify(err));
+            });
+        },
+        
+        getCurrentPosition: function (){
             var deferred = $q.defer();
             console.log('Geolocation Service called...');
             var posOptions = {timeout: 10000, maximumAge:120000, enableHighAccuracy: false};
@@ -65,4 +109,37 @@ angular.module('SeeAroundMe.services', [])
 
     return service;
 
+})
+
+.factory('ModalService', function($ionicModal, $rootScope) {
+    
+    var init = function(tpl, $scope, anim) {
+
+        var promise;
+        $scope = $scope || $rootScope.$new();
+
+        promise = $ionicModal.fromTemplateUrl(tpl, {
+          scope: $scope,
+          animation: anim ? anim : 'slide-in-up'
+        }).then(function(modal) {
+          $scope.modal = modal;
+          return modal;
+        });
+
+        $scope.openModal = function() {
+           $scope.modal.show();
+         };
+         $scope.closeModal = function() {
+           $scope.modal.hide();
+         };
+         $scope.$on('$destroy', function() {
+           $scope.modal.remove();
+         });
+
+        return promise;
+      };
+
+      return {
+        init: init
+      };    
 });

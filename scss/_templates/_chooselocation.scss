@@ -1,0 +1,86 @@
+.chooselocation {
+    
+  .bar.bar-stable{
+    background: white;
+    img{
+      width: 50%;
+      margin: auto;
+    }
+  }
+    
+  #cmap {
+        width: 100%;
+        height: 100%;
+  }     
+    
+  .scroll-content{
+      top: 0 !important;
+      bottom: 0 !important;
+   }
+    
+   .scroll {
+        height: 100%;
+   }
+
+   .bar.bar-light {
+      background-color: transparent !important;
+      border: 0 !important;
+   }
+    
+   .search-box{       
+       margin-top:84px;
+       margin-left:auto;
+       margin-right:auto;
+       width:260px;
+       height:80px;
+       -webkit-border-radius: 10px !important;       
+       padding: 0;
+   }
+    
+   .search-text{
+        height: 10px !important;
+        font-family: "Lato";
+        font-size: .7em;
+        color: $base-color;
+        margin: 0 !important;
+        text-align: center;
+   }
+    /***** customised styles for info window ****************/
+    
+    /* white background and box outline */
+    .gm-style > div:first-child > div + div > div:last-child > div > div:first-child > div
+    {
+        /* we have to use !important because we are overwritng inline styles */
+        background-color: transparent !important;
+        box-shadow: none !important;
+        width: auto !important;
+        height: auto !important;
+    }
+
+    /* arrow colour */
+    .gm-style > div:first-child > div + div > div:last-child > div > div:first-child > div > div > div
+    {
+        background-color: $base-color !important; 
+        box-shadow: none !important;
+    }
+
+    /* close button */
+    .gm-style > div:first-child > div + div > div:last-child > div > div:last-child
+    {
+        margin-right: 5px;
+        margin-top: 5px;
+    }
+
+    /* image icon inside close button */
+    .gm-style > div:first-child > div + div > div:last-child > div > div:last-child > img
+    {
+        display: none;
+    }
+
+    /* positioning of infowindow */
+    .gm-style-iw
+    {
+        top: 22px !important;
+        left: 22px !important;
+    }    
+}

@@ -7829,6 +7829,13 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   color: #345EC2 !important; }
 .addpost .gray {
   color: #7d7d7d !important; }
+.addpost .vbox {
+  height: 100%;
+  display: -webkit-flex;
+  -webkit-flex-direction: column;
+  -webkit-align-items: stretch; }
+.addpost .flex-row {
+  -webkit-flex: 1; }
 
 .chat {
   font-family: 'Lato';
@@ -7967,6 +7974,11 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-style: italic;
   font-size: 0.65em;
   color: #888888; }
+.login .medium-text {
+  text-align: center;
+  font-family: 'Lato';
+  font-size: .55em;
+  color: #888888; }
 .login .vbox {
   height: 100%;
   display: -webkit-flex;
@@ -7974,6 +7986,9 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   -webkit-align-items: stretch; }
 .login .row {
   -webkit-flex: 1; }
+.login .link {
+  color: cornflowerblue;
+  text-decoration: none; }
 
 #map {
   width: 100%;
@@ -8132,7 +8147,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   .postlistview .post_item {
     border-bottom: 1px solid lightgray; }
   .postlistview .row {
-    padding: 5px; }
+    padding: 4px !important; }
   .postlistview img {
     width: 100%;
     height: auto; }
@@ -8146,26 +8161,22 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     .postlistview .user .avatar {
       text-align: center;
       margin: auto; }
+    .postlistview .user .name {
+      /*margin-top: 1vh;*/
+      font-size: .8rem;
+      font-style: italic;
+      font-weight: bold; }
+    .postlistview .user .date {
+      font-size: .7rem;
+      font-weight: normal;
+      float: right;
+      margin-right: 10px; }
     .postlistview .user .desc {
       color: #777777;
       /*font-family: 'Lato-Light';*/
       font-family: 'Lato';
-      font-size: .8rem !important; }
-    .postlistview .user .name {
-      margin-top: 1vh;
-      font-size: .9rem;
-      font-style: italic;
-      font-weight: bold; }
-      .postlistview .user .name .date {
-        font-size: .7rem;
-        font-weight: normal;
-        float: right; }
-        .postlistview .user .name .date i {
-          font-size: 1.4rem;
-          float: right; }
-        .postlistview .user .name .date div {
-          margin: 0 10px;
-          width: 20vw; }
+      font-size: .8rem !important;
+      line-height: 1em; }
   .postlistview .share {
     display: flex;
     display: -webkit-flex;
@@ -8301,3 +8312,104 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   color: white;
   width: 100%; }
 
+.alerts {
+  font-family: 'Lato';
+  width: 86%;
+  height: 80%;
+  border-radius: 0 !important;
+  position: absolute !important;
+  left: 7% !important; }
+  .alerts .header-item {
+    font-family: 'Lato-Bold'; }
+  .alerts .alert:nth-child(2n-1) .item-content {
+    background: #ddd !important; }
+  .alerts .alert {
+    border-color: #888;
+    padding: 0;
+    overflow: inherit;
+    text-overflow: inherit; }
+    .alerts .alert .col-10 {
+      display: flex;
+      align-items: center;
+      margin: 5px 15px; }
+    .alerts .alert .top {
+      color: #345EC2; }
+      .alerts .alert .top .name {
+        font-style: italic; }
+    .alerts .alert .avatar {
+      text-align: center;
+      margin: auto;
+      margin-left: 20px; }
+    .alerts .alert img {
+      height: 50px !important;
+      width: 50px !important;
+      border-radius: 100%;
+      border: 2px solid #345EC2; }
+    .alerts .alert .row {
+      padding: 0; }
+      .alerts .alert .row p {
+        padding: 5px;
+        white-space: normal;
+        color: #777777; }
+      .alerts .alert .row .time {
+        text-align: right;
+        font-size: .8em;
+        font-style: italic; }
+  .alerts .item-complex .item-content {
+    padding: 0; }
+
+.chooselocation {
+  /***** customised styles for info window ****************/
+  /* white background and box outline */
+  /* arrow colour */
+  /* close button */
+  /* image icon inside close button */
+  /* positioning of infowindow */ }
+  .chooselocation .bar.bar-stable {
+    background: white; }
+    .chooselocation .bar.bar-stable img {
+      width: 50%;
+      margin: auto; }
+  .chooselocation #cmap {
+    width: 100%;
+    height: 100%; }
+  .chooselocation .scroll-content {
+    top: 0 !important;
+    bottom: 0 !important; }
+  .chooselocation .scroll {
+    height: 100%; }
+  .chooselocation .bar.bar-light {
+    background-color: transparent !important;
+    border: 0 !important; }
+  .chooselocation .search-box {
+    margin-top: 84px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 260px;
+    height: 80px;
+    -webkit-border-radius: 10px !important;
+    padding: 0; }
+  .chooselocation .search-text {
+    height: 10px !important;
+    font-family: "Lato";
+    font-size: .7em;
+    color: #006AA5;
+    margin: 0 !important;
+    text-align: center; }
+  .chooselocation .gm-style > div:first-child > div + div > div:last-child > div > div:first-child > div {
+    /* we have to use !important because we are overwritng inline styles */
+    background-color: transparent !important;
+    box-shadow: none !important;
+    width: auto !important;
+    height: auto !important; }
+  .chooselocation .gm-style > div:first-child > div + div > div:last-child > div > div:first-child > div > div > div {
+    background-color: #006AA5 !important;
+    box-shadow: none !important; }
+  .chooselocation .gm-style > div:first-child > div + div > div:last-child > div > div:last-child {
+    margin-right: 5px;
+    margin-top: 5px; }
+  .chooselocation .gm-style > div:first-child > div + div > div:last-child > div > div:last-child > img {
+    display: none; }
+  .chooselocation .gm-style-iw {
+    top: 22px !important;
+    left: 22px !important; }

@@ -12,6 +12,10 @@
     @include centered-small-text;
   }
 
+  .medium-text{
+    @include centered-medium-text;
+  }
+    
   .vbox {
     @include vbox-layout;
   }
@@ -19,4 +23,9 @@
   .row {
     -webkit-flex: 1;
   }
+
+    .link{
+        color: cornflowerblue;
+        text-decoration: none;
+    }
 }

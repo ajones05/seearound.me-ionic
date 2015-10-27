@@ -1,0 +1,35 @@
+<ion-modal-view class="chooselocation">
+    <div class="row bar bar-header" style="padding-top:10px;">
+        <div class="col-10">
+        </div>
+        <div class="row">
+            <button class="button button-icon">
+              <img src="img/icon.png" alt="" height="40"/>
+            </button>
+            
+            <button class="button button-icon">
+                <img src="img/seearoundme.png" height="22" alt=""/>
+            </button>
+        </div>
+        <div class="col-10">
+        </div>
+    </div>
+    <div class="card search-box">
+        <div class="item" style="padding:0;margin:0;">
+            <div class="search-text">Set post location</div>
+            <label class="item-input">             
+                <i class="icon ion-ios-search" style="font-size:1.4em;padding-right:10px;margin:0;"></i>
+                <input type="text" placeholder="Enter location">
+                <i class="icon ion-ios-close placeholder-icon" style="margin-right:10px"></i>
+            </label>
+        </div>
+    </div>          
+  <ion-content style="background:transparent;">
+      <div id="cmap" scroll="false" data-tap-disabled="true">
+      </div>
+  </ion-content>
+    <ion-footer-bar class="bar-light">
+      <button ng-click="" class="button button-light icon ion-navigate"></button>
+      <button ng-click="close(4)" class="button button-light">Cancel</button>
+    </ion-footer-bar>
+</ion-modal-view>

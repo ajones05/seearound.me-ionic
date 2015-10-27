@@ -1,4 +1,4 @@
-    <ion-modal-view class="vbox postlistview" style="background:transparent;width:100%" ng-controller="MapModalCtrl">
+    <ion-modal-view class="vbox postlistview" style="background:transparent;width:100%">
         <div class="row" ng-click="hideModal()"></div>
         
         <div class="post_item" on-swipe-up="showFullView()" on-swipe-down="hideModal()" ng-class="viewMode">
@@ -9,7 +9,7 @@
             <div class="col"> 
               <div class="name">
                 <span >Amie Roger</span>
-                <div class=" date right">
+                <div class="date right">
                   <div> 2 hours ago </div>
                 </div>
               </div>
@@ -17,8 +17,8 @@
                 Hi, look at this text. How do you think it looks? Looks nice, doesn't it?
               </p>
             </div>
-            <div style="width:20px;">
-              <a class="icon ion-close" style="font-size:.8em;" ng-click="hideModal()"></a>
+            <div style="width:20px;" ng-click="hideModal()">
+              <a class="icon ion-close" style="font-size:.8em;"></a>
             </div>              
           </div>
           <img src="img/cars.png" alt="">

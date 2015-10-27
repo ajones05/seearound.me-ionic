@@ -8,27 +8,27 @@
         </div>
         <div class="col">
             <button class="button button-icon" ng-click="showModal(2)">
-              <img src="img/newpost_off.png" height="26"/>
+              <img src="img/newpost_off.png" height="24"/>
             </button>
         </div>
         <div class="col">
-            <button class="button button-icon" ng-click="pickImages()">
-                <img src="img/camera_off.png" height="26"/>
+            <button class="button button-icon" ng-click="getImages()">
+                <img src="img/camera_off.png" height="24"/>
             </button>
         </div>
         <div class="col text-center">
             <button class="button button-icon" ng-click="showAlerts($event)" >
-              <img src="img/alerts_off.png" height="26"/>
+              <img src="img/alerts_off.png" height="24"/>
             </button>
         </div>
         <div class="col">
             <button class="button button-icon" ng-click="toggleSearch()">
-              <img src="img/search_off.png" height="26"/>
+              <img src="img/search_off.png" height="24"/>
             </button>
         </div>
 
         <button class="button button-icon" ui-sref="app.postmapview">
-          <img src="img/map_off.png" height="30"/>
+          <img src="img/map_off.png" height="28"/>
         </button>
     </div>
   </ion-nav-buttons>
@@ -61,15 +61,17 @@
         <div class="col"> 
           <div class="name">
             <span >Amie Roger</span>
-            <div class="date right">
-              <i class="icon ion-ios-location-outline"></i>
-              <div> 2 hours ago </div>
+            <div class="date">
+              2 hours ago
             </div>
           </div>
-          <div class="desc">
-            Hi, look at this text. How do you think it looks? Looks nice, doesn't it? 
-          </div>
+          <p class="desc">
+            Hi, look at this text. How do you think it looks? Looks nice, doesn't it? Here is some more text. 
+          </p>
         </div>
+        <div style="width:20px;">
+          <a class="icon ion-ios-location-outline" style="font-size:1.3em;"></a>
+        </div>                        
       </div>
       <img src="img/cars.png" alt="">
       <div class="share row">
@@ -87,8 +89,7 @@
     </div>
 
     <!-- just repeating the div above -->
-    <div>
-<div class="post_item">
+    <div class="post_item">
       <div class="row user">
         <div class="col col-20 avatar">
           <img src="img/eskimo.jpg" alt="">
@@ -96,139 +97,17 @@
         <div class="col"> 
           <div class="name">
             <span >Amie Roger</span>
-            <div class=" date right">
-              <i class="icon ion-ios-location-outline"></i>
-              <div> 2 hours ago </div>
+            <div class="date">
+              2 hours ago
             </div>
           </div>
-          <div class="desc">
+          <p class="desc">
             Hi, look at this text. How do you think it looks? Looks nice, doesn't it? 
-          </div>
+          </p>
         </div>
-      </div>
-      <img src="img/cars.png" alt="">
-      <div class="share row">
-        <span class="col col-20 chat-bubble" ui-sref="app.postcomments">
-          3
-          <img src="img/chat.png" alt="">
-        </span>
-        <span class="col arrows">
-          <img src="img/upvote.png" alt="">
-          15
-          <img src="img/downvote.png" alt="">
-        </span>
-        <span class="col"> Share </span>
-      </div>
-    </div><div class="post_item">
-      <div class="row user">
-        <div class="col col-20 avatar">
-          <img src="img/eskimo.jpg" alt="">
-        </div>
-        <div class="col"> 
-          <div class="name">
-            <span >Amie Roger</span>
-            <div class=" date right">
-              <i class="icon ion-ios-location-outline"></i>
-              <div> 2 hours ago </div>
-            </div>
-          </div>
-          <div class="desc">
-            Hi, look at this text. How do you think it looks? Looks nice, doesn't it?  
-          </div>
-        </div>
-      </div>
-      <img src="img/cars.png" alt="">
-      <div class="share row">
-        <span class="col col-20 chat-bubble" ui-sref="app.postcomments">
-          3
-          <img src="img/chat.png" alt="">
-        </span>
-        <span class="col arrows">
-          <img src="img/upvote.png" alt="">
-          15
-          <img src="img/downvote.png" alt="">
-        </span>
-        <span class="col"> Share </span>
-      </div>
-    </div><div class="post_item">
-      <div class="row user">
-        <div class="col col-20 avatar">
-          <img src="img/eskimo.jpg" alt="">
-        </div>
-        <div class="col"> 
-          <div class="name">
-            <span >Amie Roger</span>
-            <div class=" date right">
-              <i class="icon ion-ios-location-outline"></i>
-              <div> 2 hours ago </div>
-            </div>
-          </div>
-          <div class="desc">
-            Hi, look at this text. How do you think it looks? Looks nice, doesn't it?  
-          </div>
-        </div>
-      </div>
-      <img src="img/cars.png" alt="">
-      <div class="share row">
-        <span class="col col-20 chat-bubble" ui-sref="app.postcomments">
-          3
-          <img src="img/chat.png" alt="">
-        </span>
-        <span class="col arrows">
-          <img src="img/upvote.png" alt="">
-          15
-          <img src="img/downvote.png" alt="">
-        </span>
-        <span class="col"> Share </span>
-      </div>
-    </div><div class="post_item">
-      <div class="row user">
-        <div class="col col-20 avatar">
-          <img src="img/eskimo.jpg" alt="">
-        </div>
-        <div class="col"> 
-          <div class="name">
-            <span >Amie Roger</span>
-            <div class=" date right">
-              <i class="icon ion-ios-location-outline"></i>
-              <div> 2 hours ago </div>
-            </div>
-          </div>
-          <div class="desc">
-            Hi, look at this text. How do you think it looks? Looks nice, doesn't it?
-          </div>
-        </div>
-      </div>
-      <img src="img/cars.png" alt="">
-      <div class="share row">
-        <span class="col col-20 chat-bubble" ui-sref="app.postcomments">
-          3
-          <img src="img/chat.png" alt="">
-        </span>
-        <span class="col arrows">
-          <img src="img/upvote.png" alt="">
-          15
-          <img src="img/downvote.png" alt="">
-        </span>
-        <span class="col"> Share </span>
-      </div>
-    </div><div class="post_item">
-      <div class="row user">
-        <div class="col col-20 avatar">
-          <img src="img/eskimo.jpg" alt="">
-        </div>
-        <div class="col"> 
-          <div class="name">
-            <span >Amie Roger</span>
-            <div class=" date right">
-              <i class="icon ion-ios-location-outline"></i>
-              <div> 2 hours ago </div>
-            </div>
-          </div>
-          <div class="desc">
-            Hi, look at this text. How do you think it looks? Looks nice, doesn't it? 
-          </div>
-        </div>
+        <div style="width:20px;">
+          <a class="icon ion-ios-location-outline" style="font-size:1.3em;"></a>
+        </div>                        
       </div>
       <img src="img/cars.png" alt="">
       <div class="share row">
@@ -244,6 +123,39 @@
         <span class="col"> Share </span>
       </div>
     </div>
+    <div class="post_item">
+      <div class="row user">
+        <div class="col col-20 avatar">
+          <img src="img/eskimo.jpg" alt="">
+        </div>
+        <div class="col"> 
+          <div class="name">
+            <span >Amie Roger</span>
+            <div class="date">
+              2 hours ago
+            </div>
+          </div>
+          <p class="desc">
+            Hi, look at this text. How do you think it looks? Looks nice, doesn't it? 
+          </p>
+        </div>
+        <div style="width:20px;">
+          <a class="icon ion-ios-location-outline" style="font-size:1.3em;"></a>
+        </div>                        
+      </div>
+      <img src="img/cars.png" alt="">
+      <div class="share row">
+        <span class="col col-20 chat-bubble" ui-sref="app.postcomments">
+          3
+          <img src="img/chat.png" alt="">
+        </span>
+        <span class="col arrows">
+          <img src="img/upvote.png" alt="">
+          15
+          <img src="img/downvote.png" alt="">
+        </span>
+        <span class="col"> Share </span>
+      </div>
     </div>
     <!-- repeat end -->
 

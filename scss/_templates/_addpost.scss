@@ -50,5 +50,13 @@
     
   .gray {
     color: $gray !important;
-  }    
+  }
+    
+    .vbox {
+        @include vbox-layout;
+    }    
+
+    .flex-row {
+        -webkit-flex: 1;
+    }
 }
