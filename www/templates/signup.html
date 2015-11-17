@@ -2,7 +2,7 @@
   <ion-content padding="true">
       <div class="vbox">
           <div style="height: 10vh"></div>
-          <a class="button button-block button-positive" href="#/app/signin">
+          <a class="button button-block button-positive" ng-click="loginWithFB()">
             Login with Facebook
           </a>
           <p class="small-text">*We'll never post anything without your permission</p>
@@ -13,19 +13,19 @@
           <form>
               <div class="list">
                 <label class="item item-input">
-                  <input type="text" placeholder="Name...">
+                  <input type="text" placeholder="Name..." ng-model="formData.name" required="required">
                 </label>
                  <div class="spacer10"></div> 
                 <label class="item item-input">
-                  <input type="text" placeholder="E-mail address...">
+                  <input type="email" placeholder="E-mail address..." ng-model="formData.email" required="required">
                 </label>
                   <div class="spacer10"></div>
                 <label class="item item-input">
-                  <input type="password" placeholder="Password...">
+                  <input type="password" placeholder="Password..." ng-model="formData.password" required="required">
                 </label>
                   <div class="spacer10"></div>
                 <label class="item item-input">
-                  <input type="password" placeholder="Repeat password...">
+                  <input type="password" placeholder="Repeat password..." ng-model="formData.repeatPW" required="required">
                 </label>              
               </div>
               <p class="medium-text">

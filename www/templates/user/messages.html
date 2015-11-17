@@ -13,12 +13,12 @@
       <ion-item ui-sref="app.userchat" ng-repeat="m in messages" class="message">
         <div class="row">
           <div class="avatar">
-            <img src={{m.profileImage}} alt="Profile Image">
+            <img src={{m.Profile_image}} alt="Profile Image">
           </div>
           <div class="col top">
             <div class="row">
-              <span class="col name">{{m.user}}</span>
-              <span class="col time">{{m.time}}</span>
+              <span class="col name">{{m.Name}}</span>
+              <span class="col time">{{m.created}}</span>
             </div>
             <div class="row">
               <p class="text"> {{m.message}} </p>

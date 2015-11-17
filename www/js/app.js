@@ -13,7 +13,15 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.
     $rootScope.toggleSearchBar = function(){
         $rootScope.showInputBar = !$rootScope.showInputBar;
     }
+    
+    var isRegistered = localStorage.hasOwnProperty('sam_user_data');
 
+    if(isRegistered){        
+        $state.go('app.postmapview');
+    }
+    else{
+        $state.go('home');
+    }
   });
 })
 
@@ -37,7 +45,8 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.
     });
 
     $ionicConfigProvider.backButton.previousTitleText(false).text('');
-    openFB.init({appId: '755231644585441'});
+    //openFB.init({appId: '755231644585441'});
+    openFB.init({appId: '380169185437308'});
     $stateProvider
 
     .state('app', {
@@ -46,15 +55,10 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.
       templateUrl: "templates/menu.html",
       controller: 'AppCtrl'
     })
-
-    .state('app.home', {
+    
+    .state('home', {
       url: "/home",
-      views: {
-        'menuContent' :{
-          templateUrl: "templates/home.html",
-          controller: 'HomeCtrl'
-        }
-      }
+      templateUrl: "templates/home.html"      
     })
 
     .state('app.signup', {
@@ -86,7 +90,6 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.
             }
           }
         })
-
 
     .state('app.postlistview', {
         url: "/post/list",
@@ -157,6 +160,7 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.
           }
         }
     })
+
     .state('app.userchat', {
       url: "/user/chat",
       views: {
@@ -192,5 +196,5 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.
       }
     });
     
-  $urlRouterProvider.otherwise('/app/home');
+  //$urlRouterProvider.otherwise('/app/home');
 });

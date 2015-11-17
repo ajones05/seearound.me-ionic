@@ -3,126 +3,69 @@
     <ion-nav-back-button class="button-clear">
       <i class="icon ion-ios-arrow-left"></i>
     </ion-nav-back-button>
-    <ion-nav-title >Comments</ion-nav-title>
+    <ion-nav-title>Comments</ion-nav-title>
   </ion-nav-bar>
   <ion-content>
 
     <div class="post_item">
       <div class="row user">
         <div class="col col-20 avatar">
-          <img src="img/eskimo.jpg" alt="">
+          <img src="{{post.Profile_image}}" alt="">
         </div>
         <div class="col"> 
           <div class="name">
-            <span >Amie Roger</span>
+            <span>{{post.Name}}</span>
             <div class="date">
-              2 hours ago
+              {{post.timeAgo}}
             </div>
           </div>
-          <p class="desc">
-            Hi, look at this text. How do you think it looks? Looks nice, doesn't it? 
-          </p>
+          <p class="desc"> {{post.news}} </p>
         </div>
         <div style="width:20px;">
           <a class="icon ion-ios-location-outline" style="font-size:1.3em;"></a>
         </div>                        
       </div>
-      <img src="img/cars.png" alt="">
+      <img ng-if="post.images" ng-src="{{post.images}}" alt="">
       <div class="share row">
         <span class="col col-20 chat-bubble">
-          3
+          {{post.comment_count}}
           <img src="img/chat.png" alt="">
         </span>
         <span class="col arrows">
-          <img src="img/upvote.png" alt="">
-          15
-          <img src="img/downvote.png" alt="">
+          <img 
+          src="img/upvote_off.png" 
+          ng-if="post.isLikedByUser !== 'Yes'" 
+          ng-click="vote(post.id, '1')" alt="">
+          <img src="img/upvote_on.png" ng-if="post.isLikedByUser === 'Yes'" alt="">
+          {{post.news_count}}
+          <img src="img/downvote_off.png" alt="">
         </span>
-        <span class="col"> Share </span>
+        <span class="col" ng-click='openShare(post.sanitizedText, post.first_link)'> Share</span>
       </div>
     </div>
 
     <div class="comments">
-      <div class="row user">
+      <div class="row user" ng-repeat="comment in postComments">
         <div class="col col-20 avatar">
-          <img src="img/eskimo.jpg" alt="">
+          <img ng-src="{{comment.Profile_image}}" alt="profile image">
         </div>
         <div class="col"> 
           <div class="name">
-            <span >Amie Roger</span>
+            <span>{{comment.user_name}}</span>
             <div class=" date right">
-              <div> 2 hours ago </div>
+              <div>{{comment.timeAgo}}</div>
             </div>
           </div>
-          <div class="desc">
-            lorem ipsum llorem ipsum loremorem ipsum lorem ipsum lorem 
-          </div>
+          <div class="desc">{{comment.comment}}</div>
         </div>
         <div style="width:20px;">
           <a class="icon ion-ios-location-outline" style="font-size:1.3em;"></a>
         </div>                        
-    </div>
-      <div class="row user">
-        <div class="col col-20 avatar">
-          <img src="img/eskimo.jpg" alt="">
-        </div>
-        <div class="col"> 
-          <div class="name">
-            <span >Amie Roger</span>
-            <div class=" date right">
-              <div> 2 hours ago </div>
-            </div>
-          </div>
-          <div class="desc">
-            lorem ipsum llorem ipsum loremorem ipsum lorem ipsum lorem 
-          </div>
-        </div>
-        <div style="width:20px;">
-          <a class="icon ion-ios-location-outline" style="font-size:1.3em;"></a>
-        </div>                        
-    </div>
-      <div class="row user">
-        <div class="col col-20 avatar">
-          <img src="img/eskimo.jpg" alt="">
-        </div>
-        <div class="col"> 
-          <div class="name">
-            <span >Amie Roger</span>
-            <div class=" date right">
-              <div> 2 hours ago </div>
-            </div>
-          </div>
-          <div class="desc">
-            lorem ipsum llorem ipsum loremorem ipsum lorem ipsum lorem 
-          </div>
-        </div>
-        <div style="width:20px;">
-          <a class="icon ion-ios-location-outline" style="font-size:1.3em;"></a>
-        </div>                        
-    </div>
-      <div class="row user">
-        <div class="col col-20 avatar">
-          <img src="img/eskimo.jpg" alt="">
-        </div>
-        <div class="col"> 
-          <div class="name">
-            <span >Amie Roger</span>
-            <div class=" date right">
-              <div> 2 hours ago </div>
-            </div>
-          </div>
-          <div class="desc">
-            lorem ipsum llorem ipsum loremorem ipsum lorem ipsum lorem 
-          </div>
-        </div>
-        <div style="width:20px;">
-          <a class="icon ion-ios-location-outline" style="font-size:1.3em;"></a>
-        </div>                        
-    </div>
+      </div>
     </div>
   </ion-content>
   <ion-footer-bar>
-    <input type="text" placeholder="Write a comment..">
-    <div class="button button-positive">Post</div>
+    <input type="text" ng-model="commentText" placeholder="Write a comment..">
+    <div class="button button-positive" ng-click="postComment(commentText)">Post</div>
   </ion-footer-bar>
 </ion-view>

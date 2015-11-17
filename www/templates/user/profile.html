@@ -10,7 +10,7 @@
     <ion-list>
       <ion-item class="profile_image row">
         <div class="col">
-        <img src="img/eskimo.jpg" alt="">
+          <img ng-src="{{User.Profile_image}}" alt="Profile Picture">
         </div>
         <div class="centered_button col">
           <span ui-sref="app.editprofile" class="custom_btn">Edit Profile</span>
@@ -18,37 +18,37 @@
       </ion-item>
 
       <ion-item class="row no-top-border">
-        <span class="col">Name</span>
-        <span class="col">John Smith</span>
+        <span class="col col-20">Name</span>
+        <span class="col"> {{User.Name}} </span>
+      </ion-item>
+
+      <ion-item ng-if="User.Karma" class="row">
+        <span class="col col-20">Karma</span>
+        <span class="col"></span>
+      </ion-item>
+
+      <ion-item class="row" ng-if="User.Email_id">
+        <span class="col col-20">Email</span>
+        <span class="col">{{User.Email_id}} </span>
       </ion-item>
 
       <ion-item class="row">
-        <span class="col">Karma</span>
-        <span class="col">40.25</span>
+        <span class="col col-20">Gender</span>
+        <span class="col">{{User.Gender}}</span>
+      </ion-item>
+
+      <ion-item class="row" ng-if="User.Age">
+        <span class="col col-20">Age</span>
+        <span class="col">{{User.Age}} </span>
       </ion-item>
 
       <ion-item class="row">
-        <span class="col">Email</span>
-        <span class="col">Johnth@gmail.com</span>
+        <span class="col col-20">Interests</span>
+        <span class="col">{{User.Activities}}</span>
       </ion-item>
 
       <ion-item class="row">
-        <span class="col">Gender</span>
-        <span class="col">Male</span>
-      </ion-item>
-
-      <ion-item class="row">
-        <span class="col">Age</span>
-        <span class="col">32</span>
-      </ion-item>
-
-      <ion-item class="row">
-        <span class="col">Interests</span>
-        <span class="nowrap">Soccer, Tennis, Movies, Books</span>
-      </ion-item>
-
-      <ion-item class="row">
-        <span class="col">Posts</span>
+        <span class="col col-20">Posts</span>
         <span class="col">
           <span ui-sref="app.postmapview" class="custom_btn">
             See Nearby Posts

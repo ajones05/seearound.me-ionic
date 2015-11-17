@@ -53,111 +53,43 @@
     </div>          
   <ion-content padding="false">
       
-    <div class="post_item">
+    <div class="post_item" ng-repeat='post in nearbyPosts track by $index' >
       <div class="row user">
         <div class="col col-20 avatar">
-          <img src="img/eskimo.jpg" alt="">
+          <img ng-src={{post.Profile_image}} alt="" ui-sref="app.userprofile">
         </div>
         <div class="col"> 
           <div class="name">
-            <span >Amie Roger</span>
+            <span>{{post.Name}}</span>
             <div class="date">
-              2 hours ago
+              {{post.timeAgo}}
             </div>
           </div>
           <p class="desc">
-            Hi, look at this text. How do you think it looks? Looks nice, doesn't it? Here is some more text. 
+            {{post.news}}
           </p>
         </div>
-        <div style="width:20px;">
+        <div style="width:20px;padding-top:1%">
           <a class="icon ion-ios-location-outline" style="font-size:1.3em;"></a>
-        </div>                        
+        </div>
       </div>
-      <img src="img/cars.png" alt="">
+      <img ng-if="post.images" style="min-height:100px; background: lightgray" ng-src={{post.images}} alt="">
       <div class="share row">
-        <span class="col col-20 chat-bubble" ui-sref="app.postcomments">
-          3
+        <span class="col col-20 chat-bubble" ng-click="goToComments(post)">
+          {{post.comment_count}}
           <img src="img/chat.png" alt="">
         </span>
         <span class="col arrows">
-          <img src="img/upvote.png" alt="">
-          15
-          <img src="img/downvote.png" alt="">
+          <img src="img/upvote_off.png" ng-if="post.isLikedByUser !== 'Yes'" ng-click="vote(post.id, '1')" alt="">
+          <img src="img/upvote_on.png" ng-if="post.isLikedByUser === 'Yes'" alt="">
+          {{post.news_count}} 
+          <img src="img/downvote_off.png"
+              ng-click="vote(post.id, -1)"
+              alt="">
         </span>
-        <span class="col"> Share </span>
+        <span class="col" ng-click='openShare(post.sanitizedText, post.first_link)'> Share</span>
       </div>
     </div>
-
-    <!-- just repeating the div above -->
-    <div class="post_item">
-      <div class="row user">
-        <div class="col col-20 avatar">
-          <img src="img/eskimo.jpg" alt="">
-        </div>
-        <div class="col"> 
-          <div class="name">
-            <span >Amie Roger</span>
-            <div class="date">
-              2 hours ago
-            </div>
-          </div>
-          <p class="desc">
-            Hi, look at this text. How do you think it looks? Looks nice, doesn't it? 
-          </p>
-        </div>
-        <div style="width:20px;">
-          <a class="icon ion-ios-location-outline" style="font-size:1.3em;"></a>
-        </div>                        
-      </div>
-      <img src="img/cars.png" alt="">
-      <div class="share row">
-        <span class="col col-20 chat-bubble" ui-sref="app.postcomments">
-          3
-          <img src="img/chat.png" alt="">
-        </span>
-        <span class="col arrows">
-          <img src="img/upvote.png" alt="">
-          15
-          <img src="img/downvote.png" alt="">
-        </span>
-        <span class="col"> Share </span>
-      </div>
-    </div>
-    <div class="post_item">
-      <div class="row user">
-        <div class="col col-20 avatar">
-          <img src="img/eskimo.jpg" alt="">
-        </div>
-        <div class="col"> 
-          <div class="name">
-            <span >Amie Roger</span>
-            <div class="date">
-              2 hours ago
-            </div>
-          </div>
-          <p class="desc">
-            Hi, look at this text. How do you think it looks? Looks nice, doesn't it? 
-          </p>
-        </div>
-        <div style="width:20px;">
-          <a class="icon ion-ios-location-outline" style="font-size:1.3em;"></a>
-        </div>                        
-      </div>
-      <img src="img/cars.png" alt="">
-      <div class="share row">
-        <span class="col col-20 chat-bubble" ui-sref="app.postcomments">
-          3
-          <img src="img/chat.png" alt="">
-        </span>
-        <span class="col arrows">
-          <img src="img/upvote.png" alt="">
-          15
-          <img src="img/downvote.png" alt="">
-        </span>
-        <span class="col"> Share </span>
-      </div>
-    </div>
-    <!-- repeat end -->
 
   </ion-content>
 </ion-view>
