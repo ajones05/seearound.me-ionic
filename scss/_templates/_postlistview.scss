@@ -43,7 +43,6 @@
     }
     .avatar{
         text-align: center;
-        margin: auto;
     }     
       
     .name{
@@ -65,7 +64,8 @@
       /*font-family: 'Lato-Light';*/    
       font-family: 'Lato';
       font-size: .8rem !important;
-      line-height: 1em;
+      padding-top: 0.6vh;
+      line-height: 1.3rem;
     }      
   }
   .share{
