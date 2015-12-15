@@ -1,6 +1,6 @@
 angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.services', 'ngCordova'])
 
-.run(function($ionicPlatform, $state, $rootScope, $ionicPopup) {
+.run(function($ionicPlatform, $state, $rootScope, $ionicPopup, $ionicHistory ) {
   $ionicPlatform.ready(function() {
     if (window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
@@ -11,16 +11,20 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.
     }
     $rootScope.showInputBar = false;
     $rootScope.toggleSearchBar = function(){
-        $rootScope.showInputBar = !$rootScope.showInputBar;
+      $rootScope.showInputBar = !$rootScope.showInputBar;
     }
-    
+
     var isRegistered = localStorage.hasOwnProperty('sam_user_data');
 
     if(isRegistered){        
-        $state.go('app.postmapview');
+      $state.go('app.postmapview');
     }
     else{
-        $state.go('home');
+      $state.go('home');
+    }
+
+    $rootScope.goBack =function(){
+      $ionicHistory.goBack()
     }
   });
 })
@@ -170,6 +174,15 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.
         }
       }
     })
+
+    .state('app.mapforpost', {
+      url: "/post/list/map",
+      views: {
+        'menuContent' : {
+          templateUrl: "templates/post/mapforpost.html",
+        }
+      }
+    })
     
     .state('app.terms', {
       url: "/terms",
@@ -196,5 +209,5 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.
       }
     });
     
-  //$urlRouterProvider.otherwise('/app/home');
+    // $urlRouterProvider.otherwise('/app/home');
 });

@@ -7,32 +7,47 @@
     </ion-nav-buttons>
     <ion-nav-buttons side="right">
       <label class="row user">
-        <span>Amie Roger </span>
-        <img class="profile_image" src="img/eskimo.jpg" alt="profile image">
+        <span>{{other_user.name}}</span>
+        <img
+         class="profile_image"
+         ng-src=" {{other_user.profile_image}} ">
       </label>
     </ion-nav-buttons>
   </ion-nav-bar>
 
   <ion-content class="chat_msgs padding">
-    <div class="date">July 15 at 7:45 pm </div>
-    <div class="bubble bubble-left">
-      Lorem ipsum dolor sit amet      Lorem ipsum dolor sit amet      Lorem ipsum dolor sit amet      Lorem ipsum dolor sit amet      Lorem ipsum dolor sit amet
-    </div>
-    <div class="bubble bubble-left">
-      Lorem ipsum something something
-    </div>
-    <div class="date">Today at 9:15 am </div>
-    <div class="bubble bubble-right">
-      Lorem ipsum dolor sit amet      Lorem ipsum dolor sit amet      Lorem ipsum dolor sit amet      Lorem ipsum dolor sit amet      Lorem ipsum dolor sit amet
-    
-      Lorem ipsum dolor sit amet      Lorem ipsum dolor sit amet      Lorem ipsum dolor sit amet      Lorem ipsum dolor sit amet      Lorem ipsum dolor sit amet
-    
+    <div ng-repeat='m in messages'>
+      <div
+        class="date"
+        ng-bind="m.formatted_date"></div>
+      <div
+        class="bubble bubble-left"
+        ng-if="!(m.sender_id == Self.id)">
+        {{m.message}}
+      </div>
+      <div
+        class="bubble bubble-right"
+        style="float:right;"
+        ng-if="m.sender_id == Self.id">
+        {{m.message}}
+      </div>
+      <br/>
     </div>
 
   </ion-content>
 
   <ion-footer-bar class="row">
-    <input type="text" class="col" placeholder="New Message..">
-    <div class="col col-20 button button-positive">Send</div>
+    <input
+      type="text" 
+      class="col" 
+      ng-model="newMessage.text"
+      placeholder="New Message.."
+    />
+    <div 
+      ng-click='sendMessage()'
+      class="col col-20 button button-positive"
+      >
+      Send
+    </div>
   </ion-footer-bar>
 </ion-view>

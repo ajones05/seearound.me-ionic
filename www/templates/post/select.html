@@ -1,8 +1,8 @@
-<ion-popover-view style="width:100px;height:170px;">
+<ion-popover-view style="width:130px;height:220px;">
   <ion-content>
     <ion-list>
       <ion-item ng-repeat="option in options">
-        <p class="text" ng-click="setOption(option)"> {{option}} </p>
+        <p class="text" ng-click="setOption(option)"> {{option.label}} </p>
       </ion-item>
     </ion-list>
   </ion-content>

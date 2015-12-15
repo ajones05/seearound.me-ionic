@@ -35,19 +35,19 @@
         <div class="col" style="margin-left:-5px;">
             <div class="row" style="border:2px solid #ddd;height:100%;background:#fff;">
                 <i class="icon ion-ios-search" style="font-size:1.4em;padding-right:10px;margin:0;"></i>
-                <input type="text" placeholder="Search ..." style="height:100%;background:#fff;">
+                <input type="text" name="searchTerm" ng-model="searchTerm" placeholder="Search ..." style="height:100%;background:#fff;">
             </div>
          </div>
         <div style="margin-right:5px;width:100px;">    
             <div class="item item-icon-right" style="border:2px solid #ddd;" ng-click="showSelect($event)">
                 <label class="post-select">
-                  {{selected}}
+                  {{selected.label}}
                   <i class="icon ion-ios-arrow-down"></i>
                 </label>             
             </div>
         </div>
         <div class="col-20">            
-          <button class="button button-block button-positive" >Go</button>
+          <button class="button button-block button-positive" ng-click="searchPosts()">Go</button>
         </div>
     </div>          
   <ion-content>
@@ -59,8 +59,7 @@
             <div class="list">
               <div class="item range range-positive">
                 <i class="icon ion-navigate"></i>
-                <input type="range" name="volume" min="0" max="150" value="inputRadius" ng-model="inputRadius">
-                <!-- {{inputRadius/10}} -->
+                <input type="range" name="volume" min="0.5" max="1.5" step="0.1" value="circleRadius" ng-model="circleRadius" on-release="onRadiusChange()">
               </div>
             </div>
         </div>

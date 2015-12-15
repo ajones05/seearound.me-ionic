@@ -9,7 +9,9 @@
 
     <div class="post_item">
       <div class="row user">
-        <div class="col col-20 avatar">
+        <div class="col col-20 avatar"
+          ng-click="goToProfile(post.user_id)"
+          >
           <img src="{{post.Profile_image}}" alt="">
         </div>
         <div class="col"> 
@@ -46,7 +48,9 @@
 
     <div class="comments">
       <div class="row user" ng-repeat="comment in postComments">
-        <div class="col col-20 avatar">
+        <div class="col col-20 avatar"
+          ng-click="goToProfile(comment.user_id)"
+          >
           <img ng-src="{{comment.Profile_image}}" alt="profile image">
         </div>
         <div class="col"> 

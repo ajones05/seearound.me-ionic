@@ -2,8 +2,10 @@ angular.module('SeeAroundMe.services', [])
 
 .factory('AppService', function($http, $q, $cordovaCapture, $cordovaImagePicker, $ionicPopup, API_URL) {
 
-  var userData = JSON.parse(localStorage.getItem('sam_user_data') || '{}');
+  var userData = JSON.parse(localStorage.getItem('sam_user_data')) || {};
   var userId = userData.id || 0;
+  var conversationUserId = null;
+  var profileUserId = null;
 
   var currentPostComments = {};
     var service = {
@@ -31,7 +33,7 @@ angular.module('SeeAroundMe.services', [])
             });
         },
 
-        vote: function(newsId, v){
+        vote: function(newsId, v){        
           var url = API_URL + '/post-like';
           var postData = {
             user_id: userId,
@@ -66,6 +68,19 @@ angular.module('SeeAroundMe.services', [])
           var params = {
             user_id : userId, 
           }
+          return $http.post(url, params);
+        },
+
+        sendMessage: function(otherUserId, subject, message){
+          var url = API_URL + '/sendmessage';
+
+          var params = {
+            sender_id: userId,
+            reciever_id: otherUserId,
+            subject: subject,
+            message: message
+          };
+
           return $http.post(url, params);
         },
         
@@ -109,6 +124,16 @@ angular.module('SeeAroundMe.services', [])
             });
         },
         
+        getMyPosts: function (data) {
+            var url = API_URL + '/myposts';
+            return $http({
+                method: 'POST',
+                url: url,
+                data: data,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            });
+        },        
+        
         setCurrentComments: function(post){
           var d = $q.defer();
           currentPostComments.post = post;
@@ -147,6 +172,7 @@ angular.module('SeeAroundMe.services', [])
 
         addNewPost: function (data) {
             var url = API_URL + '/addimobinews';
+            data.user_id = userId;
             return $http({
                 method: 'POST',
                 url: url,
@@ -164,6 +190,8 @@ angular.module('SeeAroundMe.services', [])
         },
         
         isConnected: function(){
+          console.warn('remove this line in isConnected fn in services.js: `return true`');
+          return true;
             if(window.Connection) {
                 if(navigator.connection.type == Connection.NONE) {
                     return false;
@@ -172,6 +200,69 @@ angular.module('SeeAroundMe.services', [])
                     return true;
                 }
             }
+        },
+
+        setUserForProfilePage: function(id){
+          /*
+           * sets the id for the profile that needs to be fetched in the profile page
+           * in the profile controller, a getUserForProfilePage function is called to
+           * get the data for this user from the API
+           *
+           * please set $rootScope.isCurrentUser to false before transitioning to profilePage if
+           * this promise returns a success
+           *
+           * using a promise so that we don't fetch the
+           * wrong user later
+           */
+          var d = $q.defer();
+          profileUserId = id;
+          d.resolve();
+          return d.promise;
+        },
+
+        getUserForProfilePage: function(){
+          /*
+           * see the comment in setUserForProfilePage()
+           */
+            var url = API_URL + '/getotheruserprofile'
+
+            var params = {
+              user_id: userId,
+              other_user_id: profileUserId,
+            };
+
+            return $http.post(url, params);
+        },
+
+        editProfile: function(newData){
+          var url = API_URL + '/edit-profile';
+          console.log(newData)
+
+          var params = {
+            user_id: newData.id,
+            name: newData.Name,
+            email: newData.Email_id,
+            birth_date: newData.Birth_date,
+            public_profile: newData.public_profile,
+            gender: newData.Gender,
+            image: newData.Profile_image,
+          }
+
+          return $http.post(url, params);
+        },
+
+        setOtherUserId: function(otherUserId){
+          conversationUserId = otherUserId;
+        },
+
+        getConversation: function(){
+          var url = API_URL + '/message-conversation';
+          var params = {
+            user_id: userId,
+            other_user_id: conversationUserId,
+            start: 0,
+          }
+          return $http.post(url, params);
         }
     };
 
@@ -258,8 +349,33 @@ angular.module('SeeAroundMe.services', [])
             $rootScope.markers = [];
         },
         
-        showPosts: function(lat, long) {
-        
+        showPosts: function(center, searchData) {
+            
+            var bounds = new google.maps.LatLngBounds();
+            
+            bounds.extend(center);
+
+            // options for the polygon        
+            var populationOptions = {
+                  strokeColor: '#000000',
+                  strokeOpacity: 0.1,
+                  strokeWeight: 1,
+                  fillColor: '#000000',
+                  fillOpacity: 0.35,
+                  map: $rootScope.map,
+                  paths: [this.outerbounds, this.drawCircle(center,$rootScope.inputRadius,-1, bounds)]
+            };
+            
+            if($rootScope.cityCircle){//Circle already exists
+                //Remove the old circle before adding new one
+                $rootScope.cityCircle.setMap(null);
+                $rootScope.cityCircle = new google.maps.Polygon(populationOptions);
+            }
+            else{
+                // Add the circle for this city to the map.
+                $rootScope.cityCircle = new google.maps.Polygon(populationOptions);                
+            }
+            
             var ud = localStorage.getItem('sam_user_data');
             console.log(ud);
 
@@ -268,30 +384,15 @@ angular.module('SeeAroundMe.services', [])
             var userId = userData.id || 0;
             console.log('userId: ' + userId);
             
-            /*
-            var location = JSON.parse(localStorage.getItem('sam_user_location'));
-            if (!location) {
-                    location = {latitude: 37.8088139, longitude: -122.2660002};
-                    console.warn('WARN: Using DEV_MODE position: ' + location);        
-            }*/
-
-            var data = {
-                "latitude" : lat,// 37.8088139,
-                "longitude" : long,//-122.2635002,
-                "radious" : $rootScope.inputRadius/10,
-                "userId" : userId,
-                "fromPage" : 0,
-                "endPage" : 16
-            };
-
-            //console.log(JSON.stringify(data));
-            AppService.getNearbyPosts(data)
-            .success(function (response) {
+            function onSuccess(response){
                 console.log('Got nearby posts ..............................');
-                console.log(JSON.stringify(response));
+                //console.log(JSON.stringify(response));
                 if(response.status == 'SUCCESS'){
-                    //$scope.nearbyPosts = response.result;
                     if(response.result){
+                        // the regex that matches urls in text
+                        var urlRegEx = new RegExp(
+                            "((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))");
+
                         response.result.forEach(function (post) {
                             var marker = new google.maps.Marker({
                                 position: new google.maps.LatLng(post.latitude, post.longitude),
@@ -302,37 +403,89 @@ angular.module('SeeAroundMe.services', [])
                                     size: new google.maps.Size(18, 25)
                                 }
                             });
-
+                            
+                            // transform news text to behave nicely with html
+                            // removes links and " characters from post.news
+                            post.sanitizedText = post.news.replace(urlRegEx, '').replace(/\"/g, '');
+                            
+                            post.timeAgo = moment(post.updated_date).fromNow();
+                            marker.post = post;
+                            
                             $rootScope.markers.push(marker);
                         });
                      
-                         google.maps.event.trigger($rootScope.map,'resize');
-                         
-                         //Broadcast event to listen in MapController to add click events to markers - can't do it here
-                         $rootScope.$broadcast('refreshdone');
+                        //google.maps.event.trigger($rootScope.map,'resize');                         
+                         // Automatically center the map fitting all markers on the screen
+                        $rootScope.map.fitBounds(bounds);
+                        $rootScope.map.setZoom(14);
+                        //Broadcast event to listen in MapController to add click events to markers - can't do it here
+                        $rootScope.$broadcast('refreshdone');
                      }
                      
                 }
                  else{
                      console.log('Failed to get nearby posts ...');
-                 }
-            })
-            .error(function (err) {
-                console.warn(JSON.stringify(err));
-            });
+                 }                
+            };
+            
+            //Note the difference of user id param userId and user_id -- the api is incosistent
+            if(searchData){                
+                var data = {
+                    "latitude" : center.lat(),// 37.8088139,
+                    "longitude" : center.lng(),//-122.2635002,
+                    "radious" : $rootScope.inputRadius,
+                    "user_id" : userId,
+                    "searchText": searchData.searchTerm,
+                    "filter": searchData.filter,
+                    "fromPage" : 0
+                };
+                
+                //console.log(JSON.stringify(data));
+                AppService.getMyPosts(data)
+                .success(function (response) {
+                    onSuccess(response);
+                })
+                .error(function (err) {
+                    console.warn(JSON.stringify(err));
+                });
+            }
+            else{            
+                var data = {
+                    "latitude" : center.lat(),// 37.8088139,
+                    "longitude" : center.lng(),//-122.2635002,
+                    "radious" : $rootScope.inputRadius,
+                    "userId" : userId,
+                    "fromPage" : 0
+                };
+                            
+                //console.log(JSON.stringify(data));
+                AppService.getNearbyPosts(data)
+                .success(function (response) {
+                    onSuccess(response);
+                })
+                .error(function (err) {
+                    console.warn(JSON.stringify(err));
+                });
+            }
         },        
         
-        refreshMap: function(){
+        refreshMap: function(searchData){            
+            //Remove markers if any
+            if($rootScope.markers && $rootScope.markers.length > 0){
+                this.removeMarkers();
+            }
+            
             var me = this;
             var posOptions = {timeout: 10000, maximumAge:120000, enableHighAccuracy: false};
             $cordovaGeolocation.getCurrentPosition(posOptions)
                 .then(function (position) {
-                    var lat  = position.coords.latitude;
-                    var long = position.coords.longitude;
-                
-                    var bounds = new google.maps.LatLngBounds();
+                    var lat  = 37.8088139;//position.coords.latitude;
+                    var long = -122.2660002;//position.coords.longitude;
+                                    
                     var center = new google.maps.LatLng(lat, long);
                 
+                    $rootScope.map.setCenter(center);
+                    
                     //We'll maintain an array of markers to manage them later in the app
                     $rootScope.markers = [];
 
@@ -350,26 +503,7 @@ angular.module('SeeAroundMe.services', [])
 
                     $rootScope.markers.push(myLocation);
 
-                    bounds.extend(center);
-                
-                    // options for the polygon        
-                    var populationOptions = {
-                      strokeColor: '#000000',
-                      strokeOpacity: 0.1,
-                      strokeWeight: 1,
-                      fillColor: '#000000',
-                      fillOpacity: 0.35,
-                      map: $rootScope.map,
-                      paths: [me.outerbounds, me.drawCircle(center,0.8,-1, bounds)]
-                    };
-
-                    // Add the circle for this city to the map.
-                    var cityCircle = new google.maps.Polygon(populationOptions);
-
-                    // Automatically center the map fitting all markers on the screen
-                    $rootScope.map.fitBounds(bounds);
-
-                    me.showPosts(lat, long);
+                    me.showPosts(center, searchData);
                 
                 }, function(err) {
                     // error
@@ -386,7 +520,7 @@ angular.module('SeeAroundMe.services', [])
                         
             var mapOptions = {
                 //center: center,
-                // zoom: 20,
+                zoom: 14,
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
                 disableDefaultUI: true,
                 zoomControl: false//,
@@ -428,14 +562,14 @@ angular.module('SeeAroundMe.services', [])
         });
 
         $scope.openModal = function() {
-           $scope.modal.show();
-         };
-         $scope.closeModal = function() {
-           $scope.modal.hide();
-         };
-         $scope.$on('$destroy', function() {
-           $scope.modal.remove();
-         });
+          $scope.modal.show();
+        };
+        $scope.closeModal = function() {
+          $scope.modal.hide();
+        };
+        $scope.$on('$destroy', function() {
+          $scope.modal.remove();
+        });
 
         return promise;
       };

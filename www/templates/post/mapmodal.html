@@ -4,37 +4,38 @@
         <div class="post_item" on-swipe-up="showFullView()" on-swipe-down="hideModal()" ng-class="viewMode">
           <div class="row user">
             <div class="col col-20 avatar">
-              <img src="img/eskimo.jpg" alt="">
+              <img ng-src="{{post.Profile_image}}" alt="" ui-sref="app.userprofile">
             </div>
             <div class="col"> 
               <div class="name">
-                <span >Amie Roger</span>
+                <span>{{post.Name}}</span>
                 <div class="date right">
-                  <div> 2 hours ago </div>
+                  <div> {{post.timeAgo}} </div>
                 </div>
               </div>
               <p class="desc">
-                Hi, look at this text. How do you think it looks? Looks nice, doesn't it?
+                {{post.news}}
               </p>
             </div>
             <div style="width:20px;" ng-click="hideModal()">
               <a class="icon ion-close" style="font-size:.8em;"></a>
             </div>              
           </div>
-          <img src="img/cars.png" alt="">
+          <img ng-show="post.images" ng-src={{post.images}} alt=""/>
+          <img ng-hide="post.images" src="img/blank.png" />
           <div class="share row">
-            <span class="col col-20 chat-bubble" ui-sref="app.postcomments" ng-click="hideModal()">
-              3
+            <span class="col col-20 chat-bubble" ng-click="goToComments(post)">
+              {{post.comment_count}}
               <img src="img/chat.png" alt="">
             </span>
             <span class="col arrows">
-              <img src="img/upvote.png" alt="">
-              15
-              <img src="img/downvote.png" alt="">
+              <img src="img/upvote_off.png" ng-if="post.isLikedByUser != 1" ng-click="vote(post.id, 1)" alt="">
+              <img src="img/upvote_on.png" ng-if="post.isLikedByUser == 1" ng-click="vote(post.id, 0)" alt="">
+              {{post.news_count}} 
+              <img src="img/downvote_off.png" ng-if="post.isLikedByUser != -1" ng-click="vote(post.id, -1)" alt="">
+              <img src="img/downvote_on.png" ng-if="post.isLikedByUser == -1" ng-click="vote(post.id, 0)" alt="">
             </span>
-            <span class="col"> Share </span>
+            <span class="col" ng-click='openShare(post.sanitizedText, post.first_link)'> Share</span>
           </div>
-        </div>
-            
         </div>
     </ion-modal-view>

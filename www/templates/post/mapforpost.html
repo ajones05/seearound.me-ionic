@@ -1,0 +1,21 @@
+<ion-modal-view class="addpost">
+  <ion-header-bar>
+    <div class="buttons">
+      <button class="button button-clear" ng-click="close('map')">
+        <i class="icon ion-ios-arrow-left"></i>
+      </button>
+    </div>
+    <h1 class="title">Post Location</h1>
+  </ion-header-bar>
+
+  <ion-content ng-controller="PostListCtrl">
+    <div id="post_map"></div>
+  </ion-content>
+
+</ion-modal-view>
+<style>
+  #post_map{
+    height: 100vh;
+    width: 100vw;
+  }
+</style>

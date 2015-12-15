@@ -15,7 +15,7 @@
   <ion-content>
     <div class="row">
       <div class="avatar col col-20">
-        <img class="prof-img" src="img/eskimo.jpg" width="100%"/>
+        <img class="prof-img" ng-src={{userData.Profile_image}} width="100%"/>
       </div>
       <div class="post col">
         <textarea ng-change="checkInput()" placeholder="Write something.." ng-model="formData.postText" class="commentbox" focus-me></textarea>
