@@ -83,6 +83,7 @@
     .col+.col{
       padding-right: 15%;
       text-align: right;
+      white-space: normal;
     }
     .nowrap{
       white-space: normal;  
@@ -94,10 +95,24 @@
   }
 }
 
-    .custom_btn{
-      background: $positive;
-      padding: 10px 20px;
-      border-radius: 3px;
-      color: white;
-      width: 100%;
-    }
+div.custom_btn{
+  text-align: center;
+  margin-top: 5px;
+  width: 100%;
+  line-height: 1.1em;
+}
+.action_buttons{
+  display: flex;
+  display: -webkit-flex;
+  flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  padding: 10px 0;
+}
+
+.custom_btn{
+  background: $positive;
+  padding: 10px 20px;
+  border-radius: 3px;
+  color: white;
+  width: 100%;
+}

@@ -16,7 +16,7 @@
   </ion-nav-bar>
 
   <ion-content class="chat_msgs padding">
-    <div ng-repeat='m in messages'>
+    <div ng-repeat='m in messages track by m.id'>
       <div
         class="date"
         ng-bind="m.formatted_date"></div>

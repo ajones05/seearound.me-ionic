@@ -7863,7 +7863,9 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   .chat .date {
     text-align: center;
     font-style: italic;
-    color: #345EC2; }
+    color: #345EC2;
+    float: left;
+    width: 100%; }
   .chat .chat_msgs {
     color: black;
     background: #EEEEEE; }
@@ -8159,8 +8161,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
       border-radius: 100%;
       border: 2px solid #345EC2; }
     .postlistview .user .avatar {
-      text-align: center;
-      margin: auto; }
+      text-align: center; }
     .postlistview .user .name {
       /*margin-top: 1vh;*/
       font-size: .8rem;
@@ -8176,7 +8177,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
       /*font-family: 'Lato-Light';*/
       font-family: 'Lato';
       font-size: .8rem !important;
-      line-height: 1em; }
+      padding-top: 0.6vh;
+      line-height: 1.3rem; }
   .postlistview .share {
     display: flex;
     display: -webkit-flex;
@@ -8297,13 +8299,27 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   text-align: left; }
 .full_profile .list .col + .col {
   padding-right: 15%;
-  text-align: right; }
+  text-align: right;
+  white-space: normal; }
 .full_profile .list .nowrap {
   white-space: normal;
   width: 30%;
   margin-right: 14%;
   padding-right: 0;
   text-align: right; }
+
+div.custom_btn {
+  text-align: center;
+  margin-top: 5px;
+  width: 100%;
+  line-height: 1.1em; }
+
+.action_buttons {
+  display: flex;
+  display: -webkit-flex;
+  flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  padding: 10px 0; }
 
 .custom_btn {
   background: #345EC2;

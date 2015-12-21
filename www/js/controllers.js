@@ -13,8 +13,8 @@ angular.module('SeeAroundMe.controllers', [])
       $state.go('app.postmapview');
   };
 
-  $scope.goToProfile = function(){
-    $rootScope.isCurrentUser = true;
+  $scope.goToOwnProfile = function(){
+    AppService.setIsCurrentUserFlag(true);
     $state.go('app.userprofile')
   };
     
@@ -66,14 +66,6 @@ angular.module('SeeAroundMe.controllers', [])
     $ionicLoading.hide();
     console.warn('error getting comments');
   });
-
-  $scope.goToProfile = function(id){
-    $rootScope.isCurrentUser = false;
-    AppService.setUserForProfilePage(id)
-    .then(function(){
-      $state.go('app.userprofile');
-    })
-  }
 
   $scope.postComment = function (commentText){
     console.log('commentText -> ', commentText);
@@ -278,34 +270,38 @@ angular.module('SeeAroundMe.controllers', [])
 .controller('ProfileCtrl', function($scope, $rootScope, $state, AppService, ModalService, $ionicLoading){
   // isCurrentUser var is set to differentiate the loggedIn user
   // from other users.
-  if ($rootScope.isCurrentUser){
-    $scope.User = JSON.parse(localStorage.getItem('sam_user_data'));
-    calculateAge();
-  } else{
-    $ionicLoading.show({
-      template: 'Getting user info..'
-    });
+  $scope.$on('$ionicView.enter', function(e) {
+    console.log('is the logged in user => ', AppService.getIsCurrentUser);
+    if (AppService.getIsCurrentUser){
+      $scope.User = JSON.parse(localStorage.getItem('sam_user_data'));
+      $timeout(calculateAge(), 50);
+    } else{
+      $ionicLoading.show({
+        template: 'Getting user info..'
+      });
 
-    AppService.getUserForProfilePage()
-    .then(function(res){
-      $ionicLoading.hide();
-      // if (res.data.status == "FAILED"){
-      //   $scope.User = JSON.parse(localStorage.getItem('sam_user_data'));
-      //   calculateAge();
-      // }else{
+      AppService.getUserForProfilePage()
+      .then(function(res){
+        $ionicLoading.hide();
+        // if (res.data.status == "FAILED"){
+        //   $scope.User = JSON.parse(localStorage.getItem('sam_user_data'));
+        //   calculateAge();
+        // }else{
+        console.log('other user-> ', res.data);
         $scope.User = res.data.result;
         $scope.isFriend = res.data.friends;
         calculateAge();
-      // }
-    }, function(err){
-      console.log(err);
-      $ionicLoading.hide();
-      AppService.showErrorAlert(
-        'Profile',
-        'Sorry, there was an error fetching the profile'
-      )
-    })
-  }
+        // }
+      }, function(err){
+        console.log(err);
+        $ionicLoading.hide();
+        AppService.showErrorAlert(
+          'Profile',
+          'Sorry, there was an error fetching the profile'
+        )
+      })
+    }
+  });
 
   $scope.goToEdit = function(){
     $state.go('app.editprofile');
@@ -398,10 +394,10 @@ angular.module('SeeAroundMe.controllers', [])
   $scope.doLogin = function () {
 
     // TODO: uncomment before commiting
-    // if(!AppService.isConnected()){
-    //     AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');
-    //     return;
-    // }
+    if(!AppService.isConnected()){
+         AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');
+         return;
+     }
       
     var data = {email:$scope.formData.email, password:$scope.formData.password};
 
@@ -410,7 +406,7 @@ angular.module('SeeAroundMe.controllers', [])
     .success(function (response) {
         $ionicLoading.hide();
         if(response.status == 'SUCCESS'){
-          console.log('data -> ', response.result);
+          console.log('data -> ', JSON.stringify(response.result));
             localStorage.setItem('sam_user_data', JSON.stringify(response.result));
             $rootScope.isBeforeSignUp = false;
             $state.go('app.postmapview');
@@ -423,8 +419,8 @@ angular.module('SeeAroundMe.controllers', [])
     })
     .error(function (err) {
         $ionicLoading.hide();
-        AppService.showErrorAlert('Failed to login!', 'There seems to be a network problem. Please check your internet connection and try again.'); 
-        console.warn(JSON.stringify(err));
+        AppService.showErrorAlert('Failed to login!', 'There was an error during login process. Please contact support with the following information : ' + JSON.stringify(err)); 
+        //console.warn(JSON.stringify(err));
     });
   };
     
@@ -457,12 +453,15 @@ angular.module('SeeAroundMe.controllers', [])
                         })
                          .error(function (err) {
                                 $ionicLoading.hide();
-                                AppService.showErrorAlert('Failed to login!', 'There seems to be a network problem. Please check your internet connection and try again.');
+                                AppService.showErrorAlert('Failed to login!', 'There was an error during login process. Please contact support with the following information : ' + JSON.stringify(err)); 
                                 console.warn(JSON.stringify(err));
                         });
                 }
             },{ scope:'email'});
   };
+})
+
+.controller('FollowingCtrl', function($scope, $ionicLoading, AppService, $state){
 })
 
 .controller('MessagesCtrl', function($scope, $ionicLoading, ModalService, AppService, $state){
@@ -539,9 +538,9 @@ angular.module('SeeAroundMe.controllers', [])
   function fetchMessages(){
     AppService.getConversation()
     .then(function(res){
-      $scope.messages = res.data.result;
+      $scope.messages = res.data.result.reverse();
       $scope.messages.map(function(m){
-        m.formatted_date = moment(m.updated).format('MMMM Do[ at ]h:mm a');
+        m.formatted_date = moment(m.created).format('MMMM Do[ at ]h:mm a');
       })
 
       // quick hack to get the other user's name
@@ -596,8 +595,8 @@ angular.module('SeeAroundMe.controllers', [])
        );
 
   var location = {
-    latitude : userData.latitude,
-    longitude: userData.longitude,
+    latitude : parseFloat(userData.latitude),
+    longitude: parseFloat(userData.longitude)
   }
 
   var data = {
@@ -615,12 +614,17 @@ angular.module('SeeAroundMe.controllers', [])
     console.warn('Using DEV_MODE location coordinates on ListView');
   }
 
-  AppService.getNearbyPosts(data)
+  $scope.$on('$ionicView.enter', function(e) {
+    getPosts ();
+  });
+
+  var getPosts  = function (){
+    AppService.getNearbyPosts(data)
     .success(function(data){
       $scope.nearbyPosts = data.result;
       console.log(data.result);
       var links = [];
-      
+
       $scope.nearbyPosts.map(function(post){
         // get the first url from text
         post.first_link = post.news.match(urlRegEx);
@@ -636,8 +640,12 @@ angular.module('SeeAroundMe.controllers', [])
       })
     });
 
-  $scope.goToProfile = function(id){
-    $rootScope.isCurrentUser = false;
+  }
+
+
+  $rootScope.goToProfile = function(id){
+    console.log('goto profile called with id= ', id);
+    AppService.setIsCurrentUserFlag(false);
     AppService.setUserForProfilePage(id)
     .then(function(){
       $state.go('app.userprofile');
@@ -869,47 +877,6 @@ angular.module('SeeAroundMe.controllers', [])
     });
         
     $scope.showAlerts = function ($event) {
-      console.log('showAlerts called ...');
-      $scope.alerts = [
-        {
-          user: "Amie Roger",
-          message: "This is a test message to see how it looks like.",
-          time: "July 10, 9:15am",
-          profileImage: "img/eskimo.jpg"
-        },
-        {
-          user: "Amie Roger",
-          message: " This is a test message. This indeed is a test.",
-          time: "July 10, 9:15am",
-          profileImage: "img/eskimo.jpg"
-        },
-
-        {
-          user: "Amie Roger",
-          message: "This is a different test message. It is a bit longer. It will tell you how longer messages will look like. That should be enough.",
-          time: "July 10, 9:15am",
-          profileImage: "img/eskimo.jpg"
-        },        
-        {
-          user: "Amie Roger",
-          message: "This is very short.",
-          time: "July 10, 9:15am",
-          profileImage: "img/eskimo.jpg"
-        },
-
-        {
-          user: "Amie Roger",
-          message: "This is just more than short.",
-          time: "July 10, 9:15am",
-          profileImage: "img/eskimo.jpg"
-        },
-        {
-          user: "Amie Roger",
-          message: "This is a long message but not that long.",
-          time: "July 10, 9:15am",
-          profileImage: "img/eskimo.jpg"
-        }];
-
         $scope.alertsPopover.show($event);        
     };
     
@@ -958,16 +925,16 @@ angular.module('SeeAroundMe.controllers', [])
     
     $scope.options = [{
         label:'View all',
-        value:'All'
+        value:'void'
     },{
         label:'Mine Only',
-        value:'Myconnection'
+        value: 0
     },{
         label:'My Interests',
-        value:'Interest'
+        value: 1
     },{
         label:'Following',
-        value:'Friends'
+        value: 2
     }];
     
     $scope.selected = $scope.options[0];    
@@ -1265,48 +1232,63 @@ angular.module('SeeAroundMe.controllers', [])
       }).then(function(popover) {
         $scope.popover = popover;
     });
-        
+
+    $rootScope.alertActions = function (type){
+      switch(type.toLowerCase()){
+        case 'friend':
+          $scope.popover.hide();
+          $state.go('app.userfollowing');
+          break;
+        case 'message':
+          $scope.popover.hide();
+          $state.go('app.usermessages');
+          break;
+        default:
+          $scope.popover.hide();
+      }
+    }
+    
     $scope.showAlerts = function ($event) {
       console.log('showAlerts called ...');
-      $scope.alerts = [
-        {
-          user: "Amie Roger",
-          message: "This is a test message to see how it looks like.",
-          time: "July 10, 9:15am",
-          profileImage: "img/eskimo.jpg"
-        },
-        {
-          user: "Amie Roger",
-          message: " This is a test message. This indeed is a test.",
-          time: "July 10, 9:15am",
-          profileImage: "img/eskimo.jpg"
-        },
-
-        {
-          user: "Amie Roger",
-          message: "This is a different test message. It is a bit longer. It will tell you how longer messages will look like. That should be enough.",
-          time: "July 10, 9:15am",
-          profileImage: "img/eskimo.jpg"
-        },        
-        {
-          user: "Amie Roger",
-          message: "This is very short.",
-          time: "July 10, 9:15am",
-          profileImage: "img/eskimo.jpg"
-        },
-
-        {
-          user: "Amie Roger",
-          message: "This is just more than short.",
-          time: "July 10, 9:15am",
-          profileImage: "img/eskimo.jpg"
-        },
-        {
-          user: "Amie Roger",
-          message: "This is a long message but not that long.",
-          time: "July 10, 9:15am",
-          profileImage: "img/eskimo.jpg"
-        }];
+      // $scope.alerts = [
+      //   {
+      //     user: "Amie Roger",
+      //     message: "This is a test message to see how it looks like.",
+      //     time: "July 10, 9:15am",
+      //     profileImage: "img/eskimo.jpg"
+      //   },
+      //   {
+      //     user: "Amie Roger",
+      //     message: " This is a test message. This indeed is a test.",
+      //     time: "July 10, 9:15am",
+      //     profileImage: "img/eskimo.jpg"
+      //   },
+      //
+      //   {
+      //     user: "Amie Roger",
+      //     message: "This is a different test message. It is a bit longer. It will tell you how longer messages will look like. That should be enough.",
+      //     time: "July 10, 9:15am",
+      //     profileImage: "img/eskimo.jpg"
+      //   },        
+      //   {
+      //     user: "Amie Roger",
+      //     message: "This is very short.",
+      //     time: "July 10, 9:15am",
+      //     profileImage: "img/eskimo.jpg"
+      //   },
+      //
+      //   {
+      //     user: "Amie Roger",
+      //     message: "This is just more than short.",
+      //     time: "July 10, 9:15am",
+      //     profileImage: "img/eskimo.jpg"
+      //   },
+      //   {
+      //     user: "Amie Roger",
+      //     message: "This is a long message but not that long.",
+      //     time: "July 10, 9:15am",
+      //     profileImage: "img/eskimo.jpg"
+      //   }];
 
         $scope.popover.show($event);        
     };
@@ -1324,16 +1306,16 @@ angular.module('SeeAroundMe.controllers', [])
     
     $scope.options = [{
         label:'View all',
-        value:'All'
+        value:'void'
     },{
         label:'Mine Only',
-        value:'Myconnection'
+        value: 0
     },{
         label:'My Interests',
-        value:'Interest'
+        value: 1
     },{
         label:'Following',
-        value:'Friends'
+        value: 2
     }];
     
     $scope.selected = $scope.options[0];    
@@ -1403,6 +1385,35 @@ angular.module('SeeAroundMe.controllers', [])
             AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');        
         }    
     }, false);    
+
+    // for 'following' page
+    $scope.$on('$ionicView.enter', function(e) {
+      getFollowers();
+      getAlerts();
+    });
+
+    var getAlerts = function(){
+      AppService.getAlerts()
+      .then(function(res){
+        $rootScope.alerts = res.data.result;
+        if (!res.data.result){
+          $rootScope.alerts = [{
+            message: 'No messages'
+          }]
+        }
+      })
+    };
+
+    var getFollowers = function (){
+      AppService.getFollowing()
+      .success(function(data){
+        // this should be following and not followers
+        // but let's keep it this way for now. :)
+        $rootScope.followers = data.result;
+        console.log('following', data);
+      })
+    };
+
 })
 
 .directive('focusMe', function($timeout) {

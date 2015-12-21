@@ -6,7 +6,39 @@
         <h1 class="title">Following</h1>        
     </ion-header-bar>    
     
-  <ion-content>
-    <h1>Following</h1>
-  </ion-content>
+    <ion-content class="postlistview" >
+      <div style="color: red;">
+      </div>
+      <div class="list list-inset" style="padding-top: 0; border: none,">
+        <label class="item item-input"
+          style="
+            border: 0;
+            padding: 0;
+            margin-top: -10px;
+            margin-bottom: -10px;
+          ">
+          <i class="icon ion-search placeholder-icon"></i>
+          <input placeholder="filter this list.." type="text" ng-model="filterText" />
+        </label>
+      </div>
+      <hr style="height: 1px; background-color: lightgray; border: 0"/>
+      <div
+        class="row user"
+        ng-repeat="follower in followers | filter:filterText track by $index ">
+
+        <div
+          ng-click="goToProfile(follower.id)"
+          class="col col-20 avatar">
+          <img ng-src="{{follower.Profile_image}}"/>
+        </div>
+
+        <div class="col" style="
+          display: -webkit-flex;
+          align-items: center;
+          ">
+          <div class="name">{{follower.Name}}</div>
+          <!-- <div class="mutual">{{follower.mutual_count}} mutual friends.</div> -->
+        </div>
+      </div>
+    </ion-content>
 </ion-view>

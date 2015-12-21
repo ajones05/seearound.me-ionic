@@ -150,7 +150,8 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.
         url: "/user/following",
         views: {
           'menuContent': {
-            templateUrl: "templates/user/following.html"
+            templateUrl: "templates/user/following.html",
+            controller: 'FollowingCtrl'
           }
         }
     })

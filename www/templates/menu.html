@@ -19,8 +19,8 @@
     <ion-content>
       <ion-list>
         <ion-item class="profile_image">
-          <div ng-click='goToProfile()' menu-close>
-            <img src="{{User.Profile_image}}" >
+          <div ng-click='goToOwnProfile()' menu-close>
+            <img ng-src="{{User.Profile_image}}" >
           </div>
           <div ui-sref="app.userprofile" menu-close>{{User.Name}} </div>
         </ion-item>
@@ -42,7 +42,7 @@
             </div>
         </ion-item>
         <ion-item menu-close>
-          <div ui-sref="app.userprofile">    
+          <div ng-click="goToProfile()">    
             Profile
             <i class="ion-chevron-right"></i>
           </div>

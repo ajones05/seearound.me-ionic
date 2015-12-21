@@ -5,6 +5,7 @@ angular.module('SeeAroundMe.services', [])
   var userData = JSON.parse(localStorage.getItem('sam_user_data')) || {};
   var userId = userData.id || 0;
   var conversationUserId = null;
+  var isCurrentUser = false;
   var profileUserId = null;
 
   var currentPostComments = {};
@@ -190,8 +191,6 @@ angular.module('SeeAroundMe.services', [])
         },
         
         isConnected: function(){
-          console.warn('remove this line in isConnected fn in services.js: `return true`');
-          return true;
             if(window.Connection) {
                 if(navigator.connection.type == Connection.NONE) {
                     return false;
@@ -200,6 +199,29 @@ angular.module('SeeAroundMe.services', [])
                     return true;
                 }
             }
+        },
+
+        setIsCurrentUserFlag: function (flag){
+          isCurrentUser = flag;
+        },
+
+        getIsCurrentUserFlag: function (){
+          return isCurrentUser;
+        },
+
+        getFollowing: function(){
+          /* 
+           * get the list of users the 
+           * logged in user is following
+           */
+          var url = API_URL + '/myfriendlist';
+          var data = { user_id: userId};
+          return $http.post(url, data);
+        },
+
+        getAlerts: function(){
+          var url = API_URL + '/notification';
+          return $http.post(url, {user_id: userId});
         },
 
         setUserForProfilePage: function(id){
@@ -479,8 +501,8 @@ angular.module('SeeAroundMe.services', [])
             var posOptions = {timeout: 10000, maximumAge:120000, enableHighAccuracy: false};
             $cordovaGeolocation.getCurrentPosition(posOptions)
                 .then(function (position) {
-                    var lat  = 37.8088139;//position.coords.latitude;
-                    var long = -122.2660002;//position.coords.longitude;
+                    var lat  = position.coords.latitude;//37.8088139
+                    var long = position.coords.longitude;//-122.2660002
                                     
                     var center = new google.maps.LatLng(lat, long);
                 
