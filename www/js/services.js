@@ -538,6 +538,20 @@ angular.module('SeeAroundMe.services', [])
             });            
         },
         
+        centerMap: function(center){            
+            //Remove markers if any
+            if($rootScope.markers && $rootScope.markers.length > 0){
+                this.removeMarkers();
+            }
+            
+            $rootScope.map.setCenter(center);
+
+            //We'll maintain an array of markers to manage them later in the app
+            $rootScope.markers = [];
+
+            this.showPosts(center);            
+        },        
+        
         initMap: function(){
                         
             var mapOptions = {
@@ -559,6 +573,12 @@ angular.module('SeeAroundMe.services', [])
                 function(event) {
                     this.setZoom(14);
                     google.maps.event.removeListener(boundsListener);
+            });
+            var me = this;
+            google.maps.event.addListener((map), 'dragend', 
+                function(event) { 
+                //console.log('map dragged'); 
+                me.centerMap(this.getCenter());
             });
 
             $rootScope.map = map;

@@ -999,6 +999,15 @@ angular.module('SeeAroundMe.controllers', [])
         }
     };
     
+    $scope.resetMap = function(){
+        if(AppService.isConnected()){
+            MapService.refreshMap();
+        }
+        else{
+            AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');
+        }        
+    };
+    
     $scope.formData = {};
     $scope.fileName = {};
     $scope.searchTerm = "";
