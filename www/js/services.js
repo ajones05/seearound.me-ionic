@@ -1,11 +1,11 @@
 angular.module('SeeAroundMe.services', [])
 
-.factory('AppService', function($http, $q, $cordovaCapture, $cordovaImagePicker, $ionicPopup, API_URL) {
+.factory('AppService', function($http, $q, $rootScope, $cordovaCapture, $cordovaImagePicker, $ionicPopup, API_URL) {
 
   var userData = JSON.parse(localStorage.getItem('sam_user_data')) || {};
   var userId = userData.id || 0;
   var conversationUserId = null;
-  var isCurrentUser = false;
+  //var isCurrentUser = false; --- set it on root scope instead
   var profileUserId = null;
 
   var currentPostComments = {};
@@ -202,11 +202,11 @@ angular.module('SeeAroundMe.services', [])
         },
 
         setIsCurrentUserFlag: function (flag){
-          isCurrentUser = flag;
+          $rootScope.isCurrentUser = flag;
         },
 
         getIsCurrentUserFlag: function (){
-          return isCurrentUser;
+          return $rootScope.isCurrentUser;
         },
 
         getFollowing: function(){

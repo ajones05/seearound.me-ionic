@@ -15,7 +15,7 @@ angular.module('SeeAroundMe.controllers', [])
 
   $scope.goToOwnProfile = function(){
     AppService.setIsCurrentUserFlag(true);
-    $state.go('app.userprofile')
+    $state.go('app.userprofile');
   };
     
   $scope.signOut = function(){
@@ -271,11 +271,15 @@ angular.module('SeeAroundMe.controllers', [])
   // isCurrentUser var is set to differentiate the loggedIn user
   // from other users.
   $scope.$on('$ionicView.enter', function(e) {
-    console.log('is the logged in user => ', AppService.getIsCurrentUser);
-    if (AppService.getIsCurrentUser){
+    console.log('is the logged in user => ', $rootScope.isCurrentUser);
+    if ($rootScope.isCurrentUser){
+      //Must set this
+      $scope.isCurrentUser = true;
       $scope.User = JSON.parse(localStorage.getItem('sam_user_data'));
       $timeout(calculateAge(), 50);
     } else{
+      //Must set this
+      $scope.isCurrentUser = false;
       $ionicLoading.show({
         template: 'Getting user info..'
       });
@@ -302,10 +306,6 @@ angular.module('SeeAroundMe.controllers', [])
       })
     }
   });
-
-  $scope.goToEdit = function(){
-    $state.go('app.editprofile');
-  }
 
   $scope.showNewMessageModal = function(){
     $scope.newMessage = {};
@@ -583,7 +583,7 @@ angular.module('SeeAroundMe.controllers', [])
 
 })
 
-.controller('PostListCtrl', function($scope, $rootScope, $state, $ionicPopup, $ionicPopover, $compile, $timeout,  $ionicLoading, AppService, ModalService){
+.controller('PostListCtrl', function($scope, $rootScope, $state, $ionicPopup, $ionicPopover, $compile, $timeout,  $ionicLoading, $cordovaGeolocation, AppService, ModalService){
   $scope.formData = {};
   var userData = JSON.parse(localStorage.getItem('sam_user_data')) || '{}';
   $scope.userData = userData;
@@ -594,26 +594,57 @@ angular.module('SeeAroundMe.controllers', [])
           "((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
        );
 
+//Get current geo location
+    /*
   var location = {
     latitude : parseFloat(userData.latitude),
     longitude: parseFloat(userData.longitude)
-  }
+  }*/
+    
+    var posOptions = {timeout: 10000, maximumAge:120000, enableHighAccuracy: false};
+    var location = null, data = null;
+    $cordovaGeolocation.getCurrentPosition(posOptions)
+        .then(function (position) {
+            var lat  = position.coords.latitude;
+            var long = position.coords.longitude;
+            location = {latitude: lat, longitude: long};
+        
+              data = {
+                'latitude': location.latitude,
+                'longitude': location.longitude,
+                'userId': userId
+              }        
+            
+            //Save for future use
+            var mylocation = JSON.stringify(location);
+            localStorage.setItem('sam_user_location', mylocation);
 
-  var data = {
-    'latitude': location.latitude,
-    'longitude': location.longitude,
-    'userId': userId,
-  }
+            //console.log(mylocation);
+        }, function(err) {
+                console.error('Failed to get current position. Error: ' + JSON.stringify(err));
+              // TODO: cleanup on release
+              if (!location){
+                  
+                  var location = {
+                    latitude : $scope.userData.latitude,
+                    longitude: $scope.userData.longitude
+                  }
+                  /*
+                location = {
+                  latitude: 37.8088139,
+                  longitude: -122.266002
+                };
+                console.warn('Using DEV_MODE location coordinates on ListView');
+                */
+              }
 
-  // TODO: cleanup on release
-  if (!location){
-    location = {
-      latitude: 37.8088139,
-      longitude: -122.266002
-    };
-    console.warn('Using DEV_MODE location coordinates on ListView');
-  }
-
+              data = {
+                'latitude': location.latitude,
+                'longitude': location.longitude,
+                'userId': userId
+              }        
+        });
+    
   $scope.$on('$ionicView.enter', function(e) {
     getPosts ();
   });
@@ -900,9 +931,10 @@ angular.module('SeeAroundMe.controllers', [])
         };
         
         AppService.getMyPosts(searchData)
-            .success(function(data){
+            .success(function(data){                
               $scope.nearbyPosts = data.result;
               console.log(data.result);
+              $scope.toggleSearch();
               var links = [];
 
             $scope.nearbyPosts.map(function(post){
@@ -925,7 +957,7 @@ angular.module('SeeAroundMe.controllers', [])
     
     $scope.options = [{
         label:'View all',
-        value:'void'
+        value:''
     },{
         label:'Mine Only',
         value: 0
@@ -1311,11 +1343,12 @@ angular.module('SeeAroundMe.controllers', [])
     
     $scope.searchPosts = function(){                
         MapService.refreshMap({searchTerm: $scope.searchTerm, filter: $scope.selected.value});
+        $scope.toggleSearch();
     };
     
     $scope.options = [{
         label:'View all',
-        value:'void'
+        value:''
     },{
         label:'Mine Only',
         value: 0
@@ -1395,10 +1428,12 @@ angular.module('SeeAroundMe.controllers', [])
         }    
     }, false);    
 
-    // for 'following' page
+    // for 'following' page and also refresh map
     $scope.$on('$ionicView.enter', function(e) {
-      getFollowers();
-      getAlerts();
+        getFollowers();
+        getAlerts();
+        //Causes the map to redraw
+        google.maps.event.trigger($rootScope.map, 'resize');
     });
 
     var getAlerts = function(){

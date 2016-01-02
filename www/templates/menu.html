@@ -42,7 +42,7 @@
             </div>
         </ion-item>
         <ion-item menu-close>
-          <div ng-click="goToProfile()">    
+          <div ng-click='goToOwnProfile()'>    
             Profile
             <i class="ion-chevron-right"></i>
           </div>
@@ -51,17 +51,22 @@
           Signout
           <i class="ion-chevron-right"></i>
         </ion-item>
-        <ion-item menu-close>
-          <div ui-sref="app.terms">    
-            Terms
-            <i class="ion-chevron-right"></i>
-          </div>
-        </ion-item>
-        <ion-item menu-close>
-          <div ui-sref="app.about">    
-            About
-            <i class="ion-chevron-right"></i>
-          </div>
+        <ion-item
+          style="
+            display: -webkit-flex;
+            justify-content: space-between;
+            padding-left: 12%;
+            padding-right: 12%;
+          "
+          menu-close>
+          <button
+            ui-sref="app.terms"
+            style="color: #7d7d7d;"
+            class="button-clear button-stable">Terms</button>
+          <button
+            ui-sref="app.about"
+            style="color: #7d7d7d;"
+            class="button-clear button-stable">About</button>
         </ion-item>
       </ion-list>
     </ion-content>

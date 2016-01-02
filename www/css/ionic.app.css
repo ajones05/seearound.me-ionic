@@ -8153,32 +8153,30 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   .postlistview img {
     width: 100%;
     height: auto; }
-  .postlistview .user {
-    border-bottom: 1px solid lightgray; }
-    .postlistview .user img {
-      height: 50px !important;
-      width: 50px !important;
-      border-radius: 100%;
-      border: 2px solid #345EC2; }
-    .postlistview .user .avatar {
-      text-align: center; }
-    .postlistview .user .name {
-      /*margin-top: 1vh;*/
-      font-size: .8rem;
-      font-style: italic;
-      font-weight: bold; }
-    .postlistview .user .date {
-      font-size: .7rem;
-      font-weight: normal;
-      float: right;
-      margin-right: 10px; }
-    .postlistview .user .desc {
-      color: #777777;
-      /*font-family: 'Lato-Light';*/
-      font-family: 'Lato';
-      font-size: .8rem !important;
-      padding-top: 0.6vh;
-      line-height: 1.3rem; }
+  .postlistview .user img {
+    height: 50px !important;
+    width: 50px !important;
+    border-radius: 100%;
+    border: 2px solid #345EC2; }
+  .postlistview .user .avatar {
+    text-align: center; }
+  .postlistview .user .name {
+    /*margin-top: 1vh;*/
+    font-size: .8rem;
+    font-style: italic;
+    font-weight: bold; }
+  .postlistview .user .date {
+    font-size: .7rem;
+    font-weight: normal;
+    float: right;
+    margin-right: 10px; }
+  .postlistview .user .desc {
+    color: #777777;
+    /*font-family: 'Lato-Light';*/
+    font-family: 'Lato';
+    font-size: .8rem !important;
+    padding-top: 0.6vh;
+    line-height: 1rem; }
   .postlistview .share {
     display: flex;
     display: -webkit-flex;

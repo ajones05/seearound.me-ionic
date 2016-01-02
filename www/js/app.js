@@ -126,16 +126,6 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.
         }
     })
     
-    .state('app.editprofile', {
-      url: "/edit",
-      views:{
-        'menuContent':{
-          templateUrl: "templates/user/edit_profile.html",
-          controller: 'EditProfileCtrl'
-        }
-      }
-    })
-
     .state('app.userprofile', {
         url: "/user/profile",
         views: {
@@ -144,6 +134,16 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.
             controller: 'ProfileCtrl'
           }
         }
+    })
+    
+    .state('app.editprofile', {
+      url: "/user/edit",
+      views:{
+        'menuContent':{
+          templateUrl: "templates/user/edit_profile.html",
+          controller: 'EditProfileCtrl'
+        }
+      }
     })
 
     .state('app.userfollowing', {

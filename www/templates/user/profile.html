@@ -1,6 +1,6 @@
 <ion-view view-title="Profile" hide-nav-bar="true">
     <ion-header-bar class="bar bar-header">
-      <button class="button button-clear" ng-click="goBack()">
+      <button class="button button-clear" ui-sref="app.postmapview">
         <i class="icon ion-ios-arrow-left"></i>
       </button>
         <!-- <button menu&#45;toggle="left" class="button button&#45;icon"> -->
@@ -17,7 +17,7 @@
         </div>
         <div class="col" ng-if="isCurrentUser">
           <div
-            ng-click="goToEdit()"
+            ui-sref="app.editprofile"
             style="margin-top: 20%"
             class="custom_btn">
             Edit Profile
