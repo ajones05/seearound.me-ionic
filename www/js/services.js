@@ -1,6 +1,6 @@
 angular.module('SeeAroundMe.services', [])
 
-.factory('AppService', function($http, $q, $rootScope, $cordovaCapture, $cordovaImagePicker, $ionicPopup, API_URL) {
+.factory('AppService', function($http, $q, $rootScope, $cordovaCamera, $ionicPopup, API_URL) {
 
   var userData = JSON.parse(localStorage.getItem('sam_user_data')) || {};
   var userId = userData.id || 0;
@@ -10,30 +10,32 @@ angular.module('SeeAroundMe.services', [])
 
   var currentPostComments = {};
     var service = {
-        
-        pickImage: function(scope){
+                
+        getImage: function(scope, mediaType){
             
-            var options = {
-               maximumImagesCount: 1,
-               width: 800,
-               height: 800,
-               quality: 80
+            var cameraOptions = {
+                quality: 50,
+                encodingType: Camera.EncodingType.JPEG,
+                destinationType: Camera.DestinationType.FILE_URI,
+                saveToPhotoAlbum: false,
+                correctOrientation: true//,
+                //cameraDirection: Camera.Direction.FRONT
             };
-
-            $cordovaImagePicker.getPictures(options)
-                .then(function (results) {
-                //   for (var i = 0; i < results.length; i++) {
-                //     console.log('Image URI: ' + results[i]);
-                //   }
-                //console.log('Image URI: ' + results[0]);
-                scope.imgUri = results[0];
-            }, function(error) {
-              // An error occurred. Show a message to the user
-                // error
-                console.error('Failed to get image. Error: ' + JSON.stringify(error));
+            
+            if(mediaType == 'gallery'){
+                cameraOptions.sourceType = Camera.PictureSourceType.PHOTOLIBRARY;
+            }
+             else{
+                cameraOptions.sourceType = Camera.PictureSourceType.CAMERA;
+             }
+            //console.info(cameraOptions);
+            $cordovaCamera.getPicture(cameraOptions)
+            .then(function(imageUri){
+                console.log('image uri: '+ imageUri);
+                scope.imgUri = imageUri;
             });
         },
-
+        
         vote: function(newsId, v){        
           var url = API_URL + '/post-like';
           var postData = {
@@ -42,26 +44,6 @@ angular.module('SeeAroundMe.services', [])
             vote: v
           }
           return $http.post(url, postData)
-        },
-        
-        getImage: function(scope){
-            
-            var options = { limit: 3 };
-
-            $cordovaCapture.captureImage(options).then(function(imageData) {
-                console.log(imageData[0]);
-                
-                //Set the image
-                scope.imgUri = imageData[0].fullPath;                
-                
-                //Show compose screen (modal)
-                scope.showModal(2);
-                
-            }, function(err) {
-              // An error occurred. Show a message to the user
-                // error
-                console.error('Failed to get image. Error: ' + JSON.stringify(err));
-            });
         },
         
         getMessages: function(){
@@ -167,7 +149,7 @@ angular.module('SeeAroundMe.services', [])
            .error(function(error){
              console.log('comments fetching failed with error: ', error);
              d.reject(error);
-           })
+           });
            return d.promise;
         },
 
@@ -291,8 +273,32 @@ angular.module('SeeAroundMe.services', [])
     return service;
 })
 
-.factory('MapService', function($rootScope, $cordovaGeolocation, AppService, ModalService) {
+.factory('MapService', function($http, $q, $rootScope, $cordovaGeolocation, AppService, ModalService) {
     var service = {
+        getPlace: function(lat, lng){
+            var d = $q.defer();
+            var geocoder = new google.maps.Geocoder();
+            
+            var latlng = new google.maps.LatLng(lat, lng);
+
+            geocoder.geocode({
+                'latLng': latlng
+              }, function (results, status) {
+                if (status === google.maps.GeocoderStatus.OK) {
+                  if (results) {
+                        d.resolve(results[1]);
+                  } else {
+                    console.log('No results found');
+                      d.resolve(results);
+                  }
+                } else {
+                    console.log('Geocoder failed due to: ' + status);
+                    d.reject(status)
+                }
+              });
+            
+            return d.promise;
+        },
         getCurrentPosition: function (){
             //var deferred = $q.defer();
             console.log('Geolocation Service called...');
@@ -372,7 +378,6 @@ angular.module('SeeAroundMe.services', [])
         },
         
         showPosts: function(center, searchData) {
-            
             var bounds = new google.maps.LatLngBounds();
             
             bounds.extend(center);
@@ -435,6 +440,8 @@ angular.module('SeeAroundMe.services', [])
                             
                             $rootScope.markers.push(marker);
                         });
+                        $rootScope.currentPosts = response.result;
+                        console.log('data set in rootscope: ', $rootScope.currentPosts);
                      
                         //google.maps.event.trigger($rootScope.map,'resize');                         
                          // Automatically center the map fitting all markers on the screen

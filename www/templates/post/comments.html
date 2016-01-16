@@ -36,9 +36,9 @@
         <span class="col arrows">
           <img 
           src="img/upvote_off.png" 
-          ng-if="post.isLikedByUser !== 'Yes'" 
+          ng-if="post.isLikedByUser === '0'" 
           ng-click="vote(post.id, '1')" alt="">
-          <img src="img/upvote_on.png" ng-if="post.isLikedByUser === 'Yes'" alt="">
+          <img src="img/upvote_on.png" ng-if="post.isLikedByUser === '1'" alt="">
           {{post.news_count}}
           <img src="img/downvote_off.png" alt="">
         </span>

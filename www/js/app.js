@@ -1,14 +1,17 @@
-angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.services', 'ngCordova'])
+angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.services', 'ngCordova','google.places'])
 
 .run(function($ionicPlatform, $state, $rootScope, $ionicPopup, $ionicHistory ) {
   $ionicPlatform.ready(function() {
     if (window.cordova && window.cordova.plugins.Keyboard) {
-      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+        cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+        cordova.plugins.Keyboard.disableScroll(true);
     }
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+
+    $rootScope.currentPosts = null;
     $rootScope.showInputBar = false;
     $rootScope.toggleSearchBar = function(){
       $rootScope.showInputBar = !$rootScope.showInputBar;
@@ -64,7 +67,7 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.
       url: "/home",
       templateUrl: "templates/home.html"      
     })
-
+    
     .state('app.signup', {
         url: "/signup",
         views: {
@@ -126,6 +129,18 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.
         }
     })
     
+    .state('newpostview', {
+           url: "/post/newpost/:latitude/:longitude/:address",
+           templateUrl: "templates/post/add-post.html",
+           controller: 'NewPostCtrl'
+    })
+    
+    .state('chooselocation', {
+           url: "/post/chooselocation",
+           templateUrl: "templates/post/chooselocation.html",
+           controller: 'ChooseLocCtrl'
+    })        
+        
     .state('app.userprofile', {
         url: "/user/profile",
         views: {

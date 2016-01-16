@@ -1,4 +1,4 @@
-<ion-modal-view class="chooselocation">
+<ion-view hide-nav-bar cache-view="false"  class="chooselocation">
     <div class="row bar bar-header" style="padding-top:10px;">
         <div class="col-10">
         </div>
@@ -20,10 +20,13 @@
             <label class="item-input">             
                 <i class="icon ion-ios-search" style="font-size:1.4em;padding-right:10px;margin:0;"></i>
                 <input
-                  type="text" 
-                  id="pac-input"
+                  type="text"  
+                  g-places-autocomplete 
+                  ng-model="place" 
+                  value = "{{place.formatted_address}}"
+                  ng-change="onChange()" 
                   placeholder="Enter location"/>
-                <i class="icon ion-ios-close placeholder-icon" style="margin-right:10px"></i>
+                <i class="icon ion-ios-close placeholder-icon" ng-click="setCurrentLocation()" style="margin-right:10px"></i>
             </label>
         </div>
     </div>          
@@ -32,7 +35,7 @@
       </div>
   </ion-content>
     <ion-footer-bar class="bar-light">
-      <button ng-click="" class="button button-light icon ion-navigate"></button>
-      <button ng-click="close(4)" class="button button-light">Cancel</button>
+      <button ng-click="setCurrentLocation()" class="button button-light icon ion-navigate"></button>
+      <button ui-sref="newpostview" class="button button-light">Cancel</button>
     </ion-footer-bar>
-</ion-modal-view>
+</ion-view>

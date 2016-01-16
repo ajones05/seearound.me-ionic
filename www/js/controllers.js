@@ -24,9 +24,6 @@ angular.module('SeeAroundMe.controllers', [])
       localStorage.removeItem('sam_user_data');
       
       //Loop through all the markers and remove
-      // for (var i = 0; i < $rootScope.markers.length; i++) {
-      //     $rootScope.markers[i].setMap(null);
-      // }
       if($rootScope.markers){
         $rootScope.markers.map(function(marker){
           marker.setMap(null);
@@ -102,8 +99,8 @@ angular.module('SeeAroundMe.controllers', [])
       if (response.data.reasonfailed){
         console.log('voting failed', response.data.message)
       }else if (response.data.success){
-        $scope.post.news_count = response.data.news.news_count;
-        $scope.post.isLikedByUser = response.data.news.isLikedByUser;
+        $scope.post.news_count = response.data.vote;
+        $scope.post.isLikedByUser = v +'';
       }
     }, function(err){
       console.log('error upvoting', err)
@@ -267,7 +264,7 @@ angular.module('SeeAroundMe.controllers', [])
     }
 })
 
-.controller('ProfileCtrl', function($scope, $rootScope, $state, AppService, ModalService, $ionicLoading){
+.controller('ProfileCtrl', function($scope, $rootScope, $state, AppService, $timeout, ModalService, $ionicLoading){
   // isCurrentUser var is set to differentiate the loggedIn user
   // from other users.
   $scope.$on('$ionicView.enter', function(e) {
@@ -380,7 +377,7 @@ angular.module('SeeAroundMe.controllers', [])
       $state.go('app.userProfile');
     }, function(error){
       $ionicLoading.hide();
-    })
+    });
   }
 })
 
@@ -487,7 +484,7 @@ angular.module('SeeAroundMe.controllers', [])
 
   //Compose message view modal
   $scope.modal = function() {
-    ModalService.init('templates/post/add.html', $scope).then(function(modal) {
+    ModalService.init('templates/post/add-post.html', $scope).then(function(modal) {
       modal.show();
     });
   };
@@ -651,24 +648,26 @@ angular.module('SeeAroundMe.controllers', [])
 
   var getPosts  = function (){
     AppService.getNearbyPosts(data)
-    .success(function(data){
-      $scope.nearbyPosts = data.result;
-      console.log(data.result);
+    .success(function(response){
+      $scope.nearbyPosts = response.result;
+      console.log(response.result);
       var links = [];
 
-      $scope.nearbyPosts.map(function(post){
-        // get the first url from text
-        post.first_link = post.news.match(urlRegEx);
-        try{
-          post.first_link = post.news.match(urlRegEx)[0];
-        }catch(ex){}
+      if($scope.nearbyPosts){
+        $scope.nearbyPosts.map(function(post){
+          // get the first url from text
+          post.first_link = post.news.match(urlRegEx);
+          try{
+            post.first_link = post.news.match(urlRegEx)[0];
+          }catch(ex){}
 
-        // transform news text to behave nicely with html
-        // removes links and " characters from post.news
-        post.sanitizedText = post.news.replace(urlRegEx, '').replace(/\"/g, '')
+          // transform news text to behave nicely with html
+          // removes links and " characters from post.news
+          post.sanitizedText = post.news.replace(urlRegEx, '').replace(/\"/g, '')
 
-        post.timeAgo = moment(post.updated_date).fromNow();
-      })
+          post.timeAgo = moment(post.updated_date).fromNow();
+        })
+      }
     });
 
   }
@@ -703,9 +702,9 @@ angular.module('SeeAroundMe.controllers', [])
         console.log('voting failed', response.data.message)
       }else if (response.data.success){
         $scope.nearbyPosts.map(function(post){
-          if (post.id === response.data.news.id){
-            post.news_count = response.data.noofvotes_2;
-            post.isLikedByUser = response.data.news.isLikedByUser;
+          if (post.id === newsId){
+            post.news_count = response.data.vote;
+            post.isLikedByUser = v + '';
           }
         })
       }
@@ -716,7 +715,7 @@ angular.module('SeeAroundMe.controllers', [])
   }
     
     $scope.modal2 = function() {
-        ModalService.init('templates/post/add.html', $scope).then(function(modal) {
+        ModalService.init('templates/post/add-post.html', $scope).then(function(modal) {
             modal.show();
         });
     };
@@ -998,20 +997,170 @@ angular.module('SeeAroundMe.controllers', [])
     
     $scope.imgUri = null;
     
-    //Image selector called from camera icon in map view
-    $scope.getImages = function () {
-        
-        AppService.getImage($scope);
-    };
-    
-    //Image selector called from camera icon in compose view
-    $scope.pickImages = function () {
-        
-        AppService.pickImage($scope);
-    };
-            
     $scope.closeImage = function(){
         $scope.imgUri = null;
+    };
+})
+
+.controller('NewPostCtrl', function($scope, $stateParams, $state, $ionicLoading, AppService){
+    
+    var ud = localStorage.getItem('sam_user_data');
+    //console.log(ud);
+
+    var userData = JSON.parse(ud) || '{}';
+
+    var userId = userData.id || 0;
+
+    $scope.addLocation = "Add location";
+    $scope.formData = {};
+    $scope.showCamBar = false;
+    $scope.toggleCamBar = function(){
+        $scope.showCamBar = !$scope.showCamBar;    
+    };
+    
+    $scope.imgUri = null;
+    
+    $scope.openMedia = function(type){
+        AppService.getImage($scope, type);
+        $scope.toggleCamBar();
+    };
+    
+    
+    $scope.$on('$ionicView.enter', function(e) {
+        if($stateParams.address){
+            $scope.addLocation = $stateParams.address;
+        }
+        else{
+            $scope.addLocation = "Add location";
+        }
+    });
+
+    
+    // set post button to blue when typing
+    $scope.checkInput = function(){
+      $scope.textColor = '';
+      if ($scope.formData.postText){
+        //console.log($scope.formData.postText);
+        ($scope.formData.postText.length > 0) ? $scope.textColor = 'blue' : $scope.textColor = 'gray';
+      }
+    };
+
+    $scope.postNews = function () {
+        $ionicLoading.show({
+               template: '<ion-spinner class="spinner-calm"></ion-spinner><br/>Posting ...',
+               duration: 20000 //Dismiss after 20 seconds
+        });
+
+        var data = {
+            "news" : $scope.formData.postText,
+            "user_id" : userId,
+            "latitude" : $stateParams.latitude,
+            "longitude" : $stateParams.longitude,
+            "address" : $stateParams.address,
+            "image": ''
+        };
+
+        $ionicLoading.show('Posting ...');
+        AppService.addNewPost(data)
+        .then(function (res) {
+            //console.log('Post Success ...');
+            //console.log(JSON.stringify(res));
+            $ionicLoading.hide();
+            $state.go('app.postlistview');
+        });
+    };    
+})
+
+.controller('ChooseLocCtrl', function($scope, $rootScope, $state, MapService){
+    
+    $scope.place = {};
+    $scope.place.formatted_address = '';
+            
+    $scope.onChange = function(){
+        console.log($scope.place);
+        if(angular.isObject($scope.place)){
+            $scope.setLocation($scope.place);
+        }
+    };
+    
+    $scope.setLocation = function(place){
+        // Clear out the old marker.
+        if($scope.marker){
+            $scope.marker.setMap(null);
+            $scope.marker = null;
+        }
+        
+        if(place.geometry){
+            var center = new google.maps.LatLng(place.geometry.location.lat(), place.geometry.location.lng());
+            // If the place has a geometry, then present it on a map.
+            if (place.geometry.viewport) {
+              $scope.map.fitBounds(place.geometry.viewport);
+            } else {
+              $scope.map.setCenter(center);
+              $scope.map.setZoom(17);
+            }
+            
+            var marker = new google.maps.Marker({
+                position: center,
+                map: $scope.map,
+                icon: {
+                    url:'img/post-button.png',
+                    size: new google.maps.Size(106, 60)
+                }
+            }); 
+                        
+            google.maps.event.addListener(marker, 'click', function() {
+                var p = {
+                    address: place.formatted_address,
+                    latitude: place.geometry.location.lat(),
+                    longitude: place.geometry.location.lng() 
+                };
+                
+                $state.go('newpostview', p);
+            }); 
+            
+            $scope.marker = marker;
+        }        
+    };
+    
+    $scope.setCurrentLocation = function(){
+        $scope.setLocation($scope.myPlace); 
+    };
+
+    $scope.clearText = function(){
+        $scope.place.formatted_address = '';
+    };
+    
+    $scope.$on('$ionicView.enter', function(e) {
+        $scope.showMap();
+    });
+    
+    $scope.showMap = function(){
+        var location = JSON.parse(localStorage.getItem('sam_user_location'));
+        if (!location) {
+                location = {latitude: 37.8088139, longitude: -122.2660002};
+                console.warn('WARN: Using DEV_MODE position: ' + location);        
+        }
+        
+        //Get place from lat, lng
+        MapService.getPlace(location.latitude, location.longitude).then(
+            function(place){
+                //console.log(JSON.stringify(place));
+                $scope.myPlace = place;
+                //Create map
+                var mapOptions = {
+                    zoom: 17,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    disableDefaultUI: true,
+                    zoomControl: false
+                };
+
+                var map = new google.maps.Map(document.getElementById("cmap"), mapOptions);
+                $scope.map = map;
+                
+                $scope.setLocation(place);                        
+            }
+        );
     };
 })
 
@@ -1055,8 +1204,6 @@ angular.module('SeeAroundMe.controllers', [])
         AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');        
     }    
     
-    var userId;
-    var userData;
     var ud = localStorage.getItem('sam_user_data');
     console.log(ud);
 
@@ -1071,67 +1218,18 @@ angular.module('SeeAroundMe.controllers', [])
     
     $scope.nearbyPosts = {};
 
-
-    //google.maps.event.addDomListener(document.getElementById("map"), 'load', $scope.initialise());
-    
-    $scope.showMap = function(){
-        var location = JSON.parse(localStorage.getItem('sam_user_location'));
-        if (!location) {
-                location = {latitude: 37.8088139, longitude: -122.2660002};
-                console.warn('WARN: Using DEV_MODE position: ' + location);        
-        }
-
-        var center = new google.maps.LatLng(location.latitude, location.longitude);
-        
-        var mapOptions = {
-            center: center,
-            zoom: 15,
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
-            disableDefaultUI: true,
-            zoomControl: false//,
-            //zoomControlOptions: {
-              //style: google.maps.ZoomControlStyle.SMALL
-            //}
-        };
-
-        var map = new google.maps.Map(document.getElementById("cmap"), mapOptions);
-        
-        var marker = new google.maps.Marker({
-            position: center,
-            map: map,
-            icon: {
-                url:'img/pin-blue.png',
-                size: new google.maps.Size(22, 30)
-            },
-            // animation: google.maps.Animation.BOUNCE,
-            title: "My Location"
-        }); 
-        
-        //This is to make possible the click on the button in info window    
-        var compiled = $compile('<button ng-click="post()" class="button icon-right ion-chevron-right button-positive">Post from here</button>')($scope);
-        
-        var infoWindow = new google.maps.InfoWindow({
-            content: compiled[0]
-        });
-        
-        google.maps.event.addListener(marker, 'click', function() {
-            
-            infoWindow.open(map, marker);
-            //$scope.post();
-        });
-    };
-
     $scope.showModal = function (id) {
         // $state.go('app.postlistview');
         if(id == 1)
             $scope.modal1.show();
-        else if (id == 2){
+        else if (id == 2){//I think this block is no longer required as add-post screen has become a state
             $scope.modal2 = function() {
-                ModalService.init('templates/post/add.html', $scope).then(function(modal) {
+                ModalService.init('templates/post/add-post.html', $scope).then(function(modal) {
                     modal.show();
                 });
             };
             
+            $scope.imgUri = null;
             $scope.modal2();
         }
         else if (id == 3){
@@ -1143,7 +1241,7 @@ angular.module('SeeAroundMe.controllers', [])
             
             $scope.modal3();
         }
-        else if (id == 4){
+        else if (id == 4){//This has also become a state so not required
             
             $scope.close(2);
 
@@ -1154,20 +1252,35 @@ angular.module('SeeAroundMe.controllers', [])
             };    
             
             $scope.modal4();  
-            setTimeout(function(){
-                $scope.showMap();
-            },500);
+            //setTimeout(function(){
+                //$scope.showMap();
+            //},500);
         }        
     };
     
     $scope.viewMode = 'half-view';
+    $scope.showMapModalBar = false;
     
     $scope.showFullView = function(){
         $scope.viewMode = 'full-view';
+        $timeout(function(){
+            $scope.showMapModalBar = true;
+        },600);
+    };
+
+    $scope.swipe = function(direction, thisPost){
+      var index = $scope.currentPosts.indexOf(thisPost);
+        if(direction === 'left' && index < $scope.currentPosts.length - 1){
+                $scope.post = $scope.currentPosts[index+1];
+        }
+        else if(index > 0){
+                $scope.post = $scope.currentPosts[index-1];
+        }
     };
     
     $scope.hideModal = function(){
         $scope.viewMode = 'half-view';
+        $scope.showMapModalBar = false;
         $scope.closeModal();
     };
     
@@ -1188,7 +1301,9 @@ angular.module('SeeAroundMe.controllers', [])
         }
     };
             
-    $rootScope.$on("refreshdone", function(event, data){          
+    $rootScope.$on("refreshdone", function(event, data){     
+            $scope.currentPosts = $rootScope.currentPosts;
+        
           for (var i = 0; i < $rootScope.markers.length; i++) {
             google.maps.event.addListener($rootScope.markers[i], 'click', function() {
                     $scope.post = this.post;                    
@@ -1211,62 +1326,7 @@ angular.module('SeeAroundMe.controllers', [])
       $scope.popover.remove();
       $scope.selectPopover.remove();  
     });
-    
-    $scope.imgUri = null;
-    
-    //Image selector called from camera icon in map view
-    $scope.getImages = function () {
         
-        AppService.getImage($scope);
-    };
-    
-    //Image selector called from camera icon in compose view
-    $scope.pickImages = function () {
-        
-        AppService.pickImage($scope);
-    };
-    
-    $scope.closeImage = function(){
-        $scope.imgUri = null;
-    };
-
-    // set post button to blue when typing
-    $scope.checkInput = function(){
-      $scope.textColor = '';
-      if ($scope.formData.postText){
-        //console.log($scope.formData.postText);
-        ($scope.formData.postText.length > 0) ? $scope.textColor = 'blue' : $scope.textColor = 'gray';
-      }
-    };
-
-    $scope.post = function () {
-        $ionicLoading.show();
-
-        var data = {
-            "news" : $scope.formData.postText,
-            "user_id" : userId,
-            "latitude" : location.latitude,
-            "longitude" : location.longitude,
-            "address" : null
-        };
-
-        AppService.addNewPost(data)
-        .then(function (res) {
-            $scope.initialise();
-            $ionicLoading.hide();
-            $ionicPopup.alert({title: 'New Post', template: 'Status updated'})
-            .then(function () {
-                $scope.close(2);
-            });
-        })
-        .catch(function (err) {
-            console.warn(err);
-            $ionicLoading.hide();
-
-        })
-        //console.log($scope.formData.postText);
-    };
-    
     //Below is the popover code
     $ionicPopover.fromTemplateUrl('templates/post/alerts.html', {
         scope: $scope
@@ -1389,6 +1449,7 @@ angular.module('SeeAroundMe.controllers', [])
           $state.go('app.postcomments');
         })
       };
+
 
       $scope.vote = function(newsId , v){
         // pass v => '1' for upvote
