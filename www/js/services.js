@@ -1,24 +1,25 @@
 angular.module('SeeAroundMe.services', [])
 
-.factory('AppService', function($http, $q, $rootScope, $cordovaCamera, $ionicPopup, API_URL) {
+.factory('AppService', function($http, $q, $rootScope, $cordovaCamera, $cordovaFileTransfer, $ionicPopup, API_URL) {
 
   var userData = JSON.parse(localStorage.getItem('sam_user_data')) || {};
   var userId = userData.id || 0;
   var conversationUserId = null;
   //var isCurrentUser = false; --- set it on root scope instead
   var profileUserId = null;
-
   var currentPostComments = {};
     var service = {
                 
-        getImage: function(scope, mediaType){
+        getImage: function(mediaType){
             
             var cameraOptions = {
                 quality: 50,
                 encodingType: Camera.EncodingType.JPEG,
                 destinationType: Camera.DestinationType.FILE_URI,
                 saveToPhotoAlbum: false,
-                correctOrientation: true//,
+                correctOrientation: true,
+                targetWidth:400,
+                targetHeight: 800
                 //cameraDirection: Camera.Direction.FRONT
             };
             
@@ -30,9 +31,9 @@ angular.module('SeeAroundMe.services', [])
              }
             //console.info(cameraOptions);
             $cordovaCamera.getPicture(cameraOptions)
-            .then(function(imageUri){
-                console.log('image uri: '+ imageUri);
-                scope.imgUri = imageUri;
+            .then(function(imgUri){
+                console.log('image uri: '+ imgUri);
+                $rootScope.imgUri = imgUri;
             });
         },
         
@@ -134,12 +135,14 @@ angular.module('SeeAroundMe.services', [])
           return $http.post(url, params);
         },
 
-        getCurrentComments: function(){
+        getCurrentComments: function(post){
           var d = $q.defer();
           var url = API_URL + '/get-total-comments';
           var params = {
-            news_id: currentPostComments.post.id,
-            offset: 0
+            offset: 0,
+            news_id: post
+              ? post.id
+              : currentPostComments.post.id
           }
           $http.post(url, params)
            .success(function(data){
@@ -153,15 +156,20 @@ angular.module('SeeAroundMe.services', [])
            return d.promise;
         },
 
-        addNewPost: function (data) {
+        addNewPost: function (data) {   
+            
             var url = API_URL + '/addimobinews';
-            data.user_id = userId;
-            return $http({
-                method: 'POST',
-                url: url,
-                data: data,
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-            });
+            
+            var options = {
+                fileKey: "image",
+                fileName: new Date().getTime() + ".jpg",
+                httpMethod: 'POST',
+                chunkedMode: false,
+                mimeType: "image/jpg",
+                params: data
+            };
+            
+            return $cordovaFileTransfer.upload(url, $rootScope.imgUri, options, true);
         },
         
         showErrorAlert: function(subTitle, message){

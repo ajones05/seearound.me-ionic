@@ -4,7 +4,7 @@
     <div class="row" ng-click="hideModal()"></div>
 
     <div class="post_item"
-      on-swipe-up="showFullView()"
+      on-swipe-up="showFullView(post)"
       on-swipe-down="hideModal()"
       ng-class="viewMode"
       >
@@ -21,7 +21,7 @@
       </div>
       <div class="row user">
         <div class="col col-20 avatar">
-          <img ng-src="{{post.Profile_image}}" alt="" ui-sref="app.userprofile">
+          <img ng-src="{{post.Profile_image}}" alt="" ng-click="goToUser(post)">
         </div>
         <div class="col"> 
           <div class="name">
@@ -34,10 +34,14 @@
             {{post.news}}
           </p>
         </div>
-      </div>
+        <div
+          ng-if="showMapModalBar"
+          ng-click="showMapForPost(post.latitude, post.longitude)"
+          style="width:20px;margin-top:5px;">
+          <a class="icon ion-ios-location-outline" style="font-size:1.3em;"></a>
+        </div>
+        </div>
       <img ng-src="{{post.images}}" ng-if="post.images" alt=""/>
-      <!-- <img ng&#45;show="post.images" ng&#45;src={{post.images}} alt=""/> -->
-      <!-- <img ng&#45;hide="post.images" src="img/blank.png" /> -->
       <div class="share row">
         <span class="col col-20 chat-bubble" ng-click="goToComments(post)">
           {{post.comment_count}}
@@ -52,28 +56,30 @@
         </span>
         <span class="col" ng-click='openShare(post.sanitizedText, post.first_link)'> Share</span>
       </div>
-    </div>
-    <div class="comments">
-      <div class="row user" 
-        style="border-bottom: 1px solid lightgray; padding-bottom: 5px;"
-        ng-repeat="comment in postComments">
-        <div class="col col-20 avatar"
-          ng-click="goToProfile(comment.user_id)"
-          >
-          <img ng-src="{{comment.Profile_image}}" alt="profile image">
-        </div>
-        <div class="col"> 
-          <div class="name">
-            <span>{{comment.user_name}}</span>
-            <div class=" date right">
-              <div>{{comment.timeAgo}}</div>
-            </div>
+
+      <div class="comments" ng-if="postComments" style="background:white">
+      <hr/>
+        <div class="row user" 
+          style="border-bottom: 1px solid lightgray; padding-bottom: 5px;"
+          ng-repeat="comment in postComments">
+          <div class="col col-20 avatar"
+            ng-click="goToProfile(comment.user_id)"
+            >
+            <img ng-src="{{comment.Profile_image}}" alt="profile image">
           </div>
-          <div class="desc">{{comment.comment}}</div>
+          <div class="col"> 
+            <div class="name">
+              <span>{{comment.user_name}}</span>
+              <div class=" date right">
+                <div>{{comment.timeAgo}}</div>
+              </div>
+            </div>
+            <div class="desc">{{comment.comment}}</div>
+          </div>
+          <!-- <div style="width:20px;padding:5px"> -->
+            <!--   <a class="icon ion&#45;ios&#45;location&#45;outline" style="font&#45;size:1.3em;"></a> -->
+            <!-- </div>                         -->
         </div>
-        <!-- <div style="width:20px;padding:5px"> -->
-        <!--   <a class="icon ion&#45;ios&#45;location&#45;outline" style="font&#45;size:1.3em;"></a> -->
-        <!-- </div>                         -->
       </div>
     </div>
   </ion-pane>

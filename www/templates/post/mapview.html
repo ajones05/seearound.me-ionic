@@ -1,62 +1,57 @@
 <ion-view hide-back-button="true" class="mapview">
   <ion-nav-buttons>
-    <div class="row bar bar-header" style="padding-top:10px;">
-        <div class="col">
-            <button menu-toggle="left" class="button button-icon">
-            <img src="img/menu_off.png" height="22"/>
-            </button>
-        </div>
-        <div class="col">
-            <button class="button button-icon" ui-sref="newpostview">
-              <img src="img/newpost_off.png" height="24"/>
-            </button>
-        </div>
-        <div class="col text-center">
-            <button class="button button-icon" ng-click="showAlerts($event)" >
-              <img src="img/alerts_off.png" height="24"/>
-            </button>
-        </div>
-        <div class="col">
-            <button class="button button-icon" ng-click="toggleSearch()">
-              <img src="img/search_off.png" height="24"/>
-            </button>
-        </div>
-        <button class="button button-icon" ui-sref="app.postlistview">
-            <img src="img/list_off.png" height="24"/>
+    <div class=" row bar bar-header">
+      <div class="header-buttons">
+        <button menu-toggle="left" class="button button-icon">
+          <img src="img/menu_off.png" height="22"/>
         </button>
+        <button class="button button-icon" ui-sref="newpostview">
+          <img src="img/newpost_off.png" height="24"/>
+        </button>
+        <button class="button button-icon" ng-click="showAlerts($event)" >
+          <img src="img/alerts_off.png" height="24"/>
+        </button>
+        <button class="button button-icon" ng-click="toggleSearch()">
+          <img src="img/search_off.png" height="24"/>
+        </button>
+        <button class="button button-icon" ui-sref="app.postlistview">
+          <img src="img/list_off.png" height="24"/>
+        </button>
+      </div>
     </div>
+
   </ion-nav-buttons>
-    <div class="row bar bar-subheader" style="background:#eee;" ng-show="showSearch">
-        <div class="col" style="margin-left:-5px;">
-            <div class="row" style="border:2px solid #ddd;height:100%;background:#fff;">
-                <i class="icon ion-ios-search" style="font-size:1.4em;padding-right:10px;margin:0;"></i>
-                <input type="text" name="searchTerm" ng-model="searchTerm" placeholder="Search ..." style="height:100%;background:#fff;">
-            </div>
-         </div>
-        <div style="margin-right:5px;width:100px;">    
-            <div class="item item-icon-right" style="border:2px solid #ddd;" ng-click="showSelect($event)">
-                <label class="post-select">
-                  {{selected.label}}
-                  <i class="icon ion-ios-arrow-down"></i>
-                </label>             
-            </div>
-        </div>
-        <div class="col-20">            
-          <button class="button button-block button-positive" ng-click="searchPosts()">Go</button>
-        </div>
-    </div>          
+  <div class="row bar bar-subheader" style="background:#eee;" ng-show="showSearch">
+    <div class="col" style="margin-left:-5px;">
+      <div class="row" style="border:2px solid #ddd;height:100%;background:#fff;">
+        <i class="icon ion-ios-search" style="font-size:1.4em;padding-right:10px;margin:0;"></i>
+        <input type="text" name="searchTerm" ng-model="searchTerm" placeholder="Search ..." style="height:100%;background:#fff;">
+      </div>
+    </div>
+    <div style="margin-right:5px;width:100px;">    
+      <div class="item item-icon-right" style="border:2px solid #ddd;" ng-click="showSelect($event)">
+        <label class="post-select">
+          {{selected.label}}
+          <i class="icon ion-ios-arrow-down"></i>
+        </label>             
+      </div>
+    </div>
+    <div class="col-20">            
+      <button class="button button-block button-positive" ng-click="searchPosts()">Go</button>
+    </div>
+  </div>          
   <ion-content>
     <div id="map" data-tap-disabled="true"></div>
-       
+
   </ion-content>
-    <div class="bar bar-footer bar-light range">
-        <div class="title">
-            <div class="list">
-              <div class="item range range-positive">
-                <i ng-click="resetMap()" class="icon ion-navigate"></i>
-                <input type="range" name="volume" min="0.5" max="1.5" step="0.1" value="circleRadius" ng-model="circleRadius" on-release="onRadiusChange()">
-              </div>
-            </div>
+  <div class="bar bar-footer bar-light range">
+    <div class="title">
+      <div class="list">
+        <div class="item range range-positive">
+          <i ng-click="resetMap()" class="icon ion-navigate"></i>
+          <input type="range" name="volume" min="0.5" max="1.5" step="0.1" value="circleRadius" ng-model="circleRadius" on-release="onRadiusChange()">
         </div>
+      </div>
     </div>
+  </div>
 </ion-view>

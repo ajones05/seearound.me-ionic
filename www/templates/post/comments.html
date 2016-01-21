@@ -23,7 +23,9 @@
           </div>
           <p class="desc"> {{post.news}} </p>
         </div>
-        <div style="width:20px;">
+        <div
+          ng-click="showMapForPost(post.latitude, post.longitude)"
+          style="width:20px;">
           <a class="icon ion-ios-location-outline" style="font-size:1.3em;"></a>
         </div>                        
       </div>

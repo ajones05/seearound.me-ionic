@@ -21,8 +21,11 @@
 
 .header-buttons{
   width: 100vw;
+  padding-top: 5px;
+  display: -webkit-flex;
   display: flex;
   justify-content: space-between;
+  -webkit-justify-content: space-between;
 }
 
 .bar-header, .bar-subheader{

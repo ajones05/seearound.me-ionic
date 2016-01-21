@@ -1,7 +1,7 @@
 <ion-view class="addpost">
   <ion-header-bar>
     <div class="buttons">
-      <button class="button button-clear" ui-sref="app.postmapview">
+      <button class="button button-clear" ng-click="clearImage()" ui-sref="app.postmapview">
         <i class="icon ion-ios-arrow-left"></i>
       </button>
     </div>
@@ -14,9 +14,9 @@
   </ion-header-bar>
   <ion-header-bar class="bar bar-subheader" style="padding:0;">
     <div class="row" style="background:#ddd;height:110px;">
-        <div style="margin-top:4px;" ng-click="toggleCamBar()">
-            <img ng-show="imgUri" ng-src="{{imgUri}}" height="90"/>
-            <img ng-show="!imgUri" ng-src="img/cam_icon.png" width="90"/>
+        <div class="image-round" ng-click="toggleCamBar()">
+            <img ng-show="imgUri" ng-src="{{imgUri}}"/>
+            <img ng-show="!imgUri" ng-src="img/cam_icon.png"/>
         </div>
         <div class="col col-70">
             <div style="height:90px;padding-top:28px;margin-top:0px" ui-sref="chooselocation" class="button button-large button-block icon-right ion-chevron-right button-stable">
@@ -25,11 +25,12 @@
         </div>
     </div>
     <div class="button-bar" width="100%" style="background:#000;" ng-show="showCamBar">
+        <button class="button button-clear button-light" ng-click="clearImage()">Clear</button> 
         <button class="button button-clear button-light" ng-click="openMedia('camera')">Take Picture</button>        
-        <button class="button button-clear button-light" ng-click="openMedia('gallery')">Image Gallery</button>
+        <button class="button button-clear button-light" ng-click="openMedia('gallery')">Gallery</button>
     </div>
  </ion-header-bar>
   <ion-content has-header="true" style="margin-top:60px;">
-        <textarea ng-change="checkInput()" placeholder="Write something.." ng-model="formData.postText" class="commentbox" focus-me></textarea>
+        <textarea ng-change="checkInput()" ng-focus="hideCamBar()" placeholder="Write something.." ng-model="formData.postText" class="commentbox" focus-me></textarea>
   </ion-content>
 </ion-view>

@@ -5,7 +5,8 @@
   font-family: 'Lato';
 
   .half-view {
-    height: 220px;
+    // height: 220px;
+    height: auto;
     max-height: 220px;
     background: $light;
   }

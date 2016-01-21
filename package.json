@@ -22,14 +22,11 @@
     "cordova-plugin-splashscreen",
     "com.ionic.keyboard",
     "cordova-plugin-geolocation",
-    {
-      "locator": "https://github.com/wymsee/cordova-imagePicker.git",
-      "id": "com.synconset.imagepicker"
-    },
-    "cordova-plugin-file-transfer"
+    "cordova-plugin-file-transfer",
+    "cordova-plugin-file"
   ],
   "cordovaPlatforms": [
-    "ios",
-    "android"
+    "android",
+    "ios"
   ]
 }

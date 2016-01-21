@@ -1,30 +1,24 @@
 <ion-view hide-back-button="true" class="postlistview">
   <ion-nav-buttons>
-    <div class="row bar bar-header" id="nav-bar" style="padding-top:10px;">
-        <div class="col">
-            <button menu-toggle="left" class="button button-icon">
-            <img src="img/menu_off.png" height="22"/>
-            </button>
-        </div>
-        <div class="col">
-            <button class="button button-icon" ui-sref="newpostview">
-              <img src="img/newpost_off.png" height="24"/>
-            </button>
-        </div>
-        <div class="col text-center">
-            <button class="button button-icon" ng-click="showAlerts($event)" >
-              <img src="img/alerts_off.png" height="24"/>
-            </button>
-        </div>
-        <div class="col">
-            <button class="button button-icon" ng-click="toggleSearch()">
-              <img src="img/search_off.png" height="24"/>
-            </button>
-        </div>
-
+    <div class="row bar bar-header" id="nav-bar" >
+      <div class="header-buttons">
+        <button menu-toggle="left" class="button button-icon">
+          <img src="img/menu_off.png" height="22"/>
+        </button>
+        <button class="button button-icon" ui-sref="newpostview">
+          <img src="img/newpost_off.png" height="24"/>
+        </button>
+        <button class="button button-icon" ng-click="showAlerts($event)" >
+          <img src="img/alerts_off.png" height="24"/>
+        </button>
+        <button class="button button-icon" ng-click="toggleSearch()">
+          <img src="img/search_off.png" height="24"/>
+        </button>
         <button class="button button-icon" ui-sref="app.postmapview">
           <img src="img/map_off.png" height="28"/>
         </button>
+
+      </div>
     </div>
   </ion-nav-buttons>
     <div class="row bar bar-subheader" style="background:#eee;" ng-show="showSearch">

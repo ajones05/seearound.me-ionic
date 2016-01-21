@@ -267,8 +267,10 @@ angular.module('SeeAroundMe.controllers', [])
 .controller('ProfileCtrl', function($scope, $rootScope, $state, AppService, $timeout, ModalService, $ionicLoading){
   // isCurrentUser var is set to differentiate the loggedIn user
   // from other users.
+  $scope.User = null;
   $scope.$on('$ionicView.enter', function(e) {
     console.log('is the logged in user => ', $rootScope.isCurrentUser);
+    $scope.User = null;
     if ($rootScope.isCurrentUser){
       //Must set this
       $scope.isCurrentUser = true;
@@ -472,8 +474,11 @@ angular.module('SeeAroundMe.controllers', [])
     //TODO: handle "no messages" case
     AppService.getMessages()
     .success(function(res){
-      console.log('res-> ', res);
-      $scope.messages = res.result;
+      $scope.messages = res.result.map(function(m){
+        m.formatted_date = moment(m.created).fromNow();
+        return m;
+      })
+      console.log($scope.messages);
       $ionicLoading.hide();
     })
     .error(function(err){
@@ -490,7 +495,6 @@ angular.module('SeeAroundMe.controllers', [])
   };
 
   $scope.showCompose = function(){
-    //console.log('showCompose called ...');
     $scope.modal();
   };
 
@@ -775,6 +779,7 @@ angular.module('SeeAroundMe.controllers', [])
 
   $scope.$on('$destroy', function() {
     console.log('Destroying modals...');
+    $scope.alertsPopover.close();
     $scope.alertsPopover.remove();
     $scope.selectPopover.remove();
   });
@@ -1002,7 +1007,7 @@ angular.module('SeeAroundMe.controllers', [])
     };
 })
 
-.controller('NewPostCtrl', function($scope, $stateParams, $state, $ionicLoading, AppService){
+.controller('NewPostCtrl', function($scope, $rootScope, $stateParams, $state, $ionicLoading, AppService){
     
     var ud = localStorage.getItem('sam_user_data');
     //console.log(ud);
@@ -1014,17 +1019,24 @@ angular.module('SeeAroundMe.controllers', [])
     $scope.addLocation = "Add location";
     $scope.formData = {};
     $scope.showCamBar = false;
+    
     $scope.toggleCamBar = function(){
         $scope.showCamBar = !$scope.showCamBar;    
     };
     
-    $scope.imgUri = null;
+    $scope.hideCamBar = function(){
+        $scope.showCamBar = false;
+    };
     
     $scope.openMedia = function(type){
-        AppService.getImage($scope, type);
+        AppService.getImage(type);
         $scope.toggleCamBar();
     };
     
+    $scope.clearImage = function(){
+        $rootScope.imgUri = ""; 
+        $scope.showCamBar = false;
+    };
     
     $scope.$on('$ionicView.enter', function(e) {
         if($stateParams.address){
@@ -1056,18 +1068,24 @@ angular.module('SeeAroundMe.controllers', [])
             "user_id" : userId,
             "latitude" : $stateParams.latitude,
             "longitude" : $stateParams.longitude,
-            "address" : $stateParams.address,
-            "image": ''
+            "address" : $stateParams.address
         };
 
         $ionicLoading.show('Posting ...');
-        AppService.addNewPost(data)
-        .then(function (res) {
-            //console.log('Post Success ...');
-            //console.log(JSON.stringify(res));
-            $ionicLoading.hide();
-            $state.go('app.postlistview');
-        });
+        AppService.addNewPost(data).then(
+                function(res){
+                    console.log('Post Success ...');
+                    console.log(JSON.stringify(res));
+                    $ionicLoading.hide();
+                    $state.go('app.postlistview');
+                },
+                function(error){
+                    console.log(JSON.stringify(error));
+                },
+                function(progress){
+                    console.log('Uploaded ' + progress.loaded + ' of ' + progress.total);
+                }
+            );
     };    
 })
 
@@ -1260,25 +1278,79 @@ angular.module('SeeAroundMe.controllers', [])
     
     $scope.viewMode = 'half-view';
     $scope.showMapModalBar = false;
+
+
+    var fetchComments = function (post) {
+      AppService.getCurrentComments(post)
+      .then(function(current){
+        console.log('response', current);
+        $scope.postComments = current.comments || [];
+        try{
+          $scope.postComments.map(function(comment){
+            comment.timeAgo = moment(comment.commTime).fromNow();
+          })
+        } catch (err){
+          console.log(err);
+        }
+
+      }, function(error){
+        $ionicLoading.hide();
+        console.warn('error getting comments');
+      });
+    }
     
-    $scope.showFullView = function(){
-        $scope.viewMode = 'full-view';
-        $timeout(function(){
-            $scope.showMapModalBar = true;
-        },600);
+    $scope.showFullView = function(post){
+      $scope.viewMode = 'full-view';
+      $timeout(function(){
+        $scope.showMapModalBar = true;
+      },0);
+      fetchComments(post);
     };
+
+    $scope.goToUser = function(post){
+      AppService.setUserForProfilePage(post.user_id)
+      .then(function(){
+        $rootScope.isCurrentUser = false;
+        $scope.hideModal(); 
+        $state.go('app.userprofile')
+      });
+    }
+
+    $scope.openShare = function(text, link){
+      window.plugins.socialsharing.share( text, null, null,link);
+    }
+
+    $scope.vote = function(newsId , v){
+      console.log($scope.post);
+
+      AppService.vote(newsId, v)
+      .then(function(response){
+        console.log('response->', response)
+        if (response.data.reasonfailed){
+          console.log('voting failed', response.data.message)
+        }else if (response.data.success){
+          $scope.post.news_count = response.data.vote;
+          $scope.post.isLikedByUser = v +'';
+        }
+      }, function(err){
+        console.log('error upvoting', err)
+      })
+    }
 
     $scope.swipe = function(direction, thisPost){
       var index = $scope.currentPosts.indexOf(thisPost);
-        if(direction === 'left' && index < $scope.currentPosts.length - 1){
-                $scope.post = $scope.currentPosts[index+1];
-        }
-        else if(index > 0){
-                $scope.post = $scope.currentPosts[index-1];
-        }
+
+      if(direction === 'left' && index < $scope.currentPosts.length - 1){
+        $scope.post = $scope.currentPosts[index+1];
+      }else if(index > 0){
+        $scope.post = $scope.currentPosts[index-1];
+      } 
+
+      fetchComments($scope.post);
     };
     
     $scope.hideModal = function(){
+        $scope.postComments = null;
         $scope.viewMode = 'half-view';
         $scope.showMapModalBar = false;
         $scope.closeModal();
@@ -1450,29 +1522,6 @@ angular.module('SeeAroundMe.controllers', [])
         })
       };
 
-
-      $scope.vote = function(newsId , v){
-        // pass v => '1' for upvote
-        // and v=> '-1' for downvote
-        AppService.vote(newsId, v)
-        .then(function(response){
-          if (response.data.reasonfailed){
-            console.log('voting failed', response.data.message)
-          }else if (response.data.success){
-            $scope.nearbyPosts.map(function(post){
-              if (post.id === response.data.news.id){
-                post.news_count = response.data.noofvotes_2;
-                post.isLikedByUser = response.data.news.isLikedByUser;
-              }
-            })
-          }
-
-        }, function(err){
-          console.log('error upvoting', err)
-        })
-      };
-    
-    
     // Load map (refresh) on login
     $rootScope.$on('login', function(event, data) {
         //console.log('login event received ....');
@@ -1519,6 +1568,51 @@ angular.module('SeeAroundMe.controllers', [])
       })
     };
 
+    $scope.showMapForPost = function(latitude, longitude){
+      $scope.hideModal(); 
+      latitude = parseFloat(latitude);
+      longitude = parseFloat(longitude);
+
+      ModalService.init('templates/post/mapforpost.html', $scope).then(function(modal){
+        modal.show();
+        $scope.mapModal = modal;
+      }).then(function(){
+        $scope.showMap(latitude, longitude);
+      });
+
+    };
+
+    $scope.showMap = function(latitude, longitude){
+      console.log(latitude, longitude);
+      if (!latitude) {
+        var latLng = new google.maps.LatLng(37.8088139, -122.2660002);
+      }else{
+        var latLng = new google.maps.LatLng(latitude, longitude);
+      }
+      var mapOptions = {
+        center: latLng,
+        zoom: 15,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        disableDefaultUI: true,
+        zoomControl: false//,
+      };
+      try{
+        var map = new google.maps.Map(document.getElementById("cmap"), mapOptions);
+      }catch(e){
+        var map = new google.maps.Map(document.getElementById("post_map"), mapOptions);
+      }
+      console.log(latLng);
+
+      var marker = new google.maps.Marker({
+        position: latLng,
+        map: map,
+        icon: {
+          url:'img/pin-blue.png',
+          size: new google.maps.Size(22, 30)
+        },
+        title: "My Location"
+      }); 
+    };    
 })
 
 .directive('focusMe', function($timeout) {
