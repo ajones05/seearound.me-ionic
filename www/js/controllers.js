@@ -1017,7 +1017,7 @@ angular.module('SeeAroundMe.controllers', [])
     var userId = userData.id || 0;
 
     $scope.addLocation = "Add location";
-    $scope.formData = {};
+    $rootScope.formData = {};
     $scope.showCamBar = false;
     
     $scope.toggleCamBar = function(){
@@ -1045,6 +1045,11 @@ angular.module('SeeAroundMe.controllers', [])
         else{
             $scope.addLocation = "Add location";
         }
+        
+        if($rootScope.postText){
+            $scope.formData.postText = $rootScope.postText;
+            $scope.textColor = 'blue';
+        }
     });
 
     
@@ -1053,6 +1058,7 @@ angular.module('SeeAroundMe.controllers', [])
       $scope.textColor = '';
       if ($scope.formData.postText){
         //console.log($scope.formData.postText);
+        $rootScope.postText =  $scope.formData.postText; 
         ($scope.formData.postText.length > 0) ? $scope.textColor = 'blue' : $scope.textColor = 'gray';
       }
     };
@@ -1077,6 +1083,7 @@ angular.module('SeeAroundMe.controllers', [])
                     console.log('Post Success ...');
                     console.log(JSON.stringify(res));
                     $ionicLoading.hide();
+                    $rootScope.postText = '';
                     $state.go('app.postlistview');
                 },
                 function(error){
@@ -1089,7 +1096,7 @@ angular.module('SeeAroundMe.controllers', [])
     };    
 })
 
-.controller('ChooseLocCtrl', function($scope, $rootScope, $state, MapService){
+.controller('ChooseLocCtrl', function($scope, $rootScope, $state, $cordovaGeolocation, MapService){
     
     $scope.place = {};
     $scope.place.formatted_address = '';
@@ -1122,8 +1129,8 @@ angular.module('SeeAroundMe.controllers', [])
                 position: center,
                 map: $scope.map,
                 icon: {
-                    url:'img/post-button.png',
-                    size: new google.maps.Size(106, 60)
+                    url:'img/pin-blue.png',
+                    size: new google.maps.Size(22, 30)
                 }
             }); 
                         
@@ -1154,31 +1161,47 @@ angular.module('SeeAroundMe.controllers', [])
     });
     
     $scope.showMap = function(){
-        var location = JSON.parse(localStorage.getItem('sam_user_location'));
-        if (!location) {
-                location = {latitude: 37.8088139, longitude: -122.2660002};
-                console.warn('WARN: Using DEV_MODE position: ' + location);        
-        }
-        
-        //Get place from lat, lng
-        MapService.getPlace(location.latitude, location.longitude).then(
-            function(place){
-                //console.log(JSON.stringify(place));
-                $scope.myPlace = place;
-                //Create map
-                var mapOptions = {
-                    zoom: 17,
-                    mapTypeId: google.maps.MapTypeId.ROADMAP,
-                    disableDefaultUI: true,
-                    zoomControl: false
-                };
+        var posOptions = {timeout: 10000, maximumAge:120000, enableHighAccuracy: false};
 
-                var map = new google.maps.Map(document.getElementById("cmap"), mapOptions);
-                $scope.map = map;
-                
-                $scope.setLocation(place);                        
-            }
-        );
+        $cordovaGeolocation.getCurrentPosition(posOptions)
+            .then(function (position) {
+                var lat  = position.coords.latitude;
+                var long = position.coords.longitude;
+            
+                //Get place from lat, lng
+                MapService.getPlace(lat, long).then(
+                    function(place){
+                        //console.log(JSON.stringify(place));
+                        $scope.myPlace = place;
+                        //Create map
+                        var mapOptions = {
+                            zoom: 17,
+                            mapTypeId: google.maps.MapTypeId.ROADMAP,
+                            disableDefaultUI: true,
+                            zoomControl: false
+                        };
+
+                        var map = new google.maps.Map(document.getElementById("cmap"), mapOptions);
+                        $scope.map = map;
+
+                        google.maps.event.addListener((map), 'dragend',
+                            function(event) {
+                                var center = this.getCenter();
+                                MapService.getPlace(center.lat(), center.lng()).then(
+                                    function(place){
+                                      $scope.setLocation(place);  
+                                });
+                        });
+
+                        $scope.setLocation(place);                        
+                    }
+                );
+            }, function(err) {
+                // error
+                console.error('Failed to get current position. Error: ' + JSON.stringify(err));
+                //deferred.reject(err.message);
+                // return err;
+            });        
     };
 })
 
@@ -1300,11 +1323,13 @@ angular.module('SeeAroundMe.controllers', [])
     }
     
     $scope.showFullView = function(post){
-      $scope.viewMode = 'full-view';
-      $timeout(function(){
-        $scope.showMapModalBar = true;
-      },0);
-      fetchComments(post);
+        if(!$scope.showMapModalBar){
+          $scope.viewMode = 'full-view';
+          $timeout(function(){
+            $scope.showMapModalBar = true;
+          }, 600);
+          fetchComments(post);
+        }
     };
 
     $scope.goToUser = function(post){
