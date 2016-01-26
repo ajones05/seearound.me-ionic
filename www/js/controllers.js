@@ -130,7 +130,12 @@ angular.module('SeeAroundMe.controllers', [])
             name: $scope.formData.name,
             email: $scope.formData.email, 
             password: $scope.formData.password,
-            address:''
+            street_number: '',
+            street_name: '',
+            city: '',
+            state: '',
+            country: '',
+            zip: ''            
         };
         
         $rootScope.userData = data;
@@ -187,13 +192,9 @@ angular.module('SeeAroundMe.controllers', [])
     }            
 })
 
-.controller('LocationCtrl', function($scope, $rootScope, $state, $timeout, $ionicPopup, $ionicLoading, AppService) {
-
-    $scope.showLocationPopup = function(){
-        console.log('showLocationPopup ...');
-        //Get geolocation -- stores in local storage
-        AppService.getCurrentPosition();
-            
+.controller('LocationCtrl', function($scope, $rootScope, $state, $timeout, $ionicPopup, $ionicLoading, MapService, AppService) {
+    
+    $scope.doRegister = function(userData){
         $ionicPopup.confirm({
             title: '"SeeAround.me" Would Like to Use Your Current Location',
             cancelText: "Don't Allow",
@@ -203,19 +204,8 @@ angular.module('SeeAroundMe.controllers', [])
          if(res) {
              console.log('Location allowed ...');
             $ionicLoading.show();
-             //Get user's location
-             //var location = {latitude: 37.8088139, longitude: -122.2660002};
-             var userData = $rootScope.userData;
-             //console.log(JSON.stringify(userData));
-             //Attempt signup after some delay
-             $timeout(function(){
-                var location = JSON.parse(localStorage.getItem('sam_user_location'));
-                if(location){
-                    userData.latitude = location.latitude;
-                    userData.longitude = location.longitude;
-                    //console.log(JSON.stringify(userData));
-                    AppService.signUp(userData)
-                    .success(function (response) {
+            AppService.signUp(userData)
+                .success(function (response) {
                         console.log('SUCCESS ...... got reponse');
                         console.log(JSON.stringify(response));
                         $ionicLoading.hide();
@@ -225,21 +215,21 @@ angular.module('SeeAroundMe.controllers', [])
                             //$state.go('app.postmapview');
                              AppService.login(userData)
                              .success(function (response) {
-                                      $ionicLoading.hide();
-                                      if(response.status == 'SUCCESS'){
+                                    $ionicLoading.hide();
+                                    if(response.status == 'SUCCESS'){
                                       localStorage.setItem('sam_user_data', JSON.stringify(response.result));
                                       $rootScope.isBeforeSignUp = false;
                                       $state.go('app.postmapview');
-                                      }
-                                      else{
+                                    }
+                                    else{
                                       AppService.showErrorAlert('Failed to login!', response.message);
-                                      }
-                                      })
+                                    }
+                            })
                              .error(function (err) {
                                     $ionicLoading.hide();
                                     AppService.showErrorAlert('Failed to login!', 'There seems to be a network problem. Please check your internet connection and try again.'); 
                                     console.warn(JSON.stringify(err));
-                                    });
+                            });
                         }
                         else{
                            AppService.showErrorAlert('Failed to register!', response.message);
@@ -252,15 +242,69 @@ angular.module('SeeAroundMe.controllers', [])
                         console.warn(JSON.stringify(err));
                         $state.go('app.signup');
                     });
-                }
-                else{
-                    $ionicLoading.hide();
-                    AppService.showErrorAlert('Failed to register!', 'Failed to get geo location! Please try again later.');              
-                    $state.go('app.signup');
-                }
-             }, 1000);
-         }
+            }
+            //else ignore -- user did not allow location -- do nothing
        });
+        
+    };
+
+    $scope.showLocationPopup = function(){
+        console.log('showLocationPopup ...');
+        //Get geolocation -- stores in local storage
+        MapService.getCurrentPosition()
+            .then(function (position) {
+                var lat  = position.coords.latitude;
+                var long = position.coords.longitude;
+                var location = {latitude: lat, longitude: long};
+                var mylocation = JSON.stringify(location);
+
+                localStorage.setItem('sam_user_location', mylocation);
+
+                console.log(mylocation);
+            
+                //Get place from location coordinates
+                MapService.getPlace(lat, long).then(function(place){
+                    var components = place.address_components;
+                    
+                    var userData = $rootScope.userData;
+                    userData.latitude = lat;
+                    userData.longitude = long;
+                    //Get address components
+                    for (var i = 0; i < components.length; i++) {
+                        console.log(components[i]);
+                        switch(components[i].types[0]){
+                                
+                            case 'street_number':
+                                 userData.street_number = components[i].short_name;
+                                 break;                                
+                            case 'route':
+                                 userData.street_name = components[i].long_name;
+                                 break;
+                            case 'locality':
+                                 userData.city = components[i].short_name;
+                                 break;
+                            case 'administrative_area_level_1':
+                                 userData.state = components[i].short_name;
+                                 break;
+                            case 'country':
+                                 userData.country = components[i].short_name;
+                                 break;
+                            case 'postal_code':
+                                 userData.zip = components[i].short_name;
+                                 break;                                
+                        }
+                    }
+                    
+                    //console.log(JSON.stringify(userData));
+                    
+                    $scope.doRegister(userData);
+                });
+
+            }, function(err) {
+                // error
+                console.error('Failed to get current position. Error: ' + JSON.stringify(err));
+            });
+            
     }
 })
 
@@ -474,10 +518,15 @@ angular.module('SeeAroundMe.controllers', [])
     //TODO: handle "no messages" case
     AppService.getMessages()
     .success(function(res){
-      $scope.messages = res.result.map(function(m){
-        m.formatted_date = moment(m.created).fromNow();
-        return m;
-      })
+        if(res.result){
+          $scope.messages = res.result.map(function(m){
+            m.formatted_date = moment(m.created).fromNow();
+            return m;
+          });
+        }
+        else{
+           $scope.messages = []; 
+        }
       console.log($scope.messages);
       $ionicLoading.hide();
     })

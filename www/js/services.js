@@ -1,6 +1,6 @@
 angular.module('SeeAroundMe.services', [])
 
-.factory('AppService', function($http, $q, $rootScope, $cordovaCamera, $cordovaFileTransfer, $ionicPopup, API_URL) {
+.factory('AppService', function($http, $q, $rootScope, $cordovaNetwork, $cordovaCamera, $cordovaFileTransfer, $ionicPopup, API_URL) {
 
   var userData = JSON.parse(localStorage.getItem('sam_user_data')) || {};
   var userId = userData.id || 0;
@@ -181,14 +181,12 @@ angular.module('SeeAroundMe.services', [])
         },
         
         isConnected: function(){
-            if(window.Connection) {
-                if(navigator.connection.type == Connection.NONE) {
-                    return false;
-                }
-                else{
-                    return true;
-                }
-            }
+            
+            var isOffline = $cordovaNetwork.isOffline();
+            if(isOffline)
+                return false;
+            else
+                return true;
         },
 
         setIsCurrentUserFlag: function (flag){
@@ -281,7 +279,7 @@ angular.module('SeeAroundMe.services', [])
     return service;
 })
 
-.factory('MapService', function($http, $q, $rootScope, $cordovaGeolocation, AppService, ModalService) {
+.factory('MapService', function($http, $q, $rootScope, $ionicPopup, $cordovaGeolocation, AppService, ModalService) {
     var service = {
         getPlace: function(lat, lng){
             var d = $q.defer();
@@ -307,33 +305,13 @@ angular.module('SeeAroundMe.services', [])
             
             return d.promise;
         },
+        
         getCurrentPosition: function (){
-            //var deferred = $q.defer();
+            
             console.log('Geolocation Service called...');
             var posOptions = {timeout: 10000, maximumAge:120000, enableHighAccuracy: false};
 
-            $cordovaGeolocation.getCurrentPosition(posOptions)
-                .then(function (position) {
-                    var lat  = position.coords.latitude;
-                    var long = position.coords.longitude;
-                    var location = {latitude: lat, longitude: long};
-                    var mylocation = JSON.stringify(location);
-
-                    localStorage.setItem('sam_user_location', mylocation);
-
-                    console.log(mylocation);
-
-                    //deferred.resolve(location);
-
-                    // return mylocation;
-                }, function(err) {
-                    // error
-                    console.error('Failed to get current position. Error: ' + JSON.stringify(err));
-                    //deferred.reject(err.message);
-                    // return err;
-                });
-
-                //return deferred.promise;
+             return $cordovaGeolocation.getCurrentPosition(posOptions);
         },
         
         outerbounds: [ // covers the (mercator projection) world
@@ -547,8 +525,8 @@ angular.module('SeeAroundMe.services', [])
                     console.error('Failed to get current position. Error: ' + JSON.stringify(err));
                     $ionicPopup.alert({
                          title: 'See Around Me Alert',
-                         subTitle: 'Current Position',
-                         template: 'Failed to get your location. Make sure you are connected to the internet.'
+                         subTitle: 'Current Location',
+                         template: 'Failed to get your location. Make sure you are connected to the internet and allowed gelocation on your devivce.'
                    });                
             });            
         },
