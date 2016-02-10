@@ -19,7 +19,7 @@
         overflow: hidden;
         width: 90px;
         height: 90px; 
-        background: $positive;
+        background: #fff;
     }
     
     .image-round img {
@@ -28,6 +28,29 @@
         max-height: 100%;        
         margin: auto; 
     }
+    
+    .btn-location {
+        min-width: 100% !important;
+        height: 90px !important;
+        margin-top:0 !important;
+    }
+    
+    .address {        
+        width: 200px !important;
+        height: 90px !important;
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center; 
+        padding-right: 20px;
+        line-height: normal !important;
+    }
+    
+    .address i{
+        position: absolute;
+        right: 10px;
+        top: 28px;
+    }
+
 
   .post {
     // float: left;

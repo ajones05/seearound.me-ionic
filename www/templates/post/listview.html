@@ -32,12 +32,13 @@
             <div class="item item-icon-right" style="border:2px solid #ddd;" ng-click="showSelect($event)">
                 <label class="post-select">
                   {{selected.label}}
-                  <i class="icon ion-ios-arrow-down"></i>
+                  <i style="margin-right:-10px;font-size:1.5em;" class="icon ion-ios-arrow-down"></i>
                 </label>             
             </div>
         </div>
         <div class="col-20">            
-          <button class="button button-block button-positive" ng-click="searchPosts()">Go</button>
+          <button class="button button-block button-positive" ng-show="!isFiltered" ng-click="searchPosts()">Go</button>
+          <button class="button button-block button-positive" ng-show="isFiltered" ng-click="clearSearch()">Cancel</button>
         </div>
     </div>          
   <ion-content padding="false">

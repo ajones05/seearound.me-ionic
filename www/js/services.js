@@ -413,7 +413,7 @@ angular.module('SeeAroundMe.services', [])
                                 // title: post.title,
                                 icon: {
                                     url:'img/pin-gray.png',
-                                    size: new google.maps.Size(18, 25)
+                                    scaledSize: new google.maps.Size(18, 25)
                                 }
                             });
                             
@@ -426,20 +426,25 @@ angular.module('SeeAroundMe.services', [])
                             
                             $rootScope.markers.push(marker);
                         });
+                        //To use on list view
                         $rootScope.currentPosts = response.result;
-                        console.log('data set in rootscope: ', $rootScope.currentPosts);
+                        //console.log('data set in rootscope: ', $rootScope.currentPosts);
                      
                         //google.maps.event.trigger($rootScope.map,'resize');                         
                          // Automatically center the map fitting all markers on the screen
-                        $rootScope.map.fitBounds(bounds);
-                        $rootScope.map.setZoom(14);
+                        //$rootScope.map.fitBounds(bounds);
+                        
                         //Broadcast event to listen in MapController to add click events to markers - can't do it here
                         $rootScope.$broadcast('refreshdone');
                      }
+                    else{
+                        $rootScope.currentPosts = [];
+                    }
                      
                 }
                  else{
                      console.log('Failed to get nearby posts ...');
+                     $rootScope.currentPosts = [];
                  }                
             };
             
@@ -458,6 +463,7 @@ angular.module('SeeAroundMe.services', [])
                 //console.log(JSON.stringify(data));
                 AppService.getMyPosts(data)
                 .success(function (response) {
+                    $rootScope.isFiltered = true;
                     onSuccess(response);
                 })
                 .error(function (err) {
@@ -476,6 +482,7 @@ angular.module('SeeAroundMe.services', [])
                 //console.log(JSON.stringify(data));
                 AppService.getNearbyPosts(data)
                 .success(function (response) {
+                    $rootScope.isFiltered = false;
                     onSuccess(response);
                 })
                 .error(function (err) {
@@ -490,6 +497,84 @@ angular.module('SeeAroundMe.services', [])
                 this.removeMarkers();
             }
             
+            $rootScope.map.setCenter($rootScope.currentCenter);
+
+            //We'll maintain an array of markers to manage them later in the app
+            $rootScope.markers = [];
+
+            // Show current user position
+            var myLocation = new google.maps.Marker({
+                position: $rootScope.myCenter,
+                map: $rootScope.map,
+                icon: {
+                    url:'img/pin-blue.png',
+                    scaledSize: new google.maps.Size(22, 30)
+                },
+                // animation: google.maps.Animation.BOUNCE,
+                title: "My Location"
+            });
+
+            $rootScope.markers.push(myLocation);
+
+            this.showPosts($rootScope.currentCenter, searchData);
+        },
+        
+        resetMap: function(){            
+            //Remove markers if any
+            if($rootScope.markers && $rootScope.markers.length > 0){
+                this.removeMarkers();
+            }
+            
+            $rootScope.map.setCenter($rootScope.myCenter);
+
+            //We'll maintain an array of markers to manage them later in the app
+            $rootScope.markers = [];
+
+            // Show current user position
+            var myLocation = new google.maps.Marker({
+                position: $rootScope.myCenter,
+                map: $rootScope.map,
+                icon: {
+                    url:'img/pin-blue.png',
+                    scaledSize: new google.maps.Size(22, 30)
+                },
+                // animation: google.maps.Animation.BOUNCE,
+                title: "My Location"
+            });
+
+            $rootScope.markers.push(myLocation);
+
+            this.showPosts($rootScope.myCenter);
+        },        
+        
+        centerMap: function(center){            
+            //Remove markers if any
+            if($rootScope.markers && $rootScope.markers.length > 0){
+                this.removeMarkers();
+            }
+            else{
+                $rootScope.markers = [];
+            }
+            
+            $rootScope.map.setCenter(center);
+            
+            // Show current user position
+            var myLocation = new google.maps.Marker({
+                position: $rootScope.myCenter,
+                map: $rootScope.map,
+                icon: {
+                    url:'img/pin-blue.png',
+                    scaledSize: new google.maps.Size(22, 30)
+                },
+                // animation: google.maps.Animation.BOUNCE,
+                title: "My Location"
+            });
+
+            $rootScope.markers.push(myLocation);
+            this.showPosts(center);            
+        },        
+        
+        initMap: function(){
             var me = this;
             var posOptions = {timeout: 10000, maximumAge:120000, enableHighAccuracy: false};
             $cordovaGeolocation.getCurrentPosition(posOptions)
@@ -498,27 +583,42 @@ angular.module('SeeAroundMe.services', [])
                     var long = position.coords.longitude;//-122.2660002
                                     
                     var center = new google.maps.LatLng(lat, long);
+                    $rootScope.myCenter = center;
+                    $rootScope.currentCenter = center;
                 
-                    $rootScope.map.setCenter(center);
-                    
-                    //We'll maintain an array of markers to manage them later in the app
-                    $rootScope.markers = [];
+                    var mapOptions = {
+                        //center: center,
+                        zoom: 14,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP,
+                        disableDefaultUI: true,
+                        zoomControl: false//,
+                        //zoomControlOptions: {
+                          //style: google.maps.ZoomControlStyle.SMALL
+                        //}
+                    };
 
-                    // Show current user position
-                    var myLocation = new google.maps.Marker({
-                        position: center,
-                        map: $rootScope.map,
-                        icon: {
-                            url:'img/pin-blue.png',
-                            size: new google.maps.Size(22, 30)
-                        },
-                        // animation: google.maps.Animation.BOUNCE,
-                        title: "My Location"
+                    // console.log(mapOptions);
+                    var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+                    /*
+                    // Override our map zoom level once our fitBounds function runs (Make sure it only runs once)
+                    var boundsListener = google.maps.event.addListener((map), 'bounds_changed',
+                        function(event) {
+                            this.setZoom(14);
+                            google.maps.event.removeListener(boundsListener);
+                    });*/
+
+                    google.maps.event.addListener((map), 'dragend', 
+                        function(event) { 
+                        //console.log('map dragged'); 
+                        var c = this.getCenter();
+                        $rootScope.currentCenter = c;
+                        me.centerMap(c);
                     });
 
-                    $rootScope.markers.push(myLocation);
-
-                    me.showPosts(center, searchData);
+                    $rootScope.map = map;
+                
+                    //Now add circle and post locations on the map
+                    me.refreshMap();
                 
                 }, function(err) {
                     // error
@@ -529,52 +629,6 @@ angular.module('SeeAroundMe.services', [])
                          template: 'Failed to get your location. Make sure you are connected to the internet and allowed gelocation on your devivce.'
                    });                
             });            
-        },
-        
-        centerMap: function(center){            
-            //Remove markers if any
-            if($rootScope.markers && $rootScope.markers.length > 0){
-                this.removeMarkers();
-            }
-            
-            $rootScope.map.setCenter(center);
-
-            //We'll maintain an array of markers to manage them later in the app
-            $rootScope.markers = [];
-
-            this.showPosts(center);            
-        },        
-        
-        initMap: function(){
-                        
-            var mapOptions = {
-                //center: center,
-                zoom: 14,
-                mapTypeId: google.maps.MapTypeId.ROADMAP,
-                disableDefaultUI: true,
-                zoomControl: false//,
-                //zoomControlOptions: {
-                  //style: google.maps.ZoomControlStyle.SMALL
-                //}
-            };
-            
-            // console.log(mapOptions);
-            var map = new google.maps.Map(document.getElementById("map"), mapOptions);
-            
-            // Override our map zoom level once our fitBounds function runs (Make sure it only runs once)
-            var boundsListener = google.maps.event.addListener((map), 'bounds_changed',
-                function(event) {
-                    this.setZoom(14);
-                    google.maps.event.removeListener(boundsListener);
-            });
-            var me = this;
-            google.maps.event.addListener((map), 'dragend', 
-                function(event) { 
-                //console.log('map dragged'); 
-                me.centerMap(this.getCenter());
-            });
-
-            $rootScope.map = map;
         }
     };
     

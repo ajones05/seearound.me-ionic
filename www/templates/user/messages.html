@@ -1,17 +1,24 @@
 <ion-view view-title="Messages" class="messages" hide-nav-bar="true">
   <ion-header-bar class="bar bar-header">
-    <button menu-toggle="left" class="button button-icon">
-      <img src="img/menu_off.png" height="18"/>
+    <!-- <button menu&#45;toggle="left" class="button button&#45;icon"> -->
+    <!--   <img src="img/menu_off.png" height="18"/> -->
+    <!-- </button> -->
+    <button class="button button-clear" ng-click="goHome()">
+      <i class="icon ion-ios-arrow-left"></i>
     </button>
     <h1 class="title">Messages</h1>
-    <button class="button button-icon" ng-click="showCompose()">
+    <!-- <button class="button button&#45;icon" ui&#45;sref="app.userfollowing"> -->
+      <button
+        ng-click="goToFollowing()"
+        class="button button-icon">
       <img src="img/newpost_off.png" height="22"/>
     </button>                
   </ion-header-bar>    
   <ion-content>
     <ion-list>
       <ion-item
-        ng-repeat="m in messages"
+        ng-repeat="m in messages track by m.id"
+        ng-class="{'gray': m.reciever_read == '1'}"
         class="message">
         <div class="row"
           ng-click='viewConversation(m.sender_id)'>

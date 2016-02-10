@@ -19,8 +19,11 @@
             <img ng-show="!imgUri" ng-src="img/cam_icon.png"/>
         </div>
         <div class="col col-70">
-            <div style="height:90px;padding-top:28px;margin-top:0px" ui-sref="chooselocation" class="button button-large button-block icon-right ion-chevron-right button-stable">
-                {{addLocation}}
+            <div ui-sref="chooselocation" class="button button-large button-block button-stable btn-location">
+                <p class="address">
+                    {{addLocation}}
+                    <i class="icon icon-right ion-chevron-right"></i>
+                </p>
             </div>
         </div>
     </div>

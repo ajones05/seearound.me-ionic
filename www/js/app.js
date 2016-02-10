@@ -1,6 +1,6 @@
 angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.services', 'ngCordova','google.places'])
 
-.run(function($ionicPlatform, $state, $rootScope, $ionicPopup, $ionicHistory ) {
+.run(function($ionicPlatform, $state, $rootScope, AppService, $ionicPopup, $ionicHistory ) {
   $ionicPlatform.ready(function() {
     if (window.cordova && window.cordova.plugins.Keyboard) {
         cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
@@ -9,6 +9,24 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
+    }
+
+    $rootScope.goBack = function(){
+      if (!$ionicHistory.goBack())
+        window.history.go(-1)
+    }
+
+    $rootScope.goToProfile = function(id){
+      console.log('goto profile called with id= ', id);
+      AppService.setIsCurrentUserFlag(false);
+      AppService.setUserForProfilePage(id)
+      .then(function(){
+        $state.go('app.userprofile');
+      })
+    };
+
+    $rootScope.goHome = function(){
+      $state.go('app.postmapview')
     }
 
     $rootScope.currentPosts = null;
@@ -26,9 +44,6 @@ angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.
       $state.go('home');
     }
 
-    $rootScope.goBack =function(){
-      $ionicHistory.goBack()
-    }
   });
 })
 

@@ -130,11 +130,11 @@
           </span>
           <span class="col" ng-click='openShare(post.sanitizedText, post.first_link)'> Share</span>
         </div>
+        <hr/>
 
         <div class="comments"
           ng-if="postComments"
           style="background:white; padding-bottom: 200px">
-          <hr/>
           <div class="row user" 
             style="border-bottom: 1px solid lightgray; padding-bottom: 5px;"
             ng-repeat="comment in postComments">

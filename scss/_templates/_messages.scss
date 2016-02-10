@@ -39,14 +39,15 @@
     }
       
     img{
-      height: 60px !important;
-      width: 60px !important;
+      height: 50px !important;
+      width: 50px !important;
       border-radius: 100%;
       border: 2px solid $positive;
     }
 
     .row{
       padding: 0;
+      margin: 2px auto;
       p{
         padding: 5px;
         line-height: 0.8rem;
@@ -66,4 +67,9 @@
       padding: 0;
     }
   }
+
+  .gray{
+    background: lightgray;
+  }
+
 }

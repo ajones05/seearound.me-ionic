@@ -7815,12 +7815,28 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   overflow: hidden;
   width: 90px;
   height: 90px;
-  background: #345EC2; }
+  background: #fff; }
 .addpost .image-round img {
   display: block;
   max-width: 100%;
   max-height: 100%;
   margin: auto; }
+.addpost .btn-location {
+  min-width: 100% !important;
+  height: 90px !important;
+  margin-top: 0 !important; }
+.addpost .address {
+  width: 200px !important;
+  height: 90px !important;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  padding-right: 20px;
+  line-height: normal !important; }
+.addpost .address i {
+  position: absolute;
+  right: 10px;
+  top: 28px; }
 .addpost .post {
   height: 10rem; }
 .addpost textarea {
@@ -7973,7 +7989,10 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 .home .container {
   height: 100%; }
 .home .bottom {
-  margin-top: 42%; }
+  position: fixed;
+  left: 5%;
+  right: 5%;
+  bottom: 3%; }
 
 .login hr {
   width: 100%; }
@@ -8133,12 +8152,13 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
       margin: auto;
       margin-left: 20px; }
     .messages .message img {
-      height: 60px !important;
-      width: 60px !important;
+      height: 50px !important;
+      width: 50px !important;
       border-radius: 100%;
       border: 2px solid #345EC2; }
     .messages .message .row {
-      padding: 0; }
+      padding: 0;
+      margin: 2px auto; }
       .messages .message .row p {
         padding: 5px;
         line-height: 0.8rem;
@@ -8150,6 +8170,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
         font-style: italic; }
   .messages .item-complex .item-content {
     padding: 0; }
+  .messages .gray {
+    background: lightgray; }
 
 .postlistview {
   font-family: 'Lato'; }
@@ -8242,15 +8264,15 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
       text-align: right;
       font-family: 'Lato';
       font-size: .8rem; }
-  .postlistview ion-footer-bar {
-    border-top: 2px solid #EEEEEE;
+  .postlistview .write-comment {
+    border: 2px solid #EEEEEE;
     padding: 0; }
-    .postlistview ion-footer-bar input {
+    .postlistview .write-comment input {
       font-family: 'Lato-Italic';
       width: 75%;
       padding-left: 30px;
       padding-top: 10px; }
-    .postlistview ion-footer-bar .button {
+    .postlistview .write-comment .button {
       width: 25%;
       padding-top: 5px;
       border-radius: 0; }

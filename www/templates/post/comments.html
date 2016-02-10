@@ -12,7 +12,7 @@
         <div class="col col-20 avatar"
           ng-click="goToProfile(post.user_id)"
           >
-          <img src="{{post.Profile_image}}" alt="">
+          <img src="{{post.Profile_image}}">
         </div>
         <div class="col"> 
           <div class="name">
@@ -71,9 +71,9 @@
         <!-- </div>                         -->
       </div>
     </div>
+    <div class="row write-comment">
+      <input type="text" ng-model="commentText" placeholder="Write a comment..">
+      <div class="button button-positive" ng-click="postComment(commentText)">Post</div>
+    </div>
   </ion-content>
-  <ion-footer-bar>
-    <input type="text" ng-model="commentText" placeholder="Write a comment..">
-    <div class="button button-positive" ng-click="postComment(commentText)">Post</div>
-  </ion-footer-bar>
 </ion-view>

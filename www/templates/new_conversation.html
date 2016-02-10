@@ -7,7 +7,7 @@
         <i class="icon ion-ios-arrow-left"></i>
       </button>
     </div>
-    <h1 class="title">New message to {{User.Name}}</h1>
+    <h1 class="title">New message {{User.name.trim().length > 1 ? 'to '+ User.Name : null}}</h1>
   </ion-header-bar>
 
   <ion-content>

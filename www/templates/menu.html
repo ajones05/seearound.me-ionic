@@ -22,7 +22,7 @@
           <div ng-click='goToOwnProfile()' menu-close>
             <img ng-src="{{User.Profile_image}}" >
           </div>
-          <div ui-sref="app.userprofile" menu-close>{{User.Name}} </div>
+          <div ng-click="goToOwnProfile()" menu-close>{{User.Name}} </div>
         </ion-item>
         <ion-item>
           View Posts
@@ -61,11 +61,11 @@
           menu-close>
           <button
             ui-sref="app.terms"
-            style="color: #7d7d7d;"
+            style="color: #7d7d7d;font-size:0.8rem"
             class="button-clear button-stable">Terms</button>
           <button
             ui-sref="app.about"
-            style="color: #7d7d7d;"
+            style="color: #7d7d7d;font-size:0.8rem"
             class="button-clear button-stable">About</button>
         </ion-item>
       </ion-list>
