@@ -73,13 +73,7 @@
           {{post.comment_count}}
           <img src="img/chat.png" alt="">
         </span>
-        <span class="col arrows">
-          <img src="img/upvote_off.png" ng-if="post.isLikedByUser != 1" ng-click="vote(post.id, 1)" alt="">
-          <img src="img/upvote_on.png" ng-if="post.isLikedByUser == 1" ng-click="vote(post.id, 0)" alt="">
-          {{post.news_count}} 
-          <img src="img/downvote_off.png" ng-if="post.isLikedByUser != -1" ng-click="vote(post.id, -1)" alt="">
-          <img src="img/downvote_on.png" ng-if="post.isLikedByUser == -1" ng-click="vote(post.id, 0)" alt="">
-        </span>
+        <post-like-box />
         <span class="col" ng-click='openShare(post.sanitizedText, post.first_link)'> Share</span>
       </div>
     </div>

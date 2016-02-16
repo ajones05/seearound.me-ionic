@@ -90,24 +90,6 @@ angular.module('SeeAroundMe.controllers', [])
   $scope.openShare = function(text, link){
     window.plugins.socialsharing.share( text, null, null,link);
   }
-
-  $scope.vote = function(newsId , v){
-    console.log($scope.post);
-
-    AppService.vote(newsId, v)
-    .then(function(response){
-      console.log('response->', response)
-      if (response.data.reasonfailed){
-        console.log('voting failed', response.data.message)
-      }else if (response.data.success){
-        $scope.post.news_count = response.data.vote;
-        $scope.post.isLikedByUser = v +'';
-      }
-    }, function(err){
-      console.log('error upvoting', err)
-    })
-  }
-
 })
 
 .controller('SignupCtrl', function($scope, $rootScope, $state, AppService) {
@@ -505,7 +487,15 @@ angular.module('SeeAroundMe.controllers', [])
   };
 })
 
-.controller('FollowingCtrl', function($scope, $rootScope, $ionicLoading, AppService, $state){
+.controller('FollowingCtrl', function($scope, AppService, $state, $ionicHistory){
+      $scope.viewConversation = function(otherUserId){
+        AppService.setOtherUserId(otherUserId);
+        $state.go('app.userchat')
+      };
+      
+      $scope.goBack = function(){
+          $ionicHistory.goBack();
+      };
 })
 
 .controller('MessagesCtrl', function($scope, $rootScope, $ionicLoading, ModalService, AppService, $state){
@@ -695,27 +685,6 @@ angular.module('SeeAroundMe.controllers', [])
     })
   };
 
-  $scope.vote = function(newsId , v){
-    // pass v => '1' for upvote
-    // and v=> '-1' for downvote
-    AppService.vote(newsId, v)
-    .then(function(response){
-      if (response.data.reasonfailed){
-        console.log('voting failed', response.data.message)
-      }else if (response.data.success){
-        $scope.nearbyPosts.map(function(post){
-          if (post.id === newsId){
-            post.news_count = response.data.vote;
-            post.isLikedByUser = v + '';
-          }
-        })
-      }
-
-    }, function(err){
-      console.log('error upvoting', err)
-    })
-  }
-    
     $scope.modal2 = function() {
         ModalService.init('templates/post/add-post.html', $scope).then(function(modal) {
             modal.show();
@@ -1074,7 +1043,8 @@ angular.module('SeeAroundMe.controllers', [])
     $scope.openMedia = function(type){
         AppService.getImage(type);
         $scope.toggleCamBar();
-        $scope.textColor = 'blue'
+        if($scope.addLocation !== "        Add location")
+            $scope.textColor = 'blue'
     };
     
     $scope.clearImage = function(){
@@ -1090,29 +1060,40 @@ angular.module('SeeAroundMe.controllers', [])
     $scope.$on('$ionicView.enter', function(e) {
         if($stateParams.address){
             $scope.addLocation = $stateParams.address;
+            if($rootScope.postText || $rootScope.imgUri != ""){
+                $scope.formData.postText = $rootScope.postText;
+                $scope.textColor = 'blue';
+            }
         }
         else{
-            $scope.addLocation = "Add location";
-        }
-        
-        if($rootScope.postText){
-            $scope.formData.postText = $rootScope.postText;
-            $scope.textColor = 'blue';
-        }
+            $scope.addLocation = "        Add location";
+        }        
     });
 
     
     // set post button to blue when typing
     $scope.checkInput = function(){
+      $rootScope.postText =  $scope.formData.postText;
       $scope.textColor = '';
-      if ($scope.formData.postText){
-        //console.log($scope.formData.postText);
-        $rootScope.postText =  $scope.formData.postText; 
-        ($scope.formData.postText.length > 0) ? $scope.textColor = 'blue' : $scope.textColor = 'gray';
+      if ($scope.addLocation != "        Add location"){
+        //console.log($scope.formData.postText);         
+        if($scope.formData.postText || $rootScope.imgUri){
+            $scope.textColor = 'blue';
+        } 
+        else{  
+            $scope.textColor = 'gray';
+        }
+      }
+      else{
+        $scope.textColor = 'gray';    
       }
     };
 
     $scope.postNews = function () {
+        
+        if($scope.textColor == 'gray' || $scope.addLocation == "        Add location")
+            return;
+        
         $ionicLoading.show({
                template: '<ion-spinner class="spinner-calm"></ion-spinner><br/>Posting ...',
                duration: 20000 //Dismiss after 20 seconds
@@ -1126,7 +1107,6 @@ angular.module('SeeAroundMe.controllers', [])
             "address" : $stateParams.address
         };
 
-        $ionicLoading.show('Posting ...');
         AppService.addNewPost(data).then(
                 function(res){
                     console.log('Post Success ...');
@@ -1136,6 +1116,7 @@ angular.module('SeeAroundMe.controllers', [])
                     $state.go('app.postlistview');
                 },
                 function(error){
+                    $ionicLoading.hide();
                     console.log(JSON.stringify(error));
                 },
                 function(progress){
@@ -1145,7 +1126,7 @@ angular.module('SeeAroundMe.controllers', [])
     };    
 })
 
-.controller('ChooseLocCtrl', function($scope, $rootScope, $state, $cordovaGeolocation, MapService){
+.controller('ChooseLocCtrl', function($scope, $rootScope, $timeout, $state, $cordovaGeolocation, MapService){
     
     $scope.place = {};
     $scope.place.formatted_address = '';
@@ -1158,83 +1139,37 @@ angular.module('SeeAroundMe.controllers', [])
     };
     
     $scope.setPlace = function(place){
-        // Clear out the old marker.
-        if($scope.marker){
-            $scope.marker.setMap(null);
-            $scope.marker = null;
-        }
-        
         if(place.geometry){
             var center = new google.maps.LatLng(place.geometry.location.lat(), place.geometry.location.lng());
+            $scope.center = center;
             // If the place has a geometry, then present it on a map.
             if (place.geometry.viewport) {
               $scope.map.fitBounds(place.geometry.viewport);
             } else {
               $scope.map.setCenter(center);
               $scope.map.setZoom(14);
-            }
-            
-            var marker = new google.maps.Marker({
-                position: center,
-                map: $scope.map,
-                icon: {
-                    url:'img/use_location.png',
-                    scaledSize: new google.maps.Size(108, 60),
-                    origin: new google.maps.Point(0, 0),
-                    anchor: new google.maps.Point(54, 60)
-                }
-            }); 
-                        
-            google.maps.event.addListener(marker, 'click', function() {
+            }            
+        }        
+    };
+    
+    $scope.pickLocation = function(){
+        //Get place from lat, lng
+        MapService.getPlace($scope.center.lat(), $scope.center.lng()).then(
+            function(place){
+                //console.log(JSON.stringify(place));
                 var p = {
                     address: place.formatted_address,
                     latitude: place.geometry.location.lat(),
                     longitude: place.geometry.location.lng() 
                 };
-                
+
                 $state.go('newpostview', p);
-            }); 
-                        
-            $scope.marker = marker;
-        }        
+            });
     };
     
     $scope.setLocation = function(center){
-        // Clear out the old marker.
-        if($scope.marker){
-            $scope.marker.setMap(null);
-            $scope.marker = null;
-        }
-        
         $scope.map.setCenter(center);
-
-        var marker = new google.maps.Marker({
-            position: center,
-            map: $scope.map,
-            icon: {
-                url:'img/use_location.png',
-                scaledSize: new google.maps.Size(108, 60),
-                origin: new google.maps.Point(0, 0),
-                anchor: new google.maps.Point(54, 60)
-            }
-        }); 
-            
-        google.maps.event.addListener(marker, 'click', function() {
-            //Get place from lat, lng
-            MapService.getPlace(center.lat(), center.lng()).then(
-                function(place){
-                    //console.log(JSON.stringify(place));
-                    var p = {
-                        address: place.formatted_address,
-                        latitude: place.geometry.location.lat(),
-                        longitude: place.geometry.location.lng() 
-                    };
-
-                    $state.go('newpostview', p);
-                });
-        }); 
-
-        $scope.marker = marker;
+        $scope.center = center;
     };
     
     $scope.setCurrentLocation = function(){
@@ -1242,6 +1177,9 @@ angular.module('SeeAroundMe.controllers', [])
     };
 
     $scope.clearText = function(){
+        var locationFld = document.getElementById('locFld');
+        locationFld.value = "";
+        locationFld.focus();
         $scope.place.formatted_address = '';
     };
     
@@ -1277,19 +1215,14 @@ angular.module('SeeAroundMe.controllers', [])
                 });
             
                 google.maps.event.addListener((map), 'click', function(event) {
-                        if(event.pixel.x > 280 && event.pixel.x < 320 && event.pixel.y > 80 && event.pixel.y < 120 ){
-                            console.log('Cross clicked ...');
-                            document.getElementById('locFld').value = "";
-                            $scope.place.formatted_address = '';
-                        }
-                        else{
-                             document.getElementById('locFld').blur();
-                        }
+                    document.getElementById('locFld').blur();
                 });
             
-
-                $scope.setLocation(center);                        
-
+                $scope.setLocation(center);  
+            
+                $timeout(function(){
+                   $scope.isInitialized = true;
+                }, 500);
             }, function(err) {
                 // error
                 console.error('Failed to get current position. Error: ' + JSON.stringify(err));
@@ -1399,7 +1332,7 @@ angular.module('SeeAroundMe.controllers', [])
       AppService.getCurrentComments(post)
       .then(function(current){
         console.log('response', current);
-        $scope.postComments = current.comments || [];
+        $scope.postComments = current.comments.reverse() || [];
         try{
           $scope.postComments.map(function(comment){
             comment.timeAgo = moment(comment.commTime).fromNow();
@@ -1419,7 +1352,7 @@ angular.module('SeeAroundMe.controllers', [])
           $scope.viewMode = 'full-view';
           $timeout(function(){
             $scope.showMapModalBar = true;
-          }, 10);
+          }, 700);
           fetchComments(post);
         }
     };
@@ -1435,23 +1368,6 @@ angular.module('SeeAroundMe.controllers', [])
 
     $scope.openShare = function(text, link){
       window.plugins.socialsharing.share( text, null, null,link);
-    }
-
-    $scope.vote = function(newsId , v){
-      console.log($scope.post);
-
-      AppService.vote(newsId, v)
-      .then(function(response){
-        console.log('response->', response)
-        if (response.data.reasonfailed){
-          console.log('voting failed', response.data.message)
-        }else if (response.data.success){
-          $scope.post.news_count = response.data.vote;
-          $scope.post.isLikedByUser = v +'';
-        }
-      }, function(err){
-        console.log('error upvoting', err)
-      })
     }
 
     $scope.swipe = function(direction, thisPost){
@@ -1523,15 +1439,16 @@ angular.module('SeeAroundMe.controllers', [])
         $scope.popover = popover;
     });
 
-    $rootScope.alertActions = function (type){
-      switch(type.toLowerCase()){
+    $rootScope.alertActions = function (alert){
+      switch(alert.type.toLowerCase()){
         case 'friend':
           $scope.popover.hide();
           $state.go('app.userfollowing');
           break;
         case 'message':
           $scope.popover.hide();
-          $state.go('app.usermessages');
+          AppService.setOtherUserId(alert.user_id);
+          $state.go('app.userchat');
           break;
         default:
           $scope.popover.hide();
@@ -1540,46 +1457,6 @@ angular.module('SeeAroundMe.controllers', [])
     
     $scope.showAlerts = function ($event) {
       console.log('showAlerts called ...');
-      // $scope.alerts = [
-      //   {
-      //     user: "Amie Roger",
-      //     message: "This is a test message to see how it looks like.",
-      //     time: "July 10, 9:15am",
-      //     profileImage: "img/eskimo.jpg"
-      //   },
-      //   {
-      //     user: "Amie Roger",
-      //     message: " This is a test message. This indeed is a test.",
-      //     time: "July 10, 9:15am",
-      //     profileImage: "img/eskimo.jpg"
-      //   },
-      //
-      //   {
-      //     user: "Amie Roger",
-      //     message: "This is a different test message. It is a bit longer. It will tell you how longer messages will look like. That should be enough.",
-      //     time: "July 10, 9:15am",
-      //     profileImage: "img/eskimo.jpg"
-      //   },        
-      //   {
-      //     user: "Amie Roger",
-      //     message: "This is very short.",
-      //     time: "July 10, 9:15am",
-      //     profileImage: "img/eskimo.jpg"
-      //   },
-      //
-      //   {
-      //     user: "Amie Roger",
-      //     message: "This is just more than short.",
-      //     time: "July 10, 9:15am",
-      //     profileImage: "img/eskimo.jpg"
-      //   },
-      //   {
-      //     user: "Amie Roger",
-      //     message: "This is a long message but not that long.",
-      //     time: "July 10, 9:15am",
-      //     profileImage: "img/eskimo.jpg"
-      //   }];
-
         $scope.popover.show($event);        
     };
     
@@ -1674,16 +1551,23 @@ angular.module('SeeAroundMe.controllers', [])
     var getAlerts = function(){
       AppService.getAlerts()
       .then(function(res){
-        $rootScope.alerts = res.data.result;
-        if (!res.data.result){
-          $rootScope.alerts = [{
-            message: 'No alerts'
-          }]
-        }
-      })
+          if(res.data.result){
+              var alerts = res.data.result;
+              alerts.forEach(function(alert){
+                  var d = alert.created_at.split("-").join("/");
+                  alert.created_at = new Date(d);
+              });
+
+              $rootScope.alerts = alerts;
+          }
+          else{
+              $rootScope.alerts = [{message: 'No alerts'}];
+         }
+      });
     };
 
     var getFollowers = function (){
+        
       AppService.getFollowing()
       .success(function(data){
         // this should be following and not followers
@@ -1740,6 +1624,102 @@ angular.module('SeeAroundMe.controllers', [])
     };    
 })
 
+.directive('postLikeBox', function () {
+    return {
+        restrict: 'E',
+        template: '<span class="col arrows">'
+              +'<img src="img/upvote_off.png" ng-if="post.isLikedByUser == 0" ng-click="upVote(post.id, 1)" alt="">'
+              +'<img src="img/upvote_off.png" ng-if="post.isLikedByUser == -1" ng-click="upVote(post.id, 1)" alt="">'
+              +'<img src="img/upvote_on.png" ng-if="post.isLikedByUser == 1" ng-click="upVote(post.id, -1)" alt="">'
+              +'{{post.vote}}'
+              +'<img src="img/downvote_on.png" ng-if="post.isLikedByUser == -1" ng-click="downVote(post.id, 1)" alt="">'
+              +'<img src="img/downvote_off.png" ng-if="post.isLikedByUser == 1" ng-click="downVote(post.id, -1)" alt="">'
+              +'<img src="img/downvote_off.png" ng-if="post.isLikedByUser == 0" ng-click="downVote(post.id, -1)" alt=""></span>',
+        controller: function ($scope, AppService) {
+              $scope.upVote = function(newsId , v){
+                    console.log('V: ' + v);
+                    // pass v => '1' for upvote
+                    // and v=> '-1' for downvote
+                    AppService.vote(newsId, v)
+                    .then(function(response){
+                          console.log(JSON.stringify(response));
+                      if (response.data.reasonfailed){
+                          console.log(JSON.stringify(response.data.message));
+                      }else if (response.data.success){
+                        $scope.nearbyPosts.map(function(post){
+                          if (post.id === newsId){
+                            post.vote = response.data.vote;
+                            if(post.isLikedByUser == 1 && v == -1)//Cancel vote case
+                                    post.isLikedByUser = 0;
+                            else if(post.isLikedByUser == 0 && v == 1)
+                                    post.isLikedByUser = 1;
+                            else if(post.isLikedByUser == -1 && v == 1){
+                                post.isLikedByUser = 0;
+                                //Vote twice: one to cance negative vote and the other to vote plus
+                                AppService.vote(newsId, v)
+                                .then(function(response){
+                                  console.log(JSON.stringify(response));
+                                  if (response.data.reasonfailed){
+                                      console.log(JSON.stringify(response.data.message));
+                                  }else if (response.data.success){
+                                       post.vote = response.data.vote;
+                                      post.isLikedByUser = 1;
+                                  }
+                                });
+                            }                                   
+                          }
+                        })
+                      }
+
+                    }, function(err){
+                      console.log('error upvoting', JSON.stringify(err));
+                    });
+              };
+            
+              $scope.downVote = function(newsId , v){
+                    console.log('V: ' + v);
+                    // pass v => '1' for upvote
+                    // and v=> '-1' for downvote
+                    AppService.vote(newsId, v)
+                    .then(function(response){
+                          console.log(JSON.stringify(response));
+                      if (response.data.reasonfailed){
+                          console.log(JSON.stringify(response.data.message));
+                      }else if (response.data.success){
+                        $scope.nearbyPosts.map(function(post){
+                          if (post.id === newsId){
+                            post.vote = response.data.vote;
+                            if(post.isLikedByUser == 0 && v == -1)
+                                    post.isLikedByUser = -1;
+                            else if(post.isLikedByUser == -1 && v == 1)
+                                    post.isLikedByUser = 0;
+                            else if(post.isLikedByUser == 1 && v == -1){
+                                post.isLikedByUser = 0;
+                                //Vote twice: one to cancel positive vote and the other to vote negative
+                                AppService.vote(newsId, v)
+                                .then(function(response){
+                                  console.log(JSON.stringify(response));
+                                  if (response.data.reasonfailed){
+                                      console.log(JSON.stringify(response.data.message));
+                                  }else if (response.data.success){
+                                       post.vote = response.data.vote;
+                                       post.isLikedByUser = -1;
+                                  }
+                                });                                
+                            }
+                          }
+                        })
+                      }
+
+                    }, function(err){
+                      console.log('error upvoting', JSON.stringify(err));
+                    });
+              }
+            
+        }
+    }
+})
+
 .directive('focusMe', function($timeout) {
   return {
     link: function(scope, element, attrs) {
@@ -1750,3 +1730,6 @@ angular.module('SeeAroundMe.controllers', [])
     }
   };
 });
+
+          
+

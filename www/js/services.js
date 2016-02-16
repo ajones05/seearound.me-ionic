@@ -169,7 +169,12 @@ angular.module('SeeAroundMe.services', [])
                 params: data
             };
             
-            return $cordovaFileTransfer.upload(url, $rootScope.imgUri, options, true);
+            if($rootScope.imgUri){
+                return $cordovaFileTransfer.upload(url, $rootScope.imgUri, options, true);
+            }
+            else{
+                return $http.post(url, data);
+            }
         },
         
         showErrorAlert: function(subTitle, message){

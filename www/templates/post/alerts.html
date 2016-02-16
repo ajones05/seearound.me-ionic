@@ -3,14 +3,14 @@
     <ion-list>
       <ion-item ng-repeat="alert in alerts" class="alert">
         <div class="row"
-          ng-click="alertActions(alert.type)">
+          ng-click="alertActions(alert)">
           <div ng-if="alert.user_image" class="avatar">
             <img ng-src="{{alert.user_image}}">
           </div>
           <div class="col top">
             <div class="row" style="padding-right:10px;">
               <span class="col name">{{alert.user_name}}</span>
-              <span class="col time">{{alert.created_at}}</span>
+              <span class="col time">{{alert.created_at | date: 'MMM d, yyyy hh:mma'}}</span>
             </div>
             <div class="row">
               <p class="text"> {{alert.message}} </p>

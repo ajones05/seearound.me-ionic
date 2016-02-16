@@ -1,6 +1,6 @@
 <ion-view view-title="Following" hide-nav-bar="true">
     <ion-header-bar class="bar bar-header">
-      <button class="button button-clear" ui-sref="app.usermessages">
+      <button class="button button-clear" ng-click="goBack()">
         <i class="icon ion-ios-arrow-left"></i>
       </button>
         <!-- <button menu&#45;toggle="left" class="button button&#45;icon"> -->
@@ -21,7 +21,7 @@
             margin-bottom: -10px;
           ">
           <i class="icon ion-search placeholder-icon"></i>
-          <input placeholder="filter this list.." type="text" ng-model="filterText" />
+          <input placeholder="Filter this list.." type="text" ng-model="filterText" />
         </label>
       </div>
       <hr style="height: 1px; background-color: lightgray; border: 0"/>
@@ -35,10 +35,7 @@
           <img ng-src="{{follower.Profile_image}}"/>
         </div>
 
-        <div class="col" style="
-          display: -webkit-flex;
-          align-items: center;
-          ">
+        <div class="col" style="display: -webkit-flex;align-items: center;" ng-click="viewConversation(follower.id)">
           <div class="name">{{follower.Name}}</div>
           <!-- <div class="mutual">{{follower.mutual_count}} mutual friends.</div> -->
         </div>

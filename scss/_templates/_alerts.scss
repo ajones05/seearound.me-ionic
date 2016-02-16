@@ -4,6 +4,7 @@
     width:86%;
     height:80%;
     border-radius: 0 !important;
+    border-bottom: 1px solid #666;
     position: absolute !important;
     left:7% !important;
     
@@ -33,6 +34,7 @@
             color: $positive;
             .name{
                 font-style: italic;
+                font-size: .9em;
             }
         }
 
@@ -58,7 +60,7 @@
           }
           .time{
             text-align: right;
-            font-size: .8em;
+            font-size: .6em;
             font-style: italic;          
           }
         }

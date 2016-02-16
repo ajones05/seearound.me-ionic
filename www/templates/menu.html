@@ -19,35 +19,35 @@
     <ion-content>
       <ion-list>
         <ion-item class="profile_image">
-          <div ng-click='goToOwnProfile()' menu-close>
+          <div ng-click='goToOwnProfile()' menu-toggle>
             <img ng-src="{{User.Profile_image}}" >
           </div>
-          <div ng-click="goToOwnProfile()" menu-close>{{User.Name}} </div>
+          <div ng-click="goToOwnProfile()" menu-toggle>{{User.Name}} </div>
         </ion-item>
         <ion-item>
           View Posts
-          <p ui-sref="app.postmapview" menu-close> Map View <i class="ion-chevron-right"></i> </p>
-          <p ui-sref="app.postlistview" menu-close> List View <i class="ion-chevron-right"></i></p>
+          <p ui-sref="app.postmapview" menu-toggle> Map View <i class="ion-chevron-right"></i> </p>
+          <p ui-sref="app.postlistview" menu-toggle> List View <i class="ion-chevron-right"></i></p>
         </ion-item>
-        <ion-item  menu-close>
+        <ion-item  menu-toggle>
           <div ui-sref="app.usermessages">
             Messages
             <i class="ion-chevron-right"></i>
           </div>
         </ion-item>
-        <ion-item menu-close>
+        <ion-item menu-toggle>
             <div ui-sref="app.userfollowing">
               Following
               <i class="ion-chevron-right"></i>                
             </div>
         </ion-item>
-        <ion-item menu-close>
+        <ion-item menu-toggle>
           <div ng-click='goToOwnProfile()'>    
             Profile
             <i class="ion-chevron-right"></i>
           </div>
         </ion-item>
-        <ion-item ng-click="signOut()" menu-close>
+        <ion-item ng-click="signOut()" menu-toggle>
           Signout
           <i class="ion-chevron-right"></i>
         </ion-item>
@@ -58,7 +58,7 @@
             padding-left: 12%;
             padding-right: 12%;
           "
-          menu-close>
+          menu-toggle>
           <button
             ui-sref="app.terms"
             style="color: #7d7d7d;font-size:0.8rem"

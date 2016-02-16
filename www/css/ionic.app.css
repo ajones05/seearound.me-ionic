@@ -7810,6 +7810,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   margin: 1%;
   margin-top: 10px; }
 .addpost .image-round {
+  position: relative;
   margin-top: 4px;
   border-radius: 50%;
   overflow: hidden;
@@ -7817,9 +7818,15 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   height: 90px;
   background: #fff; }
 .addpost .image-round img {
-  display: block;
-  max-width: 100%;
   max-height: 100%;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   margin: auto; }
 .addpost .btn-location {
   min-width: 100% !important;
@@ -8387,6 +8394,7 @@ div.custom_btn {
   width: 86%;
   height: 80%;
   border-radius: 0 !important;
+  border-bottom: 1px solid #666;
   position: absolute !important;
   left: 7% !important; }
   .alerts .header-item {
@@ -8405,7 +8413,8 @@ div.custom_btn {
     .alerts .alert .top {
       color: #345EC2; }
       .alerts .alert .top .name {
-        font-style: italic; }
+        font-style: italic;
+        font-size: .9em; }
     .alerts .alert .avatar {
       text-align: center;
       margin: auto;
@@ -8423,7 +8432,7 @@ div.custom_btn {
         color: #777777; }
       .alerts .alert .row .time {
         text-align: right;
-        font-size: .8em;
+        font-size: .6em;
         font-style: italic; }
   .alerts .item-complex .item-content {
     padding: 0; }
@@ -8443,6 +8452,22 @@ div.custom_btn {
   .chooselocation #cmap {
     width: 100%;
     height: 100%; }
+  .chooselocation .center-marker {
+    position: absolute;
+    /*url of the marker*/
+    background: url('../img/use_location.png') no-repeat;
+    background-size: 108px 60px;
+    /*center the marker*/
+    top: 50%;
+    left: 50%;
+    z-index: 1200;
+    /*fix offset when needed*/
+    margin-left: -54px;
+    margin-top: -60px;
+    /*size of the image*/
+    height: 60px;
+    width: 108px;
+    cursor: pointer; }
   .chooselocation .scroll-content {
     top: 0 !important;
     bottom: 0 !important; }
@@ -8456,8 +8481,9 @@ div.custom_btn {
     margin-left: auto;
     margin-right: auto;
     width: 260px;
-    height: 80px;
+    height: 60px;
     -webkit-border-radius: 10px !important;
+    border-radius: 10px !important;
     padding: 0; }
   .chooselocation .search-text {
     height: 10px !important;
@@ -8466,6 +8492,10 @@ div.custom_btn {
     color: #006AA5;
     margin: 0 !important;
     text-align: center; }
+  .chooselocation .btn-clear {
+    margin-top: 0px;
+    margin-right: 0px;
+    z-index: 1220; }
   .chooselocation .gm-style > div:first-child > div + div > div:last-child > div > div:first-child > div {
     /* we have to use !important because we are overwritng inline styles */
     background-color: transparent !important;
