@@ -407,9 +407,10 @@ angular.module('SeeAroundMe.services', [])
                 //console.log(JSON.stringify(response));
                 if(response.status == 'SUCCESS'){
                     if(response.result){
-                        // the regex that matches urls in text
-                        var urlRegEx = new RegExp(
-                            "((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))");
+                      // the regex that matches urls in text
+                      var urlRegEx = new RegExp(
+                              "((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
+                           );
 
                         response.result.forEach(function (post) {
                             var marker = new google.maps.Marker({
@@ -422,9 +423,10 @@ angular.module('SeeAroundMe.services', [])
                                 }
                             });
                             
-                            // transform news text to behave nicely with html
-                            // removes links and " characters from post.news
-                            post.sanitizedText = post.news.replace(urlRegEx, '').replace(/\"/g, '');
+                            post.first_link = post.news.match(urlRegEx);
+                            try{
+                              post.first_link = post.news.match(urlRegEx)[0];
+                            }catch(ex){}
                             
                             post.timeAgo = moment(post.updated_date).fromNow();
                             marker.post = post;

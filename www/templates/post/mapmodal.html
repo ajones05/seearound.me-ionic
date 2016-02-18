@@ -16,19 +16,17 @@
               <div> {{post.timeAgo}} </div>
             </div>
           </div>
-          <p class="desc">
-            {{post.news}}
-          </p>
+            <p class="desc" ng-bind-html="post.news | linky | hrefToJS"></p>       
         </div>
-        </div>
+      </div>
       <img ng-src="{{post.images}}" ng-if="post.images" alt=""/>
       <div class="share row">
         <span class="col col-20 chat-bubble" ng-click="goToComments(post)">
           {{post.comment_count}}
           <img src="img/chat.png" alt="">
         </span>
-          <post-like-box />
-        <span class="col" ng-click='openShare(post.sanitizedText, post.first_link)'> Share</span>
+          <post-like-box></post-like-box>
+        <span class="col" ng-click='openShare(post.news, post.first_link)'> Share</span>
       </div>
 
       <div class="comments" ng-if="postComments" style="background:white">
@@ -84,9 +82,7 @@
                 <div> {{post.timeAgo}} </div>
               </div>
             </div>
-            <p class="desc">
-              {{post.news}}
-            </p>
+              <p class="desc" ng-bind-html="post.news | linky | hrefToJS"></p>
           </div>
           <div ng-click="showMapForPost(post.latitude, post.longitude)"
             style="width:20px;margin-top:5px;">
@@ -99,8 +95,8 @@
             {{post.comment_count}}
             <img src="img/chat.png" alt="">
           </span>
-            <post-like-box />
-          <span class="col" ng-click='openShare(post.sanitizedText, post.first_link)'> Share</span>
+            <post-like-box></post-like-box>
+          <span class="col" ng-click='openShare(post.news, post.first_link)'> Share</span>
         </div>
         <hr/>
 

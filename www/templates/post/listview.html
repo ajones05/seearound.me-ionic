@@ -57,9 +57,7 @@
               {{post.timeAgo}}
             </div>
           </div>
-          <p class="desc">
-            {{post.news}}
-          </p>
+          <p class="desc" ng-bind-html="post.news | linky | hrefToJS"></p>
         </div>
         <div 
           ng-click="showMapForPost(post.latitude, post.longitude)"
@@ -73,8 +71,8 @@
           {{post.comment_count}}
           <img src="img/chat.png" alt="">
         </span>
-        <post-like-box />
-        <span class="col" ng-click='openShare(post.sanitizedText, post.first_link)'> Share</span>
+        <post-like-box></post-like-box>
+        <span class="col" ng-click='openShare(post.news, post.first_link)'> Share</span>
       </div>
     </div>
 

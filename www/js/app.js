@@ -1,4 +1,12 @@
-angular.module('SeeAroundMe', ['ionic', 'SeeAroundMe.controllers', 'SeeAroundMe.services', 'ngCordova','google.places'])
+angular.module('SeeAroundMe', [
+    'ionic', 
+    'SeeAroundMe.controllers', 
+    'SeeAroundMe.services', 
+    'SeeAroundMe.directives', 
+    'SeeAroundMe.filters', 
+    'ngCordova',
+    'google.places', 
+    'ngSanitize'])
 
 .run(function($ionicPlatform, $state, $rootScope, AppService, $ionicPopup, $ionicHistory ) {
   $ionicPlatform.ready(function() {

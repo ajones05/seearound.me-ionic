@@ -88,7 +88,8 @@ angular.module('SeeAroundMe.controllers', [])
   }
 
   $scope.openShare = function(text, link){
-    window.plugins.socialsharing.share( text, null, null,link);
+    var sanitizedText = $sanitize(text);
+    window.plugins.socialsharing.share( sanitizedText, null, null,link);
   }
 })
 
@@ -622,26 +623,64 @@ angular.module('SeeAroundMe.controllers', [])
 
 })
 
-.controller('PostListCtrl', function($scope, $rootScope, $state, $ionicPopup, $ionicPopover, $compile, $timeout,  $ionicLoading, $cordovaGeolocation, AppService, MapService, ModalService){
+.controller('PostListCtrl', function($scope, $rootScope, $state, $ionicPopup, $ionicPopover, $compile, $timeout,  $ionicLoading, $cordovaGeolocation, $sanitize, AppService, MapService, ModalService){
   $scope.formData = {};
   var userData = JSON.parse(localStorage.getItem('sam_user_data')) || '{}';
   $scope.userData = userData;
   var userId = userData.id || 0;
 
+//ng-embed options
+    $scope.options = {
+  link             : true,      //convert links into anchor tags
+  linkTarget       : '_blank',   //_blank|_self|_parent|_top|framename
+  pdf              : {
+    embed: true                 //to show pdf viewer.
+  },
+  image            : {
+    embed: true                //to allow showing image after the text gif|jpg|jpeg|tiff|png|svg|webp.
+  },
+  audio            : {
+    embed: true                 //to allow embedding audio player if link to
+  },        
+  basicVideo       : true//,     //to allow embedding of mp4/ogg format videos
+    /*    
+  gdevAuth         :'xxxxxxxx', // Google developer auth key for youtube data api
+  video            : {
+      embed           : false,    //to allow youtube/vimeo video embedding
+      width           : null,     //width of embedded player
+      height          : null,     //height of embedded player
+      ytTheme         : 'dark',   //youtube player theme (light/dark)
+      details         : false,    //to show video details (like title, description etc.)
+  },
+  tweetEmbed       : true,
+  tweetOptions     : {
+      //The maximum width of a rendered Tweet in whole pixels. Must be between 220 and 550 inclusive.
+      maxWidth  : 550,
+      //When set to true or 1 links in a Tweet are not expanded to photo, video, or link previews.
+      hideMedia : false,
+      //When set to true or 1 a collapsed version of the previous Tweet in a conversation thread
+      //will not be displayed when the requested Tweet is in reply to another Tweet.
+      hideThread: false,
+      //Specifies whether the embedded Tweet should be floated left, right, or center in
+      //the page relative to the parent element.Valid values are left, right, center, and none.
+      //Defaults to none, meaning no alignment styles are specified for the Tweet.
+      align     : 'none',
+      //Request returned HTML and a rendered Tweet in the specified.
+      //Supported Languages listed here (https://dev.twitter.com/web/overview/languages)
+      lang      : 'en'
+  }*/
+};
   // the regex that matches urls in text
   var urlRegEx = new RegExp(
           "((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
        );
-
+    
   $scope.$on('$ionicView.enter', function(e) {
     getPosts ();
   });
 
   var getPosts  = function (){
-    // AppService.getNearbyPosts(data)
-    // .success(function(response){
     $scope.nearbyPosts = $rootScope.currentPosts;
-    var links = [];
 
     if($scope.nearbyPosts){
       $scope.nearbyPosts.map(function(post){
@@ -650,19 +689,13 @@ angular.module('SeeAroundMe.controllers', [])
         try{
           post.first_link = post.news.match(urlRegEx)[0];
         }catch(ex){}
-
-        // transform news text to behave nicely with html
-        // removes links and " characters from post.news
-        post.sanitizedText = post.news.replace(urlRegEx, '').replace(/\"/g, '');
-
+          
         post.timeAgo = moment(post.updated_date).fromNow();
       });
     }
     else{
        $scope.nearbyPosts = []; 
     }
-    // });
-
   }
 
   $rootScope.goToProfile = function(id){
@@ -675,7 +708,8 @@ angular.module('SeeAroundMe.controllers', [])
   };
 
   $scope.openShare = function(text, link){
-    window.plugins.socialsharing.share( text, null, null,link);
+    var sanitizedText = $sanitize(text);
+    window.plugins.socialsharing.share( sanitizedText, null, null,link);
   };
 
   $scope.goToComments = function(post){
@@ -918,10 +952,6 @@ angular.module('SeeAroundMe.controllers', [])
                 try{
                   post.first_link = post.news.match(urlRegEx)[0];
                 }catch(ex){}
-
-                // transform news text to behave nicely with html
-                // removes links and " characters from post.news
-                post.sanitizedText = post.news.replace(urlRegEx, '').replace(/\"/g, '')
 
                 post.timeAgo = moment(post.updated_date).fromNow();
             });
@@ -1367,7 +1397,8 @@ angular.module('SeeAroundMe.controllers', [])
     }
 
     $scope.openShare = function(text, link){
-      window.plugins.socialsharing.share( text, null, null,link);
+        var sanitizedText = $sanitize(text);
+        window.plugins.socialsharing.share( sanitizedText, null, null,link);
     }
 
     $scope.swipe = function(direction, thisPost){
@@ -1513,7 +1544,8 @@ angular.module('SeeAroundMe.controllers', [])
     };
     
       $scope.openShare = function(text, link){
-        window.plugins.socialsharing.share( text, null, null,link);
+        var sanitizedText = $sanitize(text);
+        window.plugins.socialsharing.share( sanitizedText, null, null,link);
       };
 
       $scope.goToComments = function(post){
@@ -1622,114 +1654,4 @@ angular.module('SeeAroundMe.controllers', [])
         title: "My Location"
       }); 
     };    
-})
-
-.directive('postLikeBox', function () {
-    return {
-        restrict: 'E',
-        template: '<span class="col arrows">'
-              +'<img src="img/upvote_off.png" ng-if="post.isLikedByUser == 0" ng-click="upVote(post.id, 1)" alt="">'
-              +'<img src="img/upvote_off.png" ng-if="post.isLikedByUser == -1" ng-click="upVote(post.id, 1)" alt="">'
-              +'<img src="img/upvote_on.png" ng-if="post.isLikedByUser == 1" ng-click="upVote(post.id, -1)" alt="">'
-              +'{{post.vote}}'
-              +'<img src="img/downvote_on.png" ng-if="post.isLikedByUser == -1" ng-click="downVote(post.id, 1)" alt="">'
-              +'<img src="img/downvote_off.png" ng-if="post.isLikedByUser == 1" ng-click="downVote(post.id, -1)" alt="">'
-              +'<img src="img/downvote_off.png" ng-if="post.isLikedByUser == 0" ng-click="downVote(post.id, -1)" alt=""></span>',
-        controller: function ($scope, AppService) {
-              $scope.upVote = function(newsId , v){
-                    console.log('V: ' + v);
-                    // pass v => '1' for upvote
-                    // and v=> '-1' for downvote
-                    AppService.vote(newsId, v)
-                    .then(function(response){
-                          console.log(JSON.stringify(response));
-                      if (response.data.reasonfailed){
-                          console.log(JSON.stringify(response.data.message));
-                      }else if (response.data.success){
-                        $scope.nearbyPosts.map(function(post){
-                          if (post.id === newsId){
-                            post.vote = response.data.vote;
-                            if(post.isLikedByUser == 1 && v == -1)//Cancel vote case
-                                    post.isLikedByUser = 0;
-                            else if(post.isLikedByUser == 0 && v == 1)
-                                    post.isLikedByUser = 1;
-                            else if(post.isLikedByUser == -1 && v == 1){
-                                post.isLikedByUser = 0;
-                                //Vote twice: one to cance negative vote and the other to vote plus
-                                AppService.vote(newsId, v)
-                                .then(function(response){
-                                  console.log(JSON.stringify(response));
-                                  if (response.data.reasonfailed){
-                                      console.log(JSON.stringify(response.data.message));
-                                  }else if (response.data.success){
-                                       post.vote = response.data.vote;
-                                      post.isLikedByUser = 1;
-                                  }
-                                });
-                            }                                   
-                          }
-                        })
-                      }
-
-                    }, function(err){
-                      console.log('error upvoting', JSON.stringify(err));
-                    });
-              };
-            
-              $scope.downVote = function(newsId , v){
-                    console.log('V: ' + v);
-                    // pass v => '1' for upvote
-                    // and v=> '-1' for downvote
-                    AppService.vote(newsId, v)
-                    .then(function(response){
-                          console.log(JSON.stringify(response));
-                      if (response.data.reasonfailed){
-                          console.log(JSON.stringify(response.data.message));
-                      }else if (response.data.success){
-                        $scope.nearbyPosts.map(function(post){
-                          if (post.id === newsId){
-                            post.vote = response.data.vote;
-                            if(post.isLikedByUser == 0 && v == -1)
-                                    post.isLikedByUser = -1;
-                            else if(post.isLikedByUser == -1 && v == 1)
-                                    post.isLikedByUser = 0;
-                            else if(post.isLikedByUser == 1 && v == -1){
-                                post.isLikedByUser = 0;
-                                //Vote twice: one to cancel positive vote and the other to vote negative
-                                AppService.vote(newsId, v)
-                                .then(function(response){
-                                  console.log(JSON.stringify(response));
-                                  if (response.data.reasonfailed){
-                                      console.log(JSON.stringify(response.data.message));
-                                  }else if (response.data.success){
-                                       post.vote = response.data.vote;
-                                       post.isLikedByUser = -1;
-                                  }
-                                });                                
-                            }
-                          }
-                        })
-                      }
-
-                    }, function(err){
-                      console.log('error upvoting', JSON.stringify(err));
-                    });
-              }
-            
-        }
-    }
-})
-
-.directive('focusMe', function($timeout) {
-  return {
-    link: function(scope, element, attrs) {
-
-      $timeout(function() {
-        element[0].focus(); 
-      });
-    }
-  };
 });
-
-          
-
