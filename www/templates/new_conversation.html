@@ -1,13 +1,16 @@
-<ion-modal-view 
-  ng-controller="ProfileCtrl"
-  class="addpost padding">
-  <ion-header-bar>
+<ion-modal-view class="addpost padding">
+      <ion-header-bar>
     <div class="buttons">
       <button class="button button-clear" ng-click="closeModal()">
         <i class="icon ion-ios-arrow-left"></i>
       </button>
     </div>
-    <h1 class="title">New message {{User.name.trim().length > 1 ? 'to '+ User.Name : null}}</h1>
+    <h1 class="title">New message</h1>
+    <div class="buttons">
+      <button class="button button-clear" ng-click="sendMessage()">
+          <p ng-class="textColor">Send</p>
+      </button>
+    </div>
   </ion-header-bar>
 
   <ion-content>
@@ -15,20 +18,16 @@
       <label class="item item-input item-stacked-label">
         <span class="input-label">Subject</span>
         <input type="text"
+          ng-change="checkInput()" 
           ng-model='newMessage.subject'
           placeholder="Subject">
       </label>
       <label class="item item-input item-stacked-label">
         <span class="input-label">Message</span>
-        <textarea id="" name="" cols="30" rows="10"
-          ng-model="newMessage.message">type your message...</textarea>
+        <textarea id="" name="" cols="30" rows="10"           
+          ng-model="newMessage.message">Type your message ...</textarea>
       </label>
     </div>
-    <button
-      ng-click="sendMessage()"
-      class="button button-full button-positive">
-      Send Message
-    </button>
   </ion-content>
 
 </ion-modal-view>

@@ -1,12 +1,12 @@
 // post/alerts.html
 .alerts{
     font-family: 'Lato';
-    width:86%;
+    width:90%;
     height:80%;
     border-radius: 0 !important;
     border-bottom: 1px solid #666;
     position: absolute !important;
-    left:7% !important;
+    left:5% !important;
     
     .header-item{
         font-family: 'Lato-Bold'
@@ -18,9 +18,13 @@
       }
     }
     
+    .alert:last-child{
+        border-bottom: 1px solid #666;
+    }
+    
     .alert{
         border-color: #888;
-        padding: 0;
+        padding: 6px;
         overflow: inherit;
         text-overflow: inherit;
 
@@ -61,7 +65,8 @@
           .time{
             text-align: right;
             font-size: .6em;
-            font-style: italic;          
+            font-style: italic;
+            margin-right: 10px;
           }
         }
     }

@@ -24,14 +24,21 @@
     border-bottom: 1px solid lightgray;
   }
 
+  .post-iamge{
+      max-width:100%;
+      min-height:100px; 
+      background: lightgray
+   }
+
   .row{
     padding: 4px !important;
   }
 
+/*    
   img{
     width: 100%;
     height: auto;
-  }
+  }*/
 
  .modal_header{
    width: 100vw;
@@ -130,15 +137,9 @@
 
     input{
       font-family:'Lato-Italic';
-      width: 75%;
-      padding-left: 30px;
+      width: 80%;
+      padding-left: 20px;
       padding-top: 10px;
-    }
-
-    .button{
-      width: 25%;
-      padding-top: 5px;
-      border-radius: 0;
     }
   }
     

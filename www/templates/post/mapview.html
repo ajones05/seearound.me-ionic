@@ -1,26 +1,24 @@
-<ion-view hide-back-button="true" class="mapview">
-  <ion-nav-buttons>
-    <div class=" row bar bar-header">
-      <div class="header-buttons">
-        <button menu-toggle="left" class="button button-icon">
-          <img src="img/menu_off.png" height="22"/>
-        </button>
-        <button class="button button-icon" ui-sref="newpostview">
-          <img src="img/newpost_off.png" height="24"/>
-        </button>
-        <button class="button button-icon" ng-click="showAlerts($event)" >
-          <img src="img/alerts_off.png" height="24"/>
-        </button>
-        <button class="button button-icon" ng-click="toggleSearch()">
-          <img src="img/search_off.png" height="24"/>
-        </button>
-        <button class="button button-icon" ui-sref="app.postlistview">
-          <img src="img/list_off.png" height="24"/>
-        </button>
-      </div>
+<ion-view hide-nav-bar="true" hide-back-button="true" class="mapview">
+    <div class="bar bar-header">
+        <div class="row" style="padding-top:10px">
+            <button menu-toggle="left" class="button button-icon">
+              <img src="img/menu_off.png" height="22"/>
+            </button>
+            <button class="col button button-icon" style="margin-left:18px" ui-sref="newpostview">
+              <img src="img/newpost_off.png" height="24"/>
+            </button>
+            <button class="col button button-icon" ng-click="showAlerts($event)" >
+              <img src="img/alerts_off.png" height="24"/>
+            </button>
+            <button class="col button button-icon" style="margin-right:18px" ng-click="toggleSearch()">
+              <img ng-show="!isFiltered" src="img/search_off.png" height="24"/>
+              <img ng-show="isFiltered" src="img/search_on.png" height="24"/>
+            </button>
+            <button class="button button-icon" ui-sref="app.postlistview">
+              <img src="img/list_off.png" height="24"/>
+            </button>
+        </div>
     </div>
-
-  </ion-nav-buttons>
   <div class="row bar bar-subheader" style="background:#eee;" ng-show="showSearch">
     <div class="col" style="margin-left:-5px;">
       <div class="row" style="border:2px solid #ddd;height:100%;background:#fff;">

@@ -1,30 +1,28 @@
-<ion-view hide-back-button="true" class="postlistview">
-  <ion-nav-buttons>
-    <div class="row bar bar-header" id="nav-bar" >
-      <div class="header-buttons">
-        <button menu-toggle="left" class="button button-icon">
-          <img src="img/menu_off.png" height="22"/>
-        </button>
-        <button class="button button-icon" ui-sref="newpostview">
-          <img src="img/newpost_off.png" height="24"/>
-        </button>
-        <button class="button button-icon" ng-click="showAlerts($event)" >
-          <img src="img/alerts_off.png" height="24"/>
-        </button>
-        <button class="button button-icon" ng-click="toggleSearch()">
-          <img src="img/search_off.png" height="24"/>
-        </button>
-        <button class="button button-icon" ui-sref="app.postmapview">
-          <img src="img/map_off.png" height="28"/>
-        </button>
-
-      </div>
+<ion-view hide-nav-bar="true" hide-back-button="true" class="postlistview">
+    <div class="bar bar-header">
+        <div class="row" style="padding-top:10px">
+            <button menu-toggle="left" class="button button-icon">
+                <img src="img/menu_off.png" height="22"/>
+            </button>
+            <button class="col button button-icon" style="margin-left:18px" ui-sref="newpostview">
+                <img src="img/newpost_off.png" height="24"/>
+            </button>
+            <button class="col button button-icon" ng-click="showAlerts($event)" >
+                <img src="img/alerts_off.png" height="24"/>
+            </button>
+            <button class="col button button-icon" style="margin-right:18px" ng-click="toggleSearch()">
+                <img ng-show="!isFiltered" src="img/search_off.png" height="24"/>
+                <img ng-show="isFiltered" src="img/search_on.png" height="24"/>
+            </button>
+            <button class="button button-icon" ui-sref="app.postmapview">
+              <img src="img/map_off.png" height="28"/>
+            </button>
+        </div>
     </div>
-  </ion-nav-buttons>
     <div class="row bar bar-subheader" style="background:#eee;" ng-show="showSearch">
         <div class="col" style="margin-left:-5px;">
             <div class="row" style="border:2px solid #ddd;height:100%;background:#fff;">
-                <i class="icon ion-ios-search" style="font-size:1.4em;padding-right:10px;margin:0;"></i>
+        <i class="icon ion-ios-search" style="font-size:1.4em;padding-right:10px;margin:0;"></i>
                 <input type="text" name="searchTerm" ng-model="searchTerm" placeholder="Search ..." style="height:100%;background:#fff;">
             </div>
          </div>
@@ -41,7 +39,7 @@
           <button class="button button-block button-positive" ng-show="isFiltered" ng-click="clearSearch()">Cancel</button>
         </div>
     </div>          
-  <ion-content padding="false">
+  <ion-content padding="false" class="has-header">
       
     <div class="post_item" ng-repeat='post in nearbyPosts track by $index' >
       <div class="row user">
@@ -65,7 +63,7 @@
           <a class="icon ion-ios-location-outline" style="font-size:1.3em;"></a>
         </div>
       </div>
-      <img ng-if="post.images" style="min-height:100px; background: lightgray" ng-src={{post.images}} alt="">
+      <img ng-if="post.images" class="post-iamge" ng-src={{post.images}} alt="">
       <div class="share row">
         <span class="col col-20 chat-bubble" ng-click="goToComments(post)">
           {{post.comment_count}}

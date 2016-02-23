@@ -10,6 +10,13 @@ angular.module('SeeAroundMe', [
 
 .run(function($ionicPlatform, $state, $rootScope, AppService, $ionicPopup, $ionicHistory ) {
   $ionicPlatform.ready(function() {
+    //First check for internet connection
+    if(!AppService.isConnected()){
+         AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection.');
+         $state.go('home');
+         return;
+     }
+
     if (window.cordova && window.cordova.plugins.Keyboard) {
         cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
         cordova.plugins.Keyboard.disableScroll(true);

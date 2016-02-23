@@ -17,22 +17,22 @@
   <ion-content>
     <ion-list>
       <ion-item
-        ng-repeat="m in messages track by m.id"
-        ng-class="{'gray': m.reciever_read == '1'}"
+        ng-repeat="c in conversations track by c.id"
+        ng-class="{'gray': c.reciever_read == '1'}"
         class="message">
         <div class="row"
-          ng-click='viewConversation(m.sender_id)'>
+          ng-click='viewConversation(c.sender_id)'>
           <div class="avatar">
             <img
-            ng-src="{{m.Profile_image}}">
+            ng-src="{{c.Profile_image}}">
           </div>
           <div class="col top">
             <div class="row">
-              <span class="col name">{{m.Name}}</span>
-              <span class="col time">{{ m.formatted_date }}</span>
+              <span class="col name">{{c.Name}}</span>
+              <span class="col time">{{ c.formatted_date }}</span>
             </div>
             <div class="row">
-              <p class="text"> {{m.message}} </p>
+              <p class="text"> {{c.subject}} </p>
             </div>
           </div>
         </div>

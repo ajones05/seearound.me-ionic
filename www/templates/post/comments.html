@@ -1,4 +1,4 @@
-<ion-view class="postlistview">
+<ion-view hide-nav-bar cache-view="false" class="postlistview">
   <ion-nav-bar >
     <ion-nav-back-button class="button-clear">
       <i class="icon ion-ios-arrow-left"></i>
@@ -64,8 +64,8 @@
       </div>
     </div>
     <div class="row write-comment">
-      <input type="text" ng-model="commentText" placeholder="Write a comment..">
-      <div class="button button-positive" ng-click="postComment(commentText)">Post</div>
+      <input type="text" class="col" ng-model="commentText" placeholder="Write a comment..">
+      <div class="col col-20 button button-positive" ng-click="postComment(commentText)">Post</div>
     </div>
-  </ion-content>
+  </ion-content>    
 </ion-view>

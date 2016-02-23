@@ -19,7 +19,7 @@
             <p class="desc" ng-bind-html="post.news | linky | hrefToJS"></p>       
         </div>
       </div>
-      <img ng-src="{{post.images}}" ng-if="post.images" alt=""/>
+      <img ng-src="{{post.images}}" class="post-iamge" ng-if="post.images" alt=""/>
       <div class="share row">
         <span class="col col-20 chat-bubble" ng-click="goToComments(post)">
           {{post.comment_count}}
@@ -89,7 +89,7 @@
             <a class="icon ion-ios-location-outline" style="font-size:1.3em;"></a>
           </div>
         </div>
-        <img ng-src="{{post.images}}" ng-if="post.images" alt=""/>
+        <img ng-src="{{post.images}}" class="post-iamge" ng-if="post.images" alt=""/>
         <div class="share row" style="background:white">
           <span class="col col-20 chat-bubble" ng-click="goToComments(post)">
             {{post.comment_count}}

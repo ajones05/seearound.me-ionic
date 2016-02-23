@@ -48,14 +48,14 @@ angular.module('SeeAroundMe.services', [])
         },
         
         getMessages: function(){
-          var  url = API_URL + '/listmessage';
+          var  url = API_URL + '/message-conversation';
           var params = {
             user_id : userId, 
           }
           return $http.post(url, params);
         },
 
-        sendMessage: function(otherUserId, subject, message){
+        sendMessage: function(otherUserId, subject, message, conversationId){
           var url = API_URL + '/sendmessage';
 
           var params = {
@@ -64,6 +64,14 @@ angular.module('SeeAroundMe.services', [])
             subject: subject,
             message: message
           };
+            
+          if(conversationId){//Conversation is already present
+              params.conversation_id = conversationId;
+              params.subject = null;
+          }
+          else if(!subject){//New conversation              
+                  params.subject = message;
+          }
 
           return $http.post(url, params);
         },
@@ -138,11 +146,18 @@ angular.module('SeeAroundMe.services', [])
         getCurrentComments: function(post){
           var d = $q.defer();
           var url = API_URL + '/get-total-comments';
+          if(post){
+              var postId = post.id; 
+          }
+          else if(currentPostComments.post){
+              var postId = currentPostComments.post.id; 
+          }
+          else{
+              var postId = 0;   
+          }
           var params = {
             offset: 0,
-            news_id: post
-              ? post.id
-              : currentPostComments.post.id
+            news_id: postId
           }
           $http.post(url, params)
            .success(function(data){
@@ -211,6 +226,24 @@ angular.module('SeeAroundMe.services', [])
           var data = { user_id: userId};
           return $http.post(url, data);
         },
+        
+        followUser: function(id){
+          var url = API_URL + '/follow';
+          var data = { 
+              user_id: userId,
+              receiver_id: id
+          };
+          return $http.post(url, data);
+        },
+        
+        unfollowUser: function(id){
+          var url = API_URL + '/unfollow';
+          var data = { 
+              user_id: userId,
+              receiver_id: id
+          };
+          return $http.post(url, data);
+        },                
 
         getAlerts: function(){
           var url = API_URL + '/notification';
@@ -286,6 +319,44 @@ angular.module('SeeAroundMe.services', [])
 
 .factory('MapService', function($http, $q, $rootScope, $ionicPopup, $cordovaGeolocation, AppService, ModalService) {
     var service = {
+        showPostMap: function(latitude, longitude){
+            //console.log(latitude, longitude);
+            //var position = AppService.getCurrentPosition();
+
+            //var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+            if (!latitude) {
+                var latLng = new google.maps.LatLng(37.8088139, -122.2660002);
+            }else{
+              var latLng = new google.maps.LatLng(latitude, longitude);
+            }
+        
+
+            var mapOptions = {
+              center: latLng,
+                zoom: 14,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                disableDefaultUI: true,
+                zoomControl: false//,
+                //zoomControlOptions: {
+                  //style: google.maps.ZoomControlStyle.SMALL
+                //}
+            };
+
+            var map = new google.maps.Map(document.getElementById("post_map"), mapOptions);
+        
+            var marker = new google.maps.Marker({
+                position: latLng,
+                map: map,
+                icon: {
+                    url:'img/pin-blue.png',
+                    scaledSize: new google.maps.Size(22, 30)
+                },
+                // animation: google.maps.Animation.BOUNCE,
+                title: "My Location"
+            });         
+        },
+        
         getPlace: function(lat, lng){
             var d = $q.defer();
             var geocoder = new google.maps.Geocoder();

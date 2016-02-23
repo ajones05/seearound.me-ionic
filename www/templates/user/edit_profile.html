@@ -5,12 +5,17 @@
         </button>
         <h1 class="title">Edit Profile</h1>
     </ion-header-bar>
-  <ion-content class="full_profile">
+  <ion-content class="edit_profile">
     <ion-list>
       <ion-item class="row no-top-border">
         <span class="col col-33">Name</span>
         <input class="col" type="text" value="{{User.Name}}" ng-model="newData.Name"/>
 
+      </ion-item>
+        
+      <ion-item class="row">
+        <span class="col col-33">Karma</span>
+        <input class="col" type="text" value="{{User.Karma}}" ng-model="newData.Karma"/>
       </ion-item>
 
       <ion-item class="row">
@@ -22,23 +27,10 @@
 
       <ion-item class="row">
         <span class="col col-33">Gender</span>
-        <!-- TODO: change this to dropdown -->
-        <select class="col" 
-          style="background: transparent"
-          ng-if="User.Gender == 'Male'"
-          ng-model="newData.Gender"
-          >
-          <option selected>Male</option>
-          <option>Female</option>
-        </select>
-        <select class="col" 
-          style="background: transparent"
-          ng-if="User.Gender == 'Female'"
-          ng-model="newData.Gender"
-          >
-          <option>Male</option>
-          <option selected>Female</option>
-        </select>
+        <input class="col" type="text" 
+               value="{{User.Gender}}" 
+               ng-model="newData.Gender" 
+               ng-click="showSelect($event)" style="background:#fff" readonly/>
       </ion-item>
 
       <ion-item class="row">
@@ -52,8 +44,7 @@
 
       <ion-item class="row">
         <span class="col col-33">Interests</span>
-        <textarea class="col" type="text" 
-          ng-model="newData.Activities">{{User.Activities}}</textarea>
+        <input class="col" type="text" value="{{User.Activities}}" ng-model="newData.Activities"/>
       </ion-item>
 
       <ion-item class="row item">

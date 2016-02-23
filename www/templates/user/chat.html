@@ -1,4 +1,4 @@
-<ion-view class="chat">
+<ion-view cache-view="false" class="chat">
   <ion-nav-bar>
     <ion-nav-buttons side="left">
         <button ui-sref="app.usermessages" class="button button-clear">
@@ -15,27 +15,29 @@
     </ion-nav-buttons>
   </ion-nav-bar>
 
-  <ion-content class="chat_msgs padding">
-    <div ng-repeat='m in messages track by m.id'>
-      <div
-        class="date"
-        ng-bind="m.formatted_date"></div>
-      <div
-        class="bubble bubble-left"
-        ng-if="!(m.sender_id == Self.id)">
-        {{m.message}}
+  <ion-content class="chat_msgs padding has-footer">
+    <div ng-repeat='m in messages track by m.id' class="message-wrapper">
+      
+      <div ng-if="m.sender_id !== Self.id">
+          <div class="date" ng-bind="m.formatted_date"></div>
+          <div class="bubble-left">
+              <div class="message" autolinker>
+              {{m.message}}
+              </div>
+          </div>
       </div>
-      <div
-        class="bubble bubble-right"
-        style="float:right;"
-        ng-if="m.sender_id == Self.id">
-        {{m.message}}
+      <div ng-if="m.sender_id === Self.id">
+          <div class="date" ng-bind="m.formatted_date"></div>
+          <div class="bubble-right">
+              <div class="message" autolinker>
+              {{m.message}}
+              </div>
+          </div>
       </div>
-      <br/>
+      <div class="cf"></div>
     </div>
-
   </ion-content>
-
+    
   <ion-footer-bar keyboard-attach class="row">
     <input
       type="text" 

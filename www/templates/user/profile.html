@@ -25,14 +25,10 @@
         </div>
         <div class="col action_buttons"
           ng-if='!isCurrentUser'>
-          <div
-            class="custom_btn"
-            ng-if="isFriend">
+          <div class="custom_btn" ng-if="isFriend" ng-click="unfollow()">
             Unfollow
           </div>
-          <div 
-            class="custom_btn"
-            ng-if="!isFriend">
+          <div class="custom_btn" ng-if="!isFriend" ng-click="follow()">
             Follow
           </div>
           <br/>
