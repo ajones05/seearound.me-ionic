@@ -1362,6 +1362,13 @@ angular.module('SeeAroundMe.controllers', [])
         $scope.showMapModalBar = false;
         $scope.closeModal();
         $scope.halfViewModal.remove();
+        //When modal goes down, change icon back to gray
+        if($scope.selectedMarker){
+            $scope.selectedMarker.setIcon({
+                url:'img/pin-gray.png',
+                scaledSize: new google.maps.Size(18, 25)
+            });
+        }
     };
     
     $scope.close = function(id) {
@@ -1386,6 +1393,12 @@ angular.module('SeeAroundMe.controllers', [])
         
           for (var i = 0; i < $rootScope.markers.length; i++) {
             google.maps.event.addListener($rootScope.markers[i], 'click', function() {
+                    //Change icon to blue
+                    this.setIcon({
+                        url:'img/pin-blue.png',
+                        scaledSize: new google.maps.Size(18, 25)
+                    });
+                    $scope.selectedMarker = this;
                     $scope.post = this.post;                    
                     $scope.showModal(3);
             });
