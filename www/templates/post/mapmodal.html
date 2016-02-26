@@ -102,7 +102,7 @@
 
         <div class="comments"
           ng-if="postComments"
-          style="background:white; padding-bottom: 200px">
+          style="background:white; padding-bottom: 100px">
           <div class="row user" 
             style="border-bottom: 1px solid lightgray; padding-bottom: 5px;"
             ng-repeat="comment in postComments">
@@ -125,6 +125,12 @@
               <!-- </div>                         -->
           </div>
         </div>
+        <div class="write-comment row">
+          <input type="text" class="col" ng-model="commentText" placeholder="Write a comment..">
+          <div ng-click="postComment(commentText)" class="button button-small button-positive col col-20">
+            Post
+            </div>
+        </div>                  
       </div>
     </ion-content>
   </ion-view>

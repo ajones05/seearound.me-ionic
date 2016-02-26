@@ -1318,7 +1318,25 @@ angular.module('SeeAroundMe.controllers', [])
         $ionicLoading.hide();
         console.warn('error getting comments');
       });
-    }
+    };
+    
+    $scope.postComment = function (commentText){
+        //console.log('commentText -> ', commentText);
+        AppService.postComment(commentText, userId, $scope.post.id)
+        .success(function(res){
+            $scope.commentText = "";
+          //console.log('successfully posted the comment');
+          //console.log(JSON.stringify(res));
+          $scope.post.comment_count = res.result.totalComments;
+          res.result.timeAgo = moment(res.result.commTime).fromNow();
+            $scope.postComments.push(res.result);
+            //Clear text field
+        })
+        .error(function(err){
+          console.log('error posting comment -> ', err);
+        })
+    };
+
     
     $scope.showFullView = function(post){
         if(!$scope.showMapModalBar){
