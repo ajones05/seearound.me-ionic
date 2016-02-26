@@ -7,7 +7,7 @@
     <ion-nav-view name="menuContent"></ion-nav-view>
   </ion-side-menu-content>
 
-  <ion-side-menu side="left" class="profile">
+  <ion-side-menu side="left" class="menu">
     <ion-header-bar class="bar-stable">
       <img src="img/seearoundme.png" alt="">
     </ion-header-bar>
@@ -21,8 +21,8 @@
         </ion-item>
         <ion-item>
           View Posts
-          <p ui-sref="app.postmapview" menu-toggle> Map View <i class="ion-chevron-right"></i> </p>
-          <p ui-sref="app.postlistview" menu-toggle> List View <i class="ion-chevron-right"></i></p>
+          <div class="sub-item" ui-sref="app.postmapview" menu-toggle> Map View <i class="ion-chevron-right"></i> </div>
+          <div class="sub-item" ui-sref="app.postlistview" menu-toggle> List View <i class="ion-chevron-right"></i></div>
         </ion-item>
         <ion-item  menu-toggle>
           <div ui-sref="app.usermessages">

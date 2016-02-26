@@ -764,47 +764,6 @@ angular.module('SeeAroundMe.controllers', [])
   $scope.userData = userData;
   var userId = userData.id || 0;
 
-//ng-embed options
-    $scope.options = {
-  link             : true,      //convert links into anchor tags
-  linkTarget       : '_blank',   //_blank|_self|_parent|_top|framename
-  pdf              : {
-    embed: true                 //to show pdf viewer.
-  },
-  image            : {
-    embed: true                //to allow showing image after the text gif|jpg|jpeg|tiff|png|svg|webp.
-  },
-  audio            : {
-    embed: true                 //to allow embedding audio player if link to
-  },        
-  basicVideo       : true//,     //to allow embedding of mp4/ogg format videos
-    /*    
-  gdevAuth         :'xxxxxxxx', // Google developer auth key for youtube data api
-  video            : {
-      embed           : false,    //to allow youtube/vimeo video embedding
-      width           : null,     //width of embedded player
-      height          : null,     //height of embedded player
-      ytTheme         : 'dark',   //youtube player theme (light/dark)
-      details         : false,    //to show video details (like title, description etc.)
-  },
-  tweetEmbed       : true,
-  tweetOptions     : {
-      //The maximum width of a rendered Tweet in whole pixels. Must be between 220 and 550 inclusive.
-      maxWidth  : 550,
-      //When set to true or 1 links in a Tweet are not expanded to photo, video, or link previews.
-      hideMedia : false,
-      //When set to true or 1 a collapsed version of the previous Tweet in a conversation thread
-      //will not be displayed when the requested Tweet is in reply to another Tweet.
-      hideThread: false,
-      //Specifies whether the embedded Tweet should be floated left, right, or center in
-      //the page relative to the parent element.Valid values are left, right, center, and none.
-      //Defaults to none, meaning no alignment styles are specified for the Tweet.
-      align     : 'none',
-      //Request returned HTML and a rendered Tweet in the specified.
-      //Supported Languages listed here (https://dev.twitter.com/web/overview/languages)
-      lang      : 'en'
-  }*/
-};
   // the regex that matches urls in text
   var urlRegEx = new RegExp(
           "((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
@@ -854,12 +813,6 @@ angular.module('SeeAroundMe.controllers', [])
     })
   };
 
-    $scope.modal2 = function() {
-        ModalService.init('templates/post/add-post.html', $scope).then(function(modal) {
-            modal.show();
-        });
-    };
-
     $scope.showMapForPost = function(latitude, longitude){
 
       ModalService.init('templates/post/mapforpost.html', $scope).then(function(modal){
@@ -871,41 +824,8 @@ angular.module('SeeAroundMe.controllers', [])
 
     };
     
-  $scope.showModal = function (id) {
-      
-    if (id == 4){
-
-        // don't let the user post if there's no text
-        if (! $scope.formData.postText) return 
-
-        $scope.close(2);
-
-        $scope.modal4 = function() {
-            ModalService.init('templates/post/chooselocation.html', $scope, 'slide-in-right').then(function(modal) {
-                modal.show();
-
-            });
-        };    
-
-        $scope.modal4();  
-        setTimeout(function(){
-            $scope.showMap();
-        },500);
-    }        
-    else  
-        $scope.modal2();
-  };
-
     $scope.close = function(id) {
-        if(id == 1){
-          $scope.modal1.hide();            
-        }else if(id == 4){
-          $scope.closeModal();
-          setTimeout(function(){
-            $scope.modal.remove();
-            $scope.showModal(2);
-          },500);
-        }else if(id === 'map') {
+        if(id === 'map') {
           $scope.modal.remove();
         }else
           $scope.closeModal();
@@ -913,31 +833,15 @@ angular.module('SeeAroundMe.controllers', [])
 
   $scope.$on('$destroy', function() {
     console.log('Destroying modals...');
-    $scope.alertsPopover.close();
-    $scope.alertsPopover.remove();
-    $scope.selectPopover.remove();
+    if($scope.alertsPopover){
+        $scope.alertsPopover.close();
+        $scope.alertsPopover.remove();
+    }
+    if($scope.selectPopover){
+        $scope.selectPopover.remove();
+    }
   });
         
-    $scope.post = function (data) {
-        $ionicLoading.show();
-
-        AppService.addNewPost(data)
-        .then(function (res) {
-            //$scope.initialise();
-            $ionicLoading.hide();
-            $ionicPopup.alert({title: 'New Post', template: 'Status updated'})
-            .then(function () {
-                $scope.close(4);
-                $scope.modal.remove();
-            });
-        })
-        .catch(function (err) {
-            console.warn(err);
-            $ionicLoading.hide();
-        })
-        //console.log($scope.formData.postText);
-    };
-    
   $scope.gotoMap = function(){
     $state.go('app.postmapview');
   };
@@ -1106,6 +1010,10 @@ angular.module('SeeAroundMe.controllers', [])
     $scope.closeImage = function(){
         $scope.imgUri = null;
     };
+    
+      $scope.closeMapModal = function(){
+          $scope.mapModal.remove();      
+      }    
 })
 
 .controller('NewPostCtrl', function($scope, $rootScope, $stateParams, $state, $ionicLoading, AppService){
@@ -1377,40 +1285,16 @@ angular.module('SeeAroundMe.controllers', [])
         // $state.go('app.postlistview');
         if(id == 1)
             $scope.modal1.show();
-        else if (id == 2){//I think this block is no longer required as add-post screen has become a state
-            $scope.modal2 = function() {
-                ModalService.init('templates/post/add-post.html', $scope).then(function(modal) {
-                    modal.show();
-                });
-            };
-            
-            $scope.imgUri = null;
-            $scope.modal2();
-        }
-        else if (id == 3){
+        else if (id == 3){//Opens map modal half view
             $scope.modal3 = function() {
                 ModalService.init('templates/post/mapmodal.html', $scope).then(function(modal) {
-                    modal.show();                    
+                    modal.show();
+                    $scope.halfViewModal = modal;
                 });
             };    
             
             $scope.modal3();
         }
-        else if (id == 4){//This has also become a state so not required
-            
-            $scope.close(2);
-
-            $scope.modal4 = function() {
-                ModalService.init('templates/post/chooselocation.html', $scope, 'slide-in-right').then(function(modal) {
-                    modal.show();
-                });
-            };    
-            
-            $scope.modal4();  
-            //setTimeout(function(){
-                //$scope.showMap();
-            //},500);
-        }        
     };
     
     $scope.viewMode = 'half-view';
@@ -1477,6 +1361,7 @@ angular.module('SeeAroundMe.controllers', [])
         $scope.viewMode = 'half-view';
         $scope.showMapModalBar = false;
         $scope.closeModal();
+        $scope.halfViewModal.remove();
     };
     
     $scope.close = function(id) {
@@ -1677,7 +1562,6 @@ angular.module('SeeAroundMe.controllers', [])
     };
     
   $scope.showMapForPost = function(latitude, longitude){
-      $scope.hideModal(); 
       ModalService.init('templates/post/mapforpost.html', $scope).then(function(modal){
         modal.show();
         $scope.mapModal = modal;
@@ -1685,4 +1569,8 @@ angular.module('SeeAroundMe.controllers', [])
         MapService.showPostMap(latitude, longitude);
       });
   };
+    
+  $scope.closeMapModal = function(){
+      $scope.mapModal.remove();      
+  }
 });

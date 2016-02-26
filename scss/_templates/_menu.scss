@@ -1,5 +1,5 @@
 //menu.html
-.profile{
+.menu{
   .scroll{
     background: #e8e8e8;
   }
@@ -26,8 +26,9 @@
         opacity: 0.4;
       }
 
-      p{
+      .sub-item{
         font-family: "Lato";
+        font-weight: bold;
         padding: 5% 0 0 20%;
       }
     }

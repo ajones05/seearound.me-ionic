@@ -7942,6 +7942,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     width: 0;
     height: 20px;
     border-left: 20px solid #fff;
+    border-bottom: 20px solid #fff;
     /* css3 */
     -webkit-border-bottom-left-radius: 100px 70px;
     border-bottom-left-radius: 100px 70px; }
@@ -7954,6 +7955,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     width: 0;
     height: 20px;
     border-right: 20px solid #eee;
+    border-bottom: 20px solid #eee;
     background: transparent !important;
     background-color: transparent !important;
     /* css3 */
@@ -7968,6 +7970,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     width: 0;
     height: 30px;
     border-right: 20px solid #345EC2;
+    border-bottom: 20px solid #345EC2;
     -webkit-border-bottom-right-radius: 100px 70px;
     border-bottom-right-radius: 100px 70px; }
   .chat .bubble-right:after {
@@ -7979,6 +7982,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     width: 0;
     height: 20px;
     border-left: 20px solid #eee;
+    border-bottom: 20px solid #eee;
     /* css3 */
     -webkit-border-bottom-left-radius: 100px 50px;
     border-bottom-left-radius: 100px 50px; }
@@ -8111,46 +8115,47 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   .vbox .row {
     -webkit-flex: 1; }
 
-.profile .scroll {
+.menu .scroll {
   background: #e8e8e8; }
-.profile .bar.bar-stable {
+.menu .bar.bar-stable {
   background: white; }
-  .profile .bar.bar-stable img {
+  .menu .bar.bar-stable img {
     width: 50%;
     margin: auto; }
-.profile .list .item {
+.menu .list .item {
   padding-left: 15%;
   background: #e8e8e8;
   font-family: 'Lato-Bold';
   color: #7d7d7d;
   border-bottom: 2px solid rgba(144, 144, 144, 0.9);
   font-size: 0.8rem; }
-  .profile .list .item i {
+  .menu .list .item i {
     float: right;
     padding-right: 10%;
     color: black;
     opacity: 0.4; }
-  .profile .list .item p {
+  .menu .list .item .sub-item {
     font-family: "Lato";
+    font-weight: bold;
     padding: 5% 0 0 20%; }
-.profile .list .item-complex .item-content {
+.menu .list .item-complex .item-content {
   background: inherit; }
-.profile .list ion-item:first-child {
+.menu .list ion-item:first-child {
   padding-left: 16px;
   text-align: center;
   width: 100%;
   color: #345EC2; }
-  .profile .list ion-item:first-child img {
+  .menu .list ion-item:first-child img {
     border: 4px solid #345EC2;
     opacity: 0.8;
     border-radius: 50%;
     width: 90px;
     height: 90px;
     margin: auto; }
-.profile .list .col {
+.menu .list .col {
   padding-left: 0;
   text-align: left; }
-.profile .list .col + .col {
+.menu .list .col + .col {
   padding-right: 15%;
   text-align: right; }
 
