@@ -212,7 +212,7 @@ angular.module('SeeAroundMe', [
     })
 
     .state('app.userchat', {
-      url: "/user/chat",
+      url: "/user/chat/:from",
       views: {
         'menuContent':{
           templateUrl: "templates/user/chat.html",

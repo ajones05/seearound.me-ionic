@@ -385,7 +385,7 @@ angular.module('SeeAroundMe.services', [])
         getCurrentPosition: function (){
             
             console.log('Geolocation Service called...');
-            var posOptions = {timeout: 10000, maximumAge:120000, enableHighAccuracy: false};
+            var posOptions = {timeout: 30000, maximumAge:0, enableHighAccuracy: false};
 
              return $cordovaGeolocation.getCurrentPosition(posOptions);
         },
@@ -654,7 +654,7 @@ angular.module('SeeAroundMe.services', [])
         
         initMap: function(){
             var me = this;
-            var posOptions = {timeout: 10000, maximumAge:120000, enableHighAccuracy: false};
+            var posOptions = {timeout: 30000, maximumAge:0, enableHighAccuracy: false};
             $cordovaGeolocation.getCurrentPosition(posOptions)
                 .then(function (position) {
                     var lat  = position.coords.latitude;//37.8088139

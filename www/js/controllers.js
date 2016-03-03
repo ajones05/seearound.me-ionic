@@ -675,7 +675,7 @@ angular.module('SeeAroundMe.controllers', [])
 
   $scope.viewConversation = function(otherUserId){
     AppService.setOtherUserId(otherUserId);
-    $state.go('app.userchat')
+    $state.go('app.userchat', {from: 'messages'});
   }
 
   // set post button to blue when typing
@@ -697,7 +697,7 @@ angular.module('SeeAroundMe.controllers', [])
   };
 })
 
-.controller('ChatCtrl', function($scope, $state, AppService){
+.controller('ChatCtrl', function($scope, $stateParams, $state, $ionicScrollDelegate, AppService){
   $scope.messages = [];
   $scope.Self = JSON.parse(localStorage.getItem('sam_user_data')) || '{}';
   $scope.other_user = {};
@@ -706,6 +706,13 @@ angular.module('SeeAroundMe.controllers', [])
     subject: null,
     conversationId: null
   }
+  
+  $scope.goBack = function(){
+      if($stateParams.from == 'messages')
+          $state.go('app.usermessages');
+      else
+          $state.go('app.postmapview');
+  };
 
   // fetches messages from API and populates scope vars
   function fetchMessages(){
@@ -731,7 +738,7 @@ angular.module('SeeAroundMe.controllers', [])
       }
     }, function(error){
     });
-  }
+  };
 
   $scope.sendMessage = function(){
 
@@ -742,14 +749,20 @@ angular.module('SeeAroundMe.controllers', [])
         $scope.newMessage.subject,
         $scope.newMessage.text,
         $scope.newMessage.conversationId
-      ).then(function(res){
+      ).then(function(res){    
+        
         $scope.messages.push({
           sender_id: $scope.Self.id,
           message: $scope.newMessage.text,
-        })
+        });
+        
+        $scope.newMessage.text = "";
+        
+        $ionicScrollDelegate.scrollBottom(true);
+        
       }, function(error){
       });
-  }
+  };
 
   // fetch messages every time user navigates to this page
   $scope.$on('$ionicView.enter', function(e) {
@@ -1456,8 +1469,9 @@ angular.module('SeeAroundMe.controllers', [])
           AppService.setOtherUserId(alert.user_id);
           $state.go('app.userchat');
           break;
-        default:
+        default: //vote or comment
           $scope.popover.hide();
+          $state.go('app.postlistview');
       }
     }
     
