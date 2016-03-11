@@ -29,6 +29,27 @@
       min-height:100px; 
       background: lightgray
    }
+    
+    .post-link{
+        max-height:66px;
+        overflow:hidden;
+        text-overflow:ellipsis !important;
+    }
+    
+    .link-title{
+        font-family: 'Lato';
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    .link-text{
+      color: $messageTextColor;
+      /*font-family: 'Lato-Light';*/    
+      font-family: 'Lato';
+      font-size: .9rem !important;
+      line-height: 1rem;
+      white-space: nowrap !important;
+    }
 
   .row{
     padding: 4px !important;

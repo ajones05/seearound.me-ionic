@@ -551,6 +551,7 @@ angular.module('SeeAroundMe.controllers', [])
                                     localStorage.setItem('sam_user_data', JSON.stringify(response.result));
                                     $rootScope.isBeforeSignUp = false;
                                     $state.go('app.postmapview');
+                                    $rootScope.$emit('login',{});
                                  }
                                  else{
                                     AppService.showErrorAlert('Failed to login!', response.message);
@@ -792,10 +793,11 @@ angular.module('SeeAroundMe.controllers', [])
     if($scope.nearbyPosts){
       $scope.nearbyPosts.map(function(post){
         // get the first url from text
-        post.first_link = post.news.match(urlRegEx);
-        try{
-          post.first_link = post.news.match(urlRegEx)[0];
-        }catch(ex){}
+        //post.first_link = post.news.match(urlRegEx);
+        //try{
+          //post.first_link = post.news.match(urlRegEx)[0];
+        //}catch(ex){}
+        post.news = post.news.replace(urlRegEx, "");
           
         post.timeAgo = moment(post.updated_date).fromNow();
       });
@@ -803,7 +805,11 @@ angular.module('SeeAroundMe.controllers', [])
     else{
        $scope.nearbyPosts = []; 
     }
-  }
+  };
+    
+  $scope.openLink = function(link){
+      window.open(link, '_blank', 'location=no');
+  };
 
   $rootScope.goToProfile = function(id){
     console.log('goto profile called with id= ', id);
@@ -924,11 +930,11 @@ angular.module('SeeAroundMe.controllers', [])
 
             $scope.nearbyPosts.map(function(post){
                 // get the first url from text
-                post.first_link = post.news.match(urlRegEx);
-                try{
-                  post.first_link = post.news.match(urlRegEx)[0];
-                }catch(ex){}
-
+                //post.first_link = post.news.match(urlRegEx);
+                //try{
+                  //post.first_link = post.news.match(urlRegEx)[0];
+                //}catch(ex){}
+                post.news = post.news.replace(urlRegEx, "");
                 post.timeAgo = moment(post.updated_date).fromNow();
             });
         })
@@ -961,15 +967,16 @@ angular.module('SeeAroundMe.controllers', [])
 
             $scope.nearbyPosts.map(function(post){
                 // get the first url from text
-                post.first_link = post.news.match(urlRegEx);
-                try{
-                  post.first_link = post.news.match(urlRegEx)[0];
-                }catch(ex){}
+                //post.first_link = post.news.match(urlRegEx);
+                //try{
+                  //post.first_link = post.news.match(urlRegEx)[0];
+                //}catch(ex){}
 
                 // transform news text to behave nicely with html
                 // removes links and " characters from post.news
-                post.sanitizedText = post.news.replace(urlRegEx, '').replace(/\"/g, '')
-
+                //post.sanitizedText = post.news.replace(urlRegEx, '').replace(/\"/g, '')
+                
+                post.news = post.news.replace(urlRegEx, "");
                 post.timeAgo = moment(post.updated_date).fromNow();
             });
         });        
@@ -1317,8 +1324,14 @@ angular.module('SeeAroundMe.controllers', [])
     var fetchComments = function (post) {
       AppService.getCurrentComments(post)
       .then(function(current){
-        console.log('response', current);
-        $scope.postComments = current.comments.reverse() || [];
+        //console.log('response', current);
+          if(current.comments){
+                $scope.postComments = current.comments.reverse();   
+          }
+          else{
+              $scope.postComments = [];
+          }
+          
         try{
           $scope.postComments.map(function(comment){
             comment.timeAgo = moment(comment.commTime).fromNow();
@@ -1435,7 +1448,7 @@ angular.module('SeeAroundMe.controllers', [])
             });
           }
     });
-
+    
     $scope.$on("mapview:openlist", function(event,data) {
         $scope.showModal(1);
     });

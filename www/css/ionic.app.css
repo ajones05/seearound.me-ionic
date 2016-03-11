@@ -8229,6 +8229,21 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     max-width: 100%;
     min-height: 100px;
     background: lightgray; }
+  .postlistview .post-link {
+    max-height: 66px;
+    overflow: hidden;
+    text-overflow: ellipsis !important; }
+  .postlistview .link-title {
+    font-family: 'Lato';
+    padding: 0 !important;
+    margin: 0 !important; }
+  .postlistview .link-text {
+    color: #777777;
+    /*font-family: 'Lato-Light';*/
+    font-family: 'Lato';
+    font-size: .9rem !important;
+    line-height: 1rem;
+    white-space: nowrap !important; }
   .postlistview .row {
     padding: 4px !important; }
   .postlistview .modal_header {

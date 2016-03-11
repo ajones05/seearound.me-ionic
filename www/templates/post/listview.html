@@ -55,7 +55,8 @@
               {{post.timeAgo}}
             </div>
           </div>
-          <p class="desc" ng-bind-html="post.news | linky | hrefToJS"></p>
+            <!--p class="desc" ng-bind-html="post.news | linky | hrefToJS"></p-->
+            <p class="desc">{{post.news}}</p>
         </div>
         <div 
           ng-click="showMapForPost(post.latitude, post.longitude)"
@@ -64,13 +65,20 @@
         </div>
       </div>
       <img ng-if="post.images" class="post-iamge" ng-src={{post.images}} alt="">
+        <div class="item item-body" ng-if="post.link_url" ng-click="openLink(post.link_url)">
+              <img class="full-image" ng-src={{post.link_image}} ng-if="post.link_image" alt="">
+              <div class="post-link">
+                  <h3 class="link-title">{{post.link_title}}</h3>
+                  <span class="link-text">{{post.link_description}}</span>
+              </div>
+        </div>
       <div class="share row">
         <span class="col col-20 chat-bubble" ng-click="goToComments(post)">
           {{post.comment_count}}
           <img src="img/chat.png" alt="">
         </span>
         <post-like-box></post-like-box>
-        <span class="col" ng-click='openShare(post.news, post.first_link)'> Share</span>
+        <span class="col" ng-click='openShare(post.news, post.link_url)'> Share</span>
       </div>
     </div>
 

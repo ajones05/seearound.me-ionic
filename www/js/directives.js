@@ -12,6 +12,51 @@ angular.module('SeeAroundMe.directives', [])
               +'<img src="img/downvote_off.png" ng-if="post.isLikedByUser == 1" ng-click="downVote(post.id, -1)" alt="">'
               +'<img src="img/downvote_off.png" ng-if="post.isLikedByUser == 0" ng-click="downVote(post.id, -1)" alt=""></span>',
         controller: function ($scope, AppService) {
+            
+              $scope.updateUpVote = function(post, myVote, totalVote){
+                    post.vote = totalVote;
+                    if(post.isLikedByUser == 1 && myVote == -1)//Cancel vote case
+                            post.isLikedByUser = 0;
+                    else if(post.isLikedByUser == 0 && myVote == 1)
+                            post.isLikedByUser = 1;
+                    else if(post.isLikedByUser == -1 && myVote == 1){
+                        post.isLikedByUser = 0;
+                        //Vote twice: one to cance negative vote and the other to vote plus
+                        AppService.vote(post.id, myVote)
+                        .then(function(response){
+                          console.log(JSON.stringify(response));
+                          if (response.data.reasonfailed){
+                              console.log(JSON.stringify(response.data.message));
+                          }else if (response.data.success){
+                               post.vote = response.data.vote;
+                              post.isLikedByUser = 1;
+                          }
+                        });
+                    };                  
+              };
+            
+              $scope.updateDownVote = function(post, myVote, totalVote){
+                    post.vote = totalVote;
+                    if(post.isLikedByUser == 0 && myVote == -1)
+                            post.isLikedByUser = -1;
+                    else if(post.isLikedByUser == -1 && myVote == 1)
+                            post.isLikedByUser = 0;
+                    else if(post.isLikedByUser == 1 && myVote == -1){
+                        post.isLikedByUser = 0;
+                        //Vote twice: one to cancel positive vote and the other to vote negative
+                        AppService.vote(post.id, myVote)
+                            .then(function(response){
+                              //console.log(JSON.stringify(response));
+                              if (response.data.reasonfailed){
+                                  console.log(JSON.stringify(response.data.message));
+                              }else if (response.data.success){
+                                   post.vote = response.data.vote;
+                                   post.isLikedByUser = -1;
+                              }
+                            });
+                    }
+              };            
+            
               $scope.upVote = function(newsId , v){
                     console.log('V: ' + v);
                     // pass v => '1' for upvote
@@ -22,29 +67,16 @@ angular.module('SeeAroundMe.directives', [])
                       if (response.data.reasonfailed){
                           console.log(JSON.stringify(response.data.message));
                       }else if (response.data.success){
-                        $scope.nearbyPosts.map(function(post){
-                          if (post.id === newsId){
-                            post.vote = response.data.vote;
-                            if(post.isLikedByUser == 1 && v == -1)//Cancel vote case
-                                    post.isLikedByUser = 0;
-                            else if(post.isLikedByUser == 0 && v == 1)
-                                    post.isLikedByUser = 1;
-                            else if(post.isLikedByUser == -1 && v == 1){
-                                post.isLikedByUser = 0;
-                                //Vote twice: one to cance negative vote and the other to vote plus
-                                AppService.vote(newsId, v)
-                                .then(function(response){
-                                  console.log(JSON.stringify(response));
-                                  if (response.data.reasonfailed){
-                                      console.log(JSON.stringify(response.data.message));
-                                  }else if (response.data.success){
-                                       post.vote = response.data.vote;
-                                      post.isLikedByUser = 1;
+                          if($scope.nearbyPosts.map){//List view case
+                                $scope.nearbyPosts.map(function(post){
+                                  if (post.id === newsId){
+                                      $scope.updateUpVote(post, v, response.data.vote);
                                   }
-                                });
-                            }                                   
+                                });                              
                           }
-                        })
+                          else{//Map modal view case
+                              $scope.updateUpVote($scope.post, v, response.data.vote);
+                          }
                       }
 
                     }, function(err){
@@ -62,36 +94,22 @@ angular.module('SeeAroundMe.directives', [])
                       if (response.data.reasonfailed){
                           console.log(JSON.stringify(response.data.message));
                       }else if (response.data.success){
-                        $scope.nearbyPosts.map(function(post){
-                          if (post.id === newsId){
-                            post.vote = response.data.vote;
-                            if(post.isLikedByUser == 0 && v == -1)
-                                    post.isLikedByUser = -1;
-                            else if(post.isLikedByUser == -1 && v == 1)
-                                    post.isLikedByUser = 0;
-                            else if(post.isLikedByUser == 1 && v == -1){
-                                post.isLikedByUser = 0;
-                                //Vote twice: one to cancel positive vote and the other to vote negative
-                                AppService.vote(newsId, v)
-                                .then(function(response){
-                                  console.log(JSON.stringify(response));
-                                  if (response.data.reasonfailed){
-                                      console.log(JSON.stringify(response.data.message));
-                                  }else if (response.data.success){
-                                       post.vote = response.data.vote;
-                                       post.isLikedByUser = -1;
+                          if($scope.nearbyPosts.map){//List view case
+                                $scope.nearbyPosts.map(function(post){
+                                  if (post.id === newsId){
+                                      $scope.updateDownVote(post, v, response.data.vote);
                                   }
-                                });                                
-                            }
+                                });                              
                           }
-                        })
+                          else{//Map modal view case
+                              $scope.updateDownVote($scope.post, v, response.data.vote);
+                          }                          
                       }
 
                     }, function(err){
                       console.log('error upvoting', JSON.stringify(err));
                     });
-              }
-            
+              }            
         }
     }
 })

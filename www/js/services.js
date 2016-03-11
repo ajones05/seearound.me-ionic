@@ -494,11 +494,7 @@ angular.module('SeeAroundMe.services', [])
                                 }
                             });
                             
-                            post.first_link = post.news.match(urlRegEx);
-                            try{
-                              post.first_link = post.news.match(urlRegEx)[0];
-                            }catch(ex){}
-                            
+                            post.news = post.news.replace(urlRegEx, "");
                             post.timeAgo = moment(post.updated_date).fromNow();
                             marker.post = post;
                             
