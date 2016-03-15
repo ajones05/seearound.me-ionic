@@ -21,7 +21,7 @@ angular.module('SeeAroundMe.directives', [])
                             post.isLikedByUser = 1;
                     else if(post.isLikedByUser == -1 && myVote == 1){
                         post.isLikedByUser = 0;
-                        //Vote twice: one to cance negative vote and the other to vote plus
+                        //Vote twice: one to cancel negative vote and the other to vote plus
                         AppService.vote(post.id, myVote)
                         .then(function(response){
                           console.log(JSON.stringify(response));
