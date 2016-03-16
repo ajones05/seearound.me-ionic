@@ -1046,7 +1046,7 @@ angular.module('SeeAroundMe.controllers', [])
     var userId = userData.id || 0;
 
     $scope.addLocation = "        Add location";
-    $rootScope.formData = {};
+    $scope.formData = {};
     $scope.showCamBar = false;
     
     $scope.toggleCamBar = function(){
@@ -1084,6 +1084,8 @@ angular.module('SeeAroundMe.controllers', [])
         }
         else{
             $scope.addLocation = "        Add location";
+            if($stateParams.from == "selectlocation")
+                $scope.formData.postText = $rootScope.postText;
         }        
     });
 
@@ -1126,10 +1128,11 @@ angular.module('SeeAroundMe.controllers', [])
 
         AppService.addNewPost(data).then(
                 function(res){
-                    console.log('Post Success ...');
-                    console.log(JSON.stringify(res));
+                    //console.log('Post Success ...');
+                    //console.log(JSON.stringify(res));
                     $ionicLoading.hide();
                     $rootScope.postText = '';
+                    $scope.formData.postText = '';
                     $state.go('app.postlistview');
                 },
                 function(error){
@@ -1177,7 +1180,8 @@ angular.module('SeeAroundMe.controllers', [])
                 var p = {
                     address: place.formatted_address,
                     latitude: place.geometry.location.lat(),
-                    longitude: place.geometry.location.lng() 
+                    longitude: place.geometry.location.lng(),
+                    from: "selectlocation"
                 };
 
                 $state.go('newpostview', p);
@@ -1198,6 +1202,18 @@ angular.module('SeeAroundMe.controllers', [])
         locationFld.value = "";
         locationFld.focus();
         $scope.place.formatted_address = '';
+    };
+    
+    $scope.cancel = function(){
+        
+        var p = {
+            address: "",
+            latitude: "",
+            longitude: "",
+            from: "selectlocation"
+        };
+
+        $state.go('newpostview', p);
     };
     
     $scope.$on('$ionicView.enter', function(e) {
