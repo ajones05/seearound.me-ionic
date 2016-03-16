@@ -8225,6 +8225,13 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     transition: max-height .6s ease-in-out; }
   .postlistview .post_item {
     border-bottom: 1px solid lightgray; }
+    .postlistview .post_item .item {
+      border: 0 !important;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important; }
+    .postlistview .post_item .item-body {
+      border: 1px solid lightgray;
+      padding: 0 !important; }
   .postlistview .post-iamge {
     max-width: 100%;
     min-height: 100px;
@@ -8232,7 +8239,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   .postlistview .post-link {
     max-height: 66px;
     overflow: hidden;
-    text-overflow: ellipsis !important; }
+    text-overflow: ellipsis !important;
+    padding: 4px; }
   .postlistview .link-title {
     font-family: 'Lato';
     padding: 0 !important;

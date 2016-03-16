@@ -22,6 +22,16 @@
     
   .post_item{
     border-bottom: 1px solid lightgray;
+      .item {
+            border: 0 !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;          
+      }
+      
+      .item-body {
+            border: 1px solid lightgray;
+            padding:0 !important;
+      }
   }
 
   .post-iamge{
@@ -34,6 +44,7 @@
         max-height:66px;
         overflow:hidden;
         text-overflow:ellipsis !important;
+        padding:4px;
     }
     
     .link-title{
