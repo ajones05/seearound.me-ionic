@@ -8,7 +8,7 @@ angular.module('SeeAroundMe', [
     'google.places', 
     'ngSanitize'])
 
-.run(function($ionicPlatform, $state, $rootScope, AppService, $ionicPopup, $ionicHistory ) {
+.run(function($ionicPlatform, $timeout, $state, $rootScope, AppService, $ionicPopup, $ionicHistory ) {
   $ionicPlatform.ready(function() {
     //First check for internet connection
     if(!AppService.isConnected()){
@@ -50,10 +50,14 @@ angular.module('SeeAroundMe', [
       $rootScope.showInputBar = !$rootScope.showInputBar;
     }
 
-    var isRegistered = localStorage.hasOwnProperty('sam_user_data');
+    var isAuthenticated = localStorage.hasOwnProperty('sam_user_data');
 
-    if(isRegistered){        
-      $state.go('app.postmapview');
+    if(isAuthenticated){        
+        $state.go('app.postmapview');
+        //Login event causes map initialization
+       $timeout(function(){
+              $rootScope.$broadcast('login',{});
+        }, 1000);
     }
     else{
       $state.go('home');

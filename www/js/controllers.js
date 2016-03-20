@@ -23,6 +23,8 @@ angular.module('SeeAroundMe.controllers', [])
       localStorage.removeItem('sam_user_location');
       localStorage.removeItem('sam_user_data');
       
+      //Facebook logout
+      //opneFB.logout();
       //Loop through all the markers and remove
       if($rootScope.markers){
         $rootScope.markers.map(function(marker){
@@ -104,7 +106,7 @@ angular.module('SeeAroundMe.controllers', [])
   };
 })
 
-.controller('SignupCtrl', function($scope, $rootScope, $state, AppService) {
+.controller('SignupCtrl', function($scope, $timeout, $rootScope, $state, AppService) {
     console.log('Signup controller called ...');
     $scope.formData = {};
             
@@ -160,6 +162,10 @@ angular.module('SeeAroundMe.controllers', [])
                                     localStorage.setItem('sam_user_data', JSON.stringify(response.result));
                                     $rootScope.isBeforeSignUp = false;
                                     $state.go('app.postmapview');
+                                    $timeout(function(){
+                                          $rootScope.$broadcast('login',{});
+                                    }, 1000);
+
                                  }
                                  else{
                                     AppService.showErrorAlert('Failed to login!', response.message);
@@ -187,7 +193,7 @@ angular.module('SeeAroundMe.controllers', [])
     }            
 })
 
-.controller('LocationCtrl', function($scope, $rootScope, $state, $timeout, $ionicPopup, $ionicLoading, MapService, AppService) {
+.controller('LocationCtrl', function($scope, $timeout, $rootScope, $state, $timeout, $ionicPopup, $ionicLoading, MapService, AppService) {
     
     $scope.doRegister = function(userData){
         $ionicPopup.confirm({
@@ -214,6 +220,9 @@ angular.module('SeeAroundMe.controllers', [])
                                       localStorage.setItem('sam_user_data', JSON.stringify(response.result));
                                       $rootScope.isBeforeSignUp = false;
                                       $state.go('app.postmapview');
+                                        $timeout(function(){
+                                              $rootScope.$broadcast('login',{});
+                                        }, 1000);
                                     }
                                     else{
                                       AppService.showErrorAlert('Failed to login!', response.message);
@@ -490,7 +499,7 @@ angular.module('SeeAroundMe.controllers', [])
 
 })
 
-.controller('SigninCtrl', function($scope, $rootScope, $state, $ionicLoading, $rootScope, AppService, $ionicModal) {
+.controller('SigninCtrl', function($scope, $timeout, $rootScope, $state, $ionicLoading, $rootScope, AppService, $ionicModal) {
 
   $scope.formData = {};
   //$scope.formData.email = "brandonhere123@gmail.com";
@@ -516,7 +525,9 @@ angular.module('SeeAroundMe.controllers', [])
             $rootScope.isBeforeSignUp = false;
             $state.go('app.postmapview');
             //Fire login event to cause the map to refresh
-            $rootScope.$emit('login',{});
+            $timeout(function(){
+                  $rootScope.$broadcast('login',{});
+            }, 1000);
         }
         else{
            AppService.showErrorAlert('Failed to login!', response.message);
@@ -551,7 +562,9 @@ angular.module('SeeAroundMe.controllers', [])
                                     localStorage.setItem('sam_user_data', JSON.stringify(response.result));
                                     $rootScope.isBeforeSignUp = false;
                                     $state.go('app.postmapview');
-                                    $rootScope.$emit('login',{});
+                                    $timeout(function(){
+                                          $rootScope.$broadcast('login',{});
+                                    }, 1000);
                                  }
                                  else{
                                     AppService.showErrorAlert('Failed to login!', response.message);
@@ -1294,14 +1307,6 @@ angular.module('SeeAroundMe.controllers', [])
     $scope.formData = {};
     $scope.fileName = {};
     $scope.searchTerm = "";
-
-    if(AppService.isConnected()){
-        //Make map at the start
-        MapService.initMap();
-    }
-    else{
-        AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');        
-    }    
     
     var ud = localStorage.getItem('sam_user_data');
     console.log(ud);
@@ -1580,10 +1585,16 @@ angular.module('SeeAroundMe.controllers', [])
         })
       };
 
-    // Load map (refresh) on login
+    // Load map on login
     $rootScope.$on('login', function(event, data) {
         //console.log('login event received ....');
-        MapService.refreshMap();
+        if(AppService.isConnected()){
+            //Make map at the start
+            MapService.initMap();
+        }
+        else{
+            AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');        
+        }    
     });
 
     document.addEventListener("resume", function(e) {//Cordova event
@@ -1601,7 +1612,9 @@ angular.module('SeeAroundMe.controllers', [])
         getFollowers();
         //getAlerts();
         //Causes the map to redraw
-        google.maps.event.trigger($rootScope.map, 'resize');
+        if($rootScope.map){
+            google.maps.event.trigger($rootScope.map, 'resize');
+        }
     });
 
     var getAlerts = function($event){
@@ -1646,5 +1659,6 @@ angular.module('SeeAroundMe.controllers', [])
     
   $scope.closeMapModal = function(){
       $scope.mapModal.remove();      
-  }
+  };
+  
 });

@@ -364,7 +364,8 @@ angular.module('SeeAroundMe.services', [])
             var latlng = new google.maps.LatLng(lat, lng);
 
             geocoder.geocode({
-                'latLng': latlng
+                'latLng': latlng,
+                'location_type': 'ROOFTOP'
               }, function (results, status) {
                 if (status === google.maps.GeocoderStatus.OK) {
                   if (results) {
@@ -474,9 +475,10 @@ angular.module('SeeAroundMe.services', [])
             console.log('userId: ' + userId);
             
             function onSuccess(response){
-                console.log('Got nearby posts ..............................');
+                
                 //console.log(JSON.stringify(response));
                 if(response.status == 'SUCCESS'){
+                    console.log('Got nearby posts ..............................');
                     if(response.result){
                       // the regex that matches urls in text
                       var urlRegEx = new RegExp(
