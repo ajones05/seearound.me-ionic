@@ -64,7 +64,8 @@
               <div>{{comment.timeAgo}}</div>
             </div>
           </div>
-          <div class="desc">{{comment.comment}}</div>
+            <p class="desc" ng-bind-html="comment.comment | linky | hrefToJS"></p>
+          <!--div class="desc">{{comment.comment}}</div-->
         </div>
         <!-- <div style="width:20px;padding:5px"> -->
         <!--   <a class="icon ion&#45;ios&#45;location&#45;outline" style="font&#45;size:1.3em;"></a> -->

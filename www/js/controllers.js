@@ -1136,7 +1136,12 @@ angular.module('SeeAroundMe.controllers', [])
             "user_id" : userId,
             "latitude" : $stateParams.latitude,
             "longitude" : $stateParams.longitude,
-            "address" : $stateParams.address
+            "street_number" : $stateParams.street_number,
+            "street_name" : $stateParams.street_name,
+            "city" : $stateParams.city,
+            "state" : $stateParams.state,
+            "country" : $stateParams.country,
+            "zip" : $stateParams.zip
         };
 
         AppService.addNewPost(data).then(
@@ -1196,6 +1201,34 @@ angular.module('SeeAroundMe.controllers', [])
                     longitude: place.geometry.location.lng(),
                     from: "selectlocation"
                 };
+                
+                var components = place.address_components;
+
+                //Get address components
+                for (var i = 0; i < components.length; i++) {
+                    //console.log(components[i]);
+                    switch(components[i].types[0]){
+
+                        case 'street_number':
+                             p.street_number = components[i].short_name;
+                             break;                                
+                        case 'route':
+                             p.street_name = components[i].long_name;
+                             break;
+                        case 'locality':
+                             p.city = components[i].short_name;
+                             break;
+                        case 'administrative_area_level_1':
+                             p.state = components[i].short_name;
+                             break;
+                        case 'country':
+                             p.country = components[i].short_name;
+                             break;
+                        case 'postal_code':
+                             p.zip = components[i].short_name;
+                             break;                                
+                    }
+                }
 
                 $state.go('newpostview', p);
             });
@@ -1450,6 +1483,7 @@ angular.module('SeeAroundMe.controllers', [])
         else{
             $scope.closeModal();
             $scope.modal.remove();
+            $scope.modal3.remove();
         }
     };
             

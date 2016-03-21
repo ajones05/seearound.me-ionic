@@ -164,7 +164,7 @@ angular.module('SeeAroundMe', [
     })
     
     .state('newpostview', {
-           url: "/post/newpost/:latitude/:longitude/:address/:from",
+           url: "/post/newpost/:latitude/:longitude/:address/:from/:street_number/:street_name/:city/:state/:country/:zip",
            templateUrl: "templates/post/add-post.html",
            controller: 'NewPostCtrl'
     })
