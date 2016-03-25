@@ -364,12 +364,13 @@ angular.module('SeeAroundMe.services', [])
             var latlng = new google.maps.LatLng(lat, lng);
 
             geocoder.geocode({
-                'latLng': latlng,
-                'location_type': 'ROOFTOP'
+                'latLng': latlng
+                //,
+                //'location_type': 'ROOFTOP'
               }, function (results, status) {
                 if (status === google.maps.GeocoderStatus.OK) {
                   if (results) {
-                        d.resolve(results[1]);
+                        d.resolve(results[0]);
                   } else {
                     console.log('No results found');
                       d.resolve(results);

@@ -45,9 +45,9 @@
         <span class="col"> {{User.Name}} </span>
       </ion-item>
 
-      <ion-item ng-if="User.Karma" class="row">
+      <ion-item class="row">
         <span class="col col-20">Karma</span>
-        <span class="col"></span>
+        <span class="col">{{User.karma}}</span>
       </ion-item>
 
       <ion-item class="row" ng-if="User.Email_id">
@@ -73,7 +73,7 @@
       <ion-item class="row">
         <span class="col col-20">Posts</span>
         <span class="col">
-          <span ui-sref="app.postmapview" class="custom_btn">
+          <span ng-click="showUserPosts()" class="custom_btn">
             See Nearby Posts
           </span>
         </span>

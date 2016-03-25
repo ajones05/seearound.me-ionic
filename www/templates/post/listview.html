@@ -65,7 +65,7 @@
         </div>
       </div>
       <img ng-if="post.images" class="post-iamge" ng-src={{post.images}} alt="">
-        <div class="item" ng-if="post.link_url" ng-click="openLink(post.link_url)">
+        <div class="item" style="padding-top:0;" ng-if="post.link_url" ng-click="openLink(post.link_url)">
             <div class="item-body">
               <img class="full-image" ng-src={{post.link_image}} ng-if="post.link_image" alt="">
               <div class="post-link">

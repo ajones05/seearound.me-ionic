@@ -322,7 +322,7 @@ angular.module('SeeAroundMe.controllers', [])
       //Must set this
       $scope.isCurrentUser = true;
       $scope.User = JSON.parse(localStorage.getItem('sam_user_data'));
-      $timeout(calculateAge(), 50);
+      $timeout(calculateAge(), 200);
     } else{
       //Must set this
       $scope.isCurrentUser = false;
@@ -367,7 +367,18 @@ angular.module('SeeAroundMe.controllers', [])
             $scope.isFriend = false;
           console.log(JSON.stringify(result));
       });      
-  };    
+  };
+    
+  $scope.showUserPosts = function(){
+      $rootScope.markers.forEach(function(marker){
+          if(marker.post && marker.post.user_id != $scope.User.id)
+              marker.setMap(null);
+      });
+      
+      $rootScope.isFromProfileView = true;
+      
+      $state.go('app.postmapview');
+  };
 
   $scope.showNewMessageModal = function(user){
     $scope.newMessage = {};
@@ -826,11 +837,19 @@ angular.module('SeeAroundMe.controllers', [])
 
   $rootScope.goToProfile = function(id){
     console.log('goto profile called with id= ', id);
-    AppService.setIsCurrentUserFlag(false);
+    var userData = JSON.parse(localStorage.getItem('sam_user_data')) || {};
+    var userId = userData.id || 0;
+    if(userId == id){
+        AppService.setIsCurrentUserFlag(true);
+    }
+    else{
+        AppService.setIsCurrentUserFlag(false);
+    }
+    
     AppService.setUserForProfilePage(id)
     .then(function(){
       $state.go('app.userprofile');
-    })
+    });
   };
 
   $scope.openShare = function(text, link){
@@ -1537,9 +1556,25 @@ angular.module('SeeAroundMe.controllers', [])
           AppService.setOtherUserId(alert.user_id);
           $state.go('app.userchat');
           break;
-        default: //vote or comment
+        default: //vote or comment 
           $scope.popover.hide();
-          $state.go('app.postlistview');
+            var post = null;
+            for(var i=0; i < $rootScope.currentPosts.length; i++){
+                if(alert.post_id === $rootScope.currentPosts[i].id){
+                    post = $rootScope.currentPosts[i];
+                    break;
+                }
+            }
+            
+            if(post){//Post was found in current posts
+                AppService.setCurrentComments(post)
+                .then(function(){
+                  $state.go('app.postcomments');
+                });                              
+            }
+              else{//Post was not found
+
+              }
       }
     }
     
@@ -1616,7 +1651,7 @@ angular.module('SeeAroundMe.controllers', [])
         AppService.setCurrentComments(post)
         .then(function(){
           $state.go('app.postcomments');
-        })
+        });
       };
 
     // Load map on login
@@ -1651,6 +1686,14 @@ angular.module('SeeAroundMe.controllers', [])
         }
     });
 
+    $scope.$on('$ionicView.leave', function(e) {
+        $rootScope.isFromProfileView = false;
+        //Show all markers when user has seen filtered ones
+        $rootScope.markers.forEach(function(marker){
+              marker.setMap($rootScope.map);
+        });
+    });
+    
     var getAlerts = function($event){
         $ionicLoading.show($event); 
       AppService.getAlerts()
