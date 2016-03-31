@@ -1330,7 +1330,7 @@ angular.module('SeeAroundMe.controllers', [])
     };
 })
 
-.controller('MapCtrl', function($scope, $rootScope, $state, $stateParams, $timeout, $ionicLoading, $ionicPopup, $ionicPopover, $cordovaGeolocation, $compile, AppService, MapService, ModalService) {
+.controller('MapCtrl', function($scope, $rootScope, $state, $stateParams, $timeout, $ionicLoading, $ionicPopup, $ionicPopover, $cordovaGeolocation, $ionicScrollDelegate, $compile, AppService, MapService, ModalService) {
     
     $rootScope.inputRadius = 0.8;
     $rootScope.isFiltered = false;
@@ -1572,9 +1572,22 @@ angular.module('SeeAroundMe.controllers', [])
                   $state.go('app.postcomments');
                 });                              
             }
-              else{//Post was not found
-
-              }
+            else{//Post was not found
+                var data = {
+                    user_id: alert.user_id,
+                    post_id: alert.post_id
+                };
+                
+                AppService.getPost(data)
+                .then(function(result){
+                    if(result.data.post){
+                        AppService.setCurrentComments(result.data.post)
+                        .then(function(){
+                          $state.go('app.postcomments');
+                        });  
+                    }                            
+                });
+            }
       }
     }
     
@@ -1737,5 +1750,8 @@ angular.module('SeeAroundMe.controllers', [])
   $scope.closeMapModal = function(){
       $scope.mapModal.remove();      
   };
-  
+    
+  $scope.focusInput = function(){    
+      $ionicScrollDelegate.scrollBottom(true);
+  };  
 });

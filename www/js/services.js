@@ -104,16 +104,30 @@ angular.module('SeeAroundMe.services', [])
                 data: data,
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
-        },        
+        },    
+        
+        getPost: function (data) {
+            var url = API_URL + '/post';
+             /*
+                return $http({
+                    method: 'POST',
+                    url: url,
+                    data: data,
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                });*/
+             return $http.post(url, data);
+        },                
 
         getNearbyPosts: function (data) {
             var url = API_URL + '/request-nearest';
-            return $http({
-                method: 'POST',
-                url: url,
-                data: data,
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-            });
+             /*
+                return $http({
+                    method: 'POST',
+                    url: url,
+                    data: data,
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                });*/
+             return $http.post(url, data);
         },
         
         getMyPosts: function (data) {

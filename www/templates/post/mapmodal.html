@@ -100,7 +100,7 @@
             </div>
         </div>
         <div class="share row" style="background:white">
-          <span class="col col-20 chat-bubble" ng-click="goToComments(post)">
+          <span class="col col-20 chat-bubble" ng-click="focusInput()">
             {{post.comment_count}}
             <img src="img/chat.png" alt="">
           </span>
@@ -136,7 +136,7 @@
           </div>
         </div>
         <div class="write-comment row">
-          <input type="text" class="col" ng-model="commentText" placeholder="Write a comment..">
+          <input id="commInput" type="text" class="col" ng-model="commentText" placeholder="Write a comment..">
           <div ng-click="postComment(commentText)" class="button button-small button-positive col col-20">
             Post
             </div>
