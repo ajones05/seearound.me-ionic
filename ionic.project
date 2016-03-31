@@ -1,6 +1,6 @@
 {
-  "name": "See Around Me",
-  "app_id": "1a06f02e",
+  "name": "SeeAroundMe",
+  "app_id": "adffdb2d",
   "gulpStartupTasks": [
     "sass",
     "watch"
@@ -8,5 +8,12 @@
   "watchPatterns": [
     "www/**/*",
     "!www/lib/**/*"
+  ],
+  "browsers": [
+    {
+      "platform": "android",
+      "browser": "crosswalk",
+      "version": "12.41.296.5"
+    }
   ]
 }
