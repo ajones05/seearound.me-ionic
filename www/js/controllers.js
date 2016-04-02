@@ -1333,6 +1333,7 @@ angular.module('SeeAroundMe.controllers', [])
 .controller('MapCtrl', function($scope, $rootScope, $state, $stateParams, $timeout, $ionicLoading, $ionicPopup, $ionicPopover, $cordovaGeolocation, $ionicScrollDelegate, $compile, AppService, MapService, ModalService) {
     
     $rootScope.inputRadius = 0.8;
+    $scope.circleRadius = 0.8;
     $rootScope.isFiltered = false;
     $scope.userData = JSON.parse(localStorage.getItem('sam_user_data')) || '{}';
     $scope.onRadiusChange = function(){
