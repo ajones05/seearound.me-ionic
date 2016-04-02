@@ -1,12 +1,9 @@
 <ion-view hide-nav-bar="true" hide-back-button="true" class="mapview">
-    <div class="bar bar-header">
+    <div ng-hide="isFromProfileView" class="bar bar-header">
         <div class="row" style="padding-top:10px">
-            <button ng-hide="isFromProfileView" menu-toggle="left" class="button button-icon">
+            <button menu-toggle="left" class="button button-icon">
               <img src="img/menu_off.png" height="22"/>
             </button>
-            <button ng-show="isFromProfileView" class="button button-clear" ui-sref="app.userprofile">
-                <i class="icon ion-ios-arrow-left"></i>
-            </button>            
             <button class="col button button-icon" style="margin-left:18px" ui-sref="newpostview">
               <img src="img/newpost_off.png" height="24"/>
             </button>
@@ -22,6 +19,15 @@
             </button>
         </div>
     </div>
+    
+    <div ng-show="isFromProfileView" class="bar bar-header">
+        <div class="row" style="padding-top:10px">
+            <button class="button button-clear" ui-sref="app.userprofile">
+                <i class="icon ion-ios-arrow-left"></i>
+            </button>            
+        </div>
+    </div>
+    
   <div class="row bar bar-subheader" style="background:#eee;" ng-show="showSearch">
     <div class="col" style="margin-left:-5px;">
       <div class="row" style="border:2px solid #ddd;height:100%;background:#fff;">
