@@ -1512,14 +1512,23 @@ angular.module('SeeAroundMe.controllers', [])
         
           for (var i = 0; i < $rootScope.markers.length; i++) {
             google.maps.event.addListener($rootScope.markers[i], 'click', function() {
-                    //Change icon to blue
-                    this.setIcon({
-                        url:'img/pin-blue.png',
-                        scaledSize: new google.maps.Size(18, 25)
-                    });
-                    $scope.selectedMarker = this;
-                    $scope.post = this.post;                    
-                    $scope.showModal(3);
+                    if(this.post){//It is a post location
+                        //Change icon to blue
+                        this.setIcon({
+                            url:'img/pin-blue.png',
+                            scaledSize: new google.maps.Size(18, 25)
+                        });
+                        $scope.selectedMarker = this;
+                        $scope.post = this.post;                    
+                        $scope.showModal(3);
+                    }
+                    else{//It is my location
+                        var infowindow = new google.maps.InfoWindow({
+                            content: 'My Location'
+                        });
+                        
+                        infowindow.open($rootScope.map, this);
+                    }
             });
           }
     });
