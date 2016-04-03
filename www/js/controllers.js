@@ -1449,12 +1449,22 @@ angular.module('SeeAroundMe.controllers', [])
     };
 
     $scope.goToUser = function(post){
-      AppService.setUserForProfilePage(post.user_id)
-      .then(function(){
-        $rootScope.isCurrentUser = false;
-        $scope.hideModal(); 
-        $state.go('app.userprofile')
-      });
+        
+        console.log('goto profile called with id= ', post.user_id);
+        var userData = JSON.parse(localStorage.getItem('sam_user_data')) || {};
+        var userId = userData.id || 0;
+        if(userId == post.user_id){
+            AppService.setIsCurrentUserFlag(true);
+        }
+        else{
+            AppService.setIsCurrentUserFlag(false);
+        }
+
+        AppService.setUserForProfilePage(post.user_id)
+        .then(function(){
+          $scope.hideModal();
+          $state.go('app.userprofile');
+        });
     }
 
     $scope.openShare = function(text, link){

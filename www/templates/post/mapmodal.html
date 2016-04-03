@@ -116,7 +116,7 @@
             style="border-bottom: 1px solid lightgray; padding-bottom: 5px;"
             ng-repeat="comment in postComments">
             <div class="col col-20 avatar"
-              ng-click="goToProfile(comment.user_id)"
+              ng-click="goToUser(comment)"
               >
               <img ng-src="{{comment.Profile_image}}" alt="profile image">
             </div>
