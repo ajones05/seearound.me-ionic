@@ -1,11 +1,9 @@
 angular.module('SeeAroundMe.controllers', [])
 
-.controller('AppCtrl', function($scope, AppService, $rootScope, $state) {
+.controller('AppCtrl', function($scope, AppService, $timeout, $rootScope, $state) {
   //$scope.$on('$ionicView.enter', function(e) {
   //});
-  
-  $scope.User = JSON.parse(localStorage.getItem('sam_user_data')) || {};
-    
+      
   $rootScope.isBeforeSignUp = false;
 
   $scope.openPostList = function () {
@@ -23,6 +21,8 @@ angular.module('SeeAroundMe.controllers', [])
       localStorage.removeItem('sam_user_location');
       localStorage.removeItem('sam_user_data');
       
+      AppService.setUserId(0);
+      
       //Facebook logout
       //opneFB.logout();
       //Loop through all the markers and remove
@@ -35,7 +35,7 @@ angular.module('SeeAroundMe.controllers', [])
       $rootScope.markers = [];
       
       $state.go('home');
-  }
+  };    
 })
 
 .controller('CommentsCtrl', function($scope, $ionicLoading, AppService, ModalService, MapService, $state, $rootScope) {
@@ -45,7 +45,8 @@ angular.module('SeeAroundMe.controllers', [])
 
   var userData = JSON.parse(localStorage.getItem('sam_user_data' ))|| '{}';
   var userId = userData.id || 0;
-
+  AppService.setUserId(userId);
+    
   AppService.getCurrentComments()
   .then(function(current){
     console.log('response', current);
@@ -159,6 +160,7 @@ angular.module('SeeAroundMe.controllers', [])
                                 $ionicLoading.hide();
                                  //console.log(JSON.stringify(response));
                                  if(response.status == 'SUCCESS'){
+                                    AppService.setUserId(response.result.id);
                                     localStorage.setItem('sam_user_data', JSON.stringify(response.result));
                                     $rootScope.isBeforeSignUp = false;
                                     $state.go('app.postmapview');
@@ -217,6 +219,7 @@ angular.module('SeeAroundMe.controllers', [])
                              .success(function (response) {
                                     $ionicLoading.hide();
                                     if(response.status == 'SUCCESS'){
+                                      AppService.setUserId(response.result.id);
                                       localStorage.setItem('sam_user_data', JSON.stringify(response.result));
                                       $rootScope.isBeforeSignUp = false;
                                       $state.go('app.postmapview');
@@ -531,7 +534,8 @@ angular.module('SeeAroundMe.controllers', [])
     .success(function (response) {
         $ionicLoading.hide();
         if(response.status == 'SUCCESS'){
-          console.log('data -> ', JSON.stringify(response.result));
+            //console.log('data -> ', JSON.stringify(response.result));
+            AppService.setUserId(response.result.id);
             localStorage.setItem('sam_user_data', JSON.stringify(response.result));
             $rootScope.isBeforeSignUp = false;
             $state.go('app.postmapview');
@@ -570,6 +574,7 @@ angular.module('SeeAroundMe.controllers', [])
                                 $ionicLoading.hide();
                                  //console.log(JSON.stringify(response));
                                  if(response.status == 'SUCCESS'){
+                                    AppService.setUserId(response.result.id);
                                     localStorage.setItem('sam_user_data', JSON.stringify(response.result));
                                     $rootScope.isBeforeSignUp = false;
                                     $state.go('app.postmapview');
@@ -801,6 +806,7 @@ angular.module('SeeAroundMe.controllers', [])
   var userData = JSON.parse(localStorage.getItem('sam_user_data')) || '{}';
   $scope.userData = userData;
   var userId = userData.id || 0;
+  AppService.setUserId(userId);
 
   // the regex that matches urls in text
   var urlRegEx = new RegExp(
@@ -839,6 +845,7 @@ angular.module('SeeAroundMe.controllers', [])
     console.log('goto profile called with id= ', id);
     var userData = JSON.parse(localStorage.getItem('sam_user_data')) || {};
     var userId = userData.id || 0;
+    AppService.setUserId(userId);
     if(userId == id){
         AppService.setIsCurrentUserFlag(true);
     }
@@ -1076,6 +1083,8 @@ angular.module('SeeAroundMe.controllers', [])
     var userData = JSON.parse(ud) || '{}';
 
     var userId = userData.id || 0;
+    
+    AppService.setUserId(userId);
 
     $scope.addLocation = "        Add location";
     $scope.formData = {};
@@ -1367,7 +1376,8 @@ angular.module('SeeAroundMe.controllers', [])
     var userData = JSON.parse(ud) || '{}';
 
     var userId = userData.id || 0;
-
+    AppService.setUserId(userId);
+    
     if(userData.Profile_image)
         $scope.formData.Profile_image = userData.Profile_image;
     else
@@ -1690,6 +1700,8 @@ angular.module('SeeAroundMe.controllers', [])
     // Load map on login
     $rootScope.$on('login', function(event, data) {
         //console.log('login event received ....');
+        $rootScope.User = JSON.parse(localStorage.getItem('sam_user_data')) || {};
+        
         if(AppService.isConnected()){
             //Make map at the start
             MapService.initMap();

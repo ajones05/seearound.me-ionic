@@ -312,6 +312,10 @@ angular.module('SeeAroundMe.services', [])
 
           return $http.post(url, params);
         },
+        
+        setUserId: function(id){
+            userId = id;
+        },
 
         setOtherUserId: function(otherUserId){
           conversationUserId = otherUserId;
