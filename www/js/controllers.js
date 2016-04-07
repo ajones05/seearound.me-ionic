@@ -138,7 +138,7 @@ angular.module('SeeAroundMe.controllers', [])
         
         $rootScope.userData = data;
         //Ask user to allow location
-        $state.go('app.allowlocation'); 
+        $state.go('allowlocation'); 
     };
             
     $scope.loginWithFB = function(){
@@ -183,15 +183,15 @@ angular.module('SeeAroundMe.controllers', [])
     };                
     
     $scope.openTerms = function(){
-        console.log('openTerms ...');
+        //console.log('openTerms ...');
         $rootScope.isBeforeSignUp = true;
-        $state.go('app.terms');
+        $state.go('terms');
     };
     
     $scope.openPrivacy = function(){
-        console.log('openPrivacy ...');
+        //console.log('openPrivacy ...');
         $rootScope.isBeforeSignUp = true;
-        $state.go('app.privacy');
+        $state.go('privacy');
     }            
 })
 
@@ -1476,6 +1476,10 @@ angular.module('SeeAroundMe.controllers', [])
           $state.go('app.userprofile');
         });
     }
+    
+    $scope.openLink = function(link){
+        window.open(link, '_blank', 'location=no');
+    };    
 
     $scope.openShare = function(text, link){
         var sanitizedText = $sanitize(text);

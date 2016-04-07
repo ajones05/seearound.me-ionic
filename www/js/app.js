@@ -102,34 +102,22 @@ angular.module('SeeAroundMe', [
       templateUrl: "templates/home.html"      
     })
     
-    .state('app.signup', {
+    .state('signup', {
         url: "/signup",
-        views: {
-          'menuContent' :{
-            templateUrl: "templates/signup.html",
-            controller: 'SignupCtrl'
-          }
-        }
+        templateUrl: "templates/signup.html",
+        controller: 'SignupCtrl'
       })
 
-    .state('app.signin', {
+    .state('signin', {
           url: "/signin",
-          views: {
-            'menuContent' :{
-              templateUrl: "templates/signin.html",
-              controller: 'SigninCtrl'
-            }
-          }
+          templateUrl: "templates/signin.html",
+          controller: 'SigninCtrl'
         })
     
-    .state('app.allowlocation', {
+    .state('allowlocation', {
           url: "/allowlocation",
-          views: {
-            'menuContent' :{
-              templateUrl: "templates/allowlocation.html",
-              controller: 'LocationCtrl'
-            }
-          }
+          templateUrl: "templates/allowlocation.html",
+          controller: 'LocationCtrl'
         })
 
     .state('app.postlistview', {
@@ -234,6 +222,16 @@ angular.module('SeeAroundMe', [
       }
     })
     
+    .state('terms', {
+      //url: "/terms",
+      templateUrl: "templates/terms.html"
+    })
+    
+    .state('privacy', {
+      //url: "/privacy",
+      templateUrl: "templates/privacy.html"
+    })   
+    
     .state('app.terms', {
       url: "/terms",
       views:{
@@ -243,18 +241,20 @@ angular.module('SeeAroundMe', [
       }
     })
     
+    .state('app.privacy', {
+      url: "/privacy",
+      views:{
+        'menuContent':{
+          templateUrl: "templates/privacy.html"
+        }
+      }
+    })   
+    
     .state('app.about', {
       url: "/about",
       views:{
         'menuContent':{
           templateUrl: "templates/about.html"
-        }
-      }
-    }).state('app.privacy', {
-      url: "/privacy",
-      views:{
-        'menuContent':{
-          templateUrl: "templates/privacy.html"
         }
       }
     });
