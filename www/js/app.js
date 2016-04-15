@@ -60,7 +60,7 @@ angular.module('SeeAroundMe', [
         }, 1000);
     }
     else{
-      $state.go('home');
+      $state.go('intro');
     }
 
   });
@@ -96,6 +96,12 @@ angular.module('SeeAroundMe', [
       templateUrl: "templates/menu.html",
       controller: 'AppCtrl'
     })
+    
+    .state('intro', {
+        url: "/intro",
+        templateUrl: "templates/intro/intro.html",
+        controller: 'IntroCtrl'
+      })    
     
     .state('home', {
       url: "/home",
