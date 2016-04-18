@@ -57,109 +57,20 @@ angular.module('SeeAroundMe.controllers', [])
   };
 })
 
-.controller('CommentsCtrl', function($scope, $ionicLoading, AppService, ModalService, MapService, $state, $rootScope) {
-  $ionicLoading.show({
-    template: 'Fetching Comments..'
-  });
-
-  var userData = JSON.parse(localStorage.getItem('sam_user_data' ))|| '{}';
-  var userId = userData.id || 0;
-  AppService.setUserId(userId);
+.controller('HomeCtrl', function($scope, $rootScope, $timeout, $state, $ionicLoading, MapService, AppService) {
     
-  AppService.getCurrentComments()
-  .then(function(current){
-    console.log('response', current);
-    if(current){
-        $scope.post = current.post;
-        if(current.comments){
-            $scope.postComments = current.comments.reverse() || [];
+    MapService.getCurrentPosition()
+        .then(function (position) {
+            var lat  = position.coords.latitude;
+            var long = position.coords.longitude;
+            var location = {latitude: lat, longitude: long};
+            var mylocation = JSON.stringify(location);
 
-            $scope.postComments.map(function(comment){
-              comment.timeAgo = moment(comment.commTime).fromNow();
-            });
-        }
+            localStorage.setItem('sam_user_location', mylocation);
 
-        $ionicLoading.hide();
-    }
-    else{
-       $ionicLoading.hide(); 
-    }
-  }, function(error){
-    $ionicLoading.hide();
-    console.warn('error getting comments');
-  });
-
-  $scope.postComment = function (commentText){
-    console.log('commentText -> ', commentText);
-    AppService.postComment(commentText, userId, $scope.post.id)
-    .success(function(res){
-      //console.log('successfully posted the comment');
-      //console.log(JSON.stringify(res));
-      $scope.post.comment_count = res.result.totalComments;
-      res.result.timeAgo = moment(res.result.commTime).fromNow();
-        $scope.postComments.push(res.result);
-        //Clear text field
-        $scope.commentText = "";
-    })
-    .error(function(err){
-      console.log('error posting comment -> ', err);
-    })
-  };
+            console.log(mylocation);
+    });
     
-  $scope.showMapForPost = function(latitude, longitude){
-
-      ModalService.init('templates/post/mapforpost.html', $scope).then(function(modal){
-        modal.show();
-        $scope.mapModal = modal;
-      }).then(function(){
-        MapService.showPostMap(latitude, longitude);
-      });
-  };
-    
-  $scope.close = function(map){
-      $scope.mapModal.remove();
-  };
-
-  $scope.openShare = function(text, link){
-    var sanitizedText = $sanitize(text);
-    window.plugins.socialsharing.share( sanitizedText, null, null,link);
-  };
-})
-
-.controller('SignupCtrl', function($scope, $timeout, $rootScope, $state, AppService) {
-    console.log('Signup controller called ...');
-    $scope.formData = {};
-            
-    $scope.doSignUp = function(user){
-        console.log('Signup ...');
-        if(!AppService.isConnected()){
-            AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');
-            
-            return;
-        }
-        
-        if($scope.formData.password !== $scope.formData.repeatPW){
-            AppService.showErrorAlert('Passwrod Mismatch', 'Repeated password does not match the value in password field!');            
-            return;
-        }
-        
-        var data = {
-            name: $scope.formData.name,
-            email: $scope.formData.email, 
-            password: $scope.formData.password,
-            street_number: '',
-            street_name: '',
-            city: '',
-            state: '',
-            country: '',
-            zip: ''            
-        };
-        
-        $rootScope.userData = data;
-        //Ask user to allow location
-        $state.go('allowlocation'); 
-    };
-            
     $scope.loginWithFB = function(){
         if(!AppService.isConnected()){
             AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');
@@ -199,82 +110,92 @@ angular.module('SeeAroundMe.controllers', [])
                         });
                 }
             },{ scope:'email'});
-    };                
-    
-    $scope.openTerms = function(){
-        //console.log('openTerms ...');
-        $rootScope.isBeforeSignUp = true;
-        $state.go('terms');
-    };
-    
-    $scope.openPrivacy = function(){
-        //console.log('openPrivacy ...');
-        $rootScope.isBeforeSignUp = true;
-        $state.go('privacy');
-    }            
+    };                    
+
 })
 
-.controller('LocationCtrl', function($scope, $timeout, $rootScope, $state, $timeout, $ionicPopup, $ionicLoading, MapService, AppService) {
+.controller('SignupCtrl', function($scope, $rootScope, $timeout, $state, $ionicLoading, MapService, AppService) {
+    console.log('Signup controller called ...');
+    $scope.formData = {};
+            
+    $scope.doSignUp = function(user){
+        console.log('Signup ...');
+        if(!AppService.isConnected()){
+            AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');
+            
+            return;
+        }
+        
+        if($scope.formData.password !== $scope.formData.repeatPW){
+            AppService.showErrorAlert('Passwrod Mismatch', 'Repeated password does not match the value in password field!');            
+            return;
+        }
+        
+        var data = {
+            name: $scope.formData.name,
+            email: $scope.formData.email, 
+            password: $scope.formData.password,
+            street_number: '',
+            street_name: '',
+            city: '',
+            state: '',
+            country: '',
+            zip: ''            
+        };
+        
+        $rootScope.userData = data;
+        
+        $scope.prepareToRegister();
+    };
     
     $scope.doRegister = function(userData){
-        $ionicPopup.confirm({
-            title: '"SeeAround.me" Would Like to Use Your Current Location',
-            cancelText: "Don't Allow",
-            cancelType: 'button-default',
-            okType: 'button-default'
-        }).then(function(res) {
-         if(res) {
-             console.log('Location allowed ...');
-            $ionicLoading.show();
-            AppService.signUp(userData)
-                .success(function (response) {
-                        console.log('SUCCESS ...... got reponse');
-                        console.log(JSON.stringify(response));
-                        $ionicLoading.hide();
-                        if(response.status == 'SUCCESS'){
-                            $rootScope.isBeforeSignUp = false;
-                            //$state.go('app.postmapview');
-                             AppService.login(userData)
-                             .success(function (response) {
-                                    $ionicLoading.hide();
-                                    if(response.status == 'SUCCESS'){
-                                      AppService.setUserId(response.result.id);
-                                      localStorage.setItem('sam_user_data', JSON.stringify(response.result));
-                                      $rootScope.isBeforeSignUp = false;
-                                      $state.go('app.postmapview');
-                                        $timeout(function(){
-                                              $rootScope.$broadcast('login',{});
-                                        }, 1000);
-                                    }
-                                    else{
-                                      AppService.showErrorAlert('Failed to login!', response.message);
-                                    }
-                            })
-                             .error(function (err) {
-                                    $ionicLoading.hide();
-                                    AppService.showErrorAlert('Failed to login!', 'There seems to be a network problem. Please check your internet connection and try again.'); 
-                                    console.warn(JSON.stringify(err));
-                            });
-                        }
-                        else{
-                           AppService.showErrorAlert('Failed to register!', response.message);
-                           $state.go('app.signup');
-                        }
-                    })
-                    .error(function (err) {
-                        $ionicLoading.hide();
-                        AppService.showErrorAlert('Failed to register!', 'There seems to be a network problem. Please check your internet connection and try again.'); 
-                        console.warn(JSON.stringify(err));
-                        $state.go('app.signup');
-                    });
-            }
-            //else ignore -- user did not allow location -- do nothing
-       });
-        
+        $ionicLoading.show();
+        AppService.signUp(userData)
+            .success(function (response) {
+                    console.log('SUCCESS ...... got reponse');
+                    console.log(JSON.stringify(response));
+                    $ionicLoading.hide();
+                    if(response.status == 'SUCCESS'){
+                        $rootScope.isBeforeSignUp = false;
+                        //$state.go('app.postmapview');
+                         AppService.login(userData)
+                         .success(function (response) {
+                                $ionicLoading.hide();
+                                if(response.status == 'SUCCESS'){
+                                  AppService.setUserId(response.result.id);
+                                  localStorage.setItem('sam_user_data', JSON.stringify(response.result));
+                                  $rootScope.isBeforeSignUp = false;
+                                  $state.go('app.postmapview');
+                                    $timeout(function(){
+                                          $rootScope.$broadcast('login',{});
+                                    }, 1000);
+                                }
+                                else{
+                                  AppService.showErrorAlert('Failed to login!', response.message);
+                                }
+                        })
+                         .error(function (err) {
+                                $ionicLoading.hide();
+                                AppService.showErrorAlert('Failed to login!', 'There seems to be a network problem. Please check your internet connection and try again.'); 
+                                console.warn(JSON.stringify(err));
+                        });
+                    }
+                    else{
+                       AppService.showErrorAlert('Failed to register!', response.message);
+                       $state.go('app.signup');
+                    }
+                })
+                .error(function (err) {
+                    $ionicLoading.hide();
+                    AppService.showErrorAlert('Failed to register!', 'There seems to be a network problem. Please check your internet connection and try again.'); 
+                    console.warn(JSON.stringify(err));
+                    $state.go('app.signup');
+                });
+
     };
 
-    $scope.showLocationPopup = function(){
-        console.log('showLocationPopup ...');
+    $scope.prepareToRegister = function(){
+        console.log('prepareToRegister ...');
         //Get geolocation -- stores in local storage
         MapService.getCurrentPosition()
             .then(function (position) {
@@ -330,7 +251,102 @@ angular.module('SeeAroundMe.controllers', [])
                 console.error('Failed to get current position. Error: ' + JSON.stringify(err));
             });
             
-    }
+    };    
+                
+    $scope.openTerms = function(){
+        //console.log('openTerms ...');
+        $rootScope.isBeforeSignUp = true;
+        $state.go('terms');
+    };
+    
+    $scope.openPrivacy = function(){
+        //console.log('openPrivacy ...');
+        $rootScope.isBeforeSignUp = true;
+        $state.go('privacy');
+    }            
+})
+
+.controller('SigninCtrl', function($scope, $timeout, $rootScope, $state, $ionicLoading, AppService, $ionicModal) {
+
+  $scope.formData = {};
+  //$scope.formData.email = "brandonhere123@gmail.com";
+  //$scope.formData.password = "dev12345678";
+
+
+  $scope.doLogin = function () {
+
+    if(!AppService.isConnected()){
+         AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');
+         return;
+     }
+      
+    var data = {email:$scope.formData.email, password:$scope.formData.password};
+
+    $ionicLoading.show();
+    AppService.login(data)
+    .success(function (response) {
+        $ionicLoading.hide();
+        if(response.status == 'SUCCESS'){
+            //console.log('data -> ', JSON.stringify(response.result));
+            AppService.setUserId(response.result.id);
+            localStorage.setItem('sam_user_data', JSON.stringify(response.result));
+            $rootScope.isBeforeSignUp = false;
+            $state.go('app.postmapview');
+            //Fire login event to cause the map to refresh
+            $timeout(function(){
+                  $rootScope.$broadcast('login',{});
+            }, 1000);
+        }
+        else{
+           AppService.showErrorAlert('Failed to login!', response.message);
+        }
+    })
+    .error(function (err) {
+        $ionicLoading.hide();
+        AppService.showErrorAlert('Failed to login!', 'There was an error during login process. Please contact support with the following information : ' + JSON.stringify(err)); 
+        //console.warn(JSON.stringify(err));
+    });
+  };
+    
+  $scope.loginWithFB = function(){
+        if(!AppService.isConnected()){
+            AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');
+
+            return;
+        }
+      
+            openFB.login(function(fbData){
+                 //console.log('openFB login callback called ....');
+                 //console.log(JSON.stringify(fbData));
+                 if(fbData.status == 'connected'){
+                     //console.log(fbData.authResponse.token);
+                     var data = {token: fbData.authResponse.token};
+                     $ionicLoading.show();
+                     AppService.fbLogin(data)
+                        .success(function (response) {
+                                $ionicLoading.hide();
+                                 //console.log(JSON.stringify(response));
+                                 if(response.status == 'SUCCESS'){
+                                    AppService.setUserId(response.result.id);
+                                    localStorage.setItem('sam_user_data', JSON.stringify(response.result));
+                                    $rootScope.isBeforeSignUp = false;
+                                    $state.go('app.postmapview');
+                                    $timeout(function(){
+                                          $rootScope.$broadcast('login',{});
+                                    }, 1000);
+                                 }
+                                 else{
+                                    AppService.showErrorAlert('Failed to login!', response.message);
+                                 }
+                        })
+                         .error(function (err) {
+                                $ionicLoading.hide();
+                                AppService.showErrorAlert('Failed to login!', 'There was an error during login process. Please contact support with the following information : ' + JSON.stringify(err)); 
+                                console.warn(JSON.stringify(err));
+                        });
+                }
+            },{ scope:'email'});
+  };
 })
 
 .controller('ProfileCtrl', function($scope, $rootScope, $state, AppService, $timeout, ModalService, $ionicLoading){
@@ -532,86 +548,72 @@ angular.module('SeeAroundMe.controllers', [])
 
 })
 
-.controller('SigninCtrl', function($scope, $timeout, $rootScope, $state, $ionicLoading, $rootScope, AppService, $ionicModal) {
+.controller('CommentsCtrl', function($scope, $ionicLoading, AppService, ModalService, MapService, $state, $rootScope) {
+  $ionicLoading.show({
+    template: 'Fetching Comments..'
+  });
 
-  $scope.formData = {};
-  //$scope.formData.email = "brandonhere123@gmail.com";
-  //$scope.formData.password = "dev12345678";
+  var userData = JSON.parse(localStorage.getItem('sam_user_data' ))|| '{}';
+  var userId = userData.id || 0;
+  AppService.setUserId(userId);
+    
+  AppService.getCurrentComments()
+  .then(function(current){
+    console.log('response', current);
+    if(current){
+        $scope.post = current.post;
+        if(current.comments){
+            $scope.postComments = current.comments.reverse() || [];
 
+            $scope.postComments.map(function(comment){
+              comment.timeAgo = moment(comment.commTime).fromNow();
+            });
+        }
 
-  $scope.doLogin = function () {
-
-    if(!AppService.isConnected()){
-         AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');
-         return;
-     }
-      
-    var data = {email:$scope.formData.email, password:$scope.formData.password};
-
-    $ionicLoading.show();
-    AppService.login(data)
-    .success(function (response) {
         $ionicLoading.hide();
-        if(response.status == 'SUCCESS'){
-            //console.log('data -> ', JSON.stringify(response.result));
-            AppService.setUserId(response.result.id);
-            localStorage.setItem('sam_user_data', JSON.stringify(response.result));
-            $rootScope.isBeforeSignUp = false;
-            $state.go('app.postmapview');
-            //Fire login event to cause the map to refresh
-            $timeout(function(){
-                  $rootScope.$broadcast('login',{});
-            }, 1000);
-        }
-        else{
-           AppService.showErrorAlert('Failed to login!', response.message);
-        }
+    }
+    else{
+       $ionicLoading.hide(); 
+    }
+  }, function(error){
+    $ionicLoading.hide();
+    console.warn('error getting comments');
+  });
+
+  $scope.postComment = function (commentText){
+    console.log('commentText -> ', commentText);
+    AppService.postComment(commentText, userId, $scope.post.id)
+    .success(function(res){
+      //console.log('successfully posted the comment');
+      //console.log(JSON.stringify(res));
+      $scope.post.comment_count = res.result.totalComments;
+      res.result.timeAgo = moment(res.result.commTime).fromNow();
+        $scope.postComments.push(res.result);
+        //Clear text field
+        $scope.commentText = "";
     })
-    .error(function (err) {
-        $ionicLoading.hide();
-        AppService.showErrorAlert('Failed to login!', 'There was an error during login process. Please contact support with the following information : ' + JSON.stringify(err)); 
-        //console.warn(JSON.stringify(err));
-    });
+    .error(function(err){
+      console.log('error posting comment -> ', err);
+    })
   };
     
-  $scope.loginWithFB = function(){
-        if(!AppService.isConnected()){
-            AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');
+  $scope.showMapForPost = function(latitude, longitude){
 
-            return;
-        }
-      
-            openFB.login(function(fbData){
-                 //console.log('openFB login callback called ....');
-                 //console.log(JSON.stringify(fbData));
-                 if(fbData.status == 'connected'){
-                     //console.log(fbData.authResponse.token);
-                     var data = {token: fbData.authResponse.token};
-                     $ionicLoading.show();
-                     AppService.fbLogin(data)
-                        .success(function (response) {
-                                $ionicLoading.hide();
-                                 //console.log(JSON.stringify(response));
-                                 if(response.status == 'SUCCESS'){
-                                    AppService.setUserId(response.result.id);
-                                    localStorage.setItem('sam_user_data', JSON.stringify(response.result));
-                                    $rootScope.isBeforeSignUp = false;
-                                    $state.go('app.postmapview');
-                                    $timeout(function(){
-                                          $rootScope.$broadcast('login',{});
-                                    }, 1000);
-                                 }
-                                 else{
-                                    AppService.showErrorAlert('Failed to login!', response.message);
-                                 }
-                        })
-                         .error(function (err) {
-                                $ionicLoading.hide();
-                                AppService.showErrorAlert('Failed to login!', 'There was an error during login process. Please contact support with the following information : ' + JSON.stringify(err)); 
-                                console.warn(JSON.stringify(err));
-                        });
-                }
-            },{ scope:'email'});
+      ModalService.init('templates/post/mapforpost.html', $scope).then(function(modal){
+        modal.show();
+        $scope.mapModal = modal;
+      }).then(function(){
+        MapService.showPostMap(latitude, longitude);
+      });
+  };
+    
+  $scope.close = function(map){
+      $scope.mapModal.remove();
+  };
+
+  $scope.openShare = function(text, link){
+    var sanitizedText = $sanitize(text);
+    window.plugins.socialsharing.share( sanitizedText, null, null,link);
   };
 })
 

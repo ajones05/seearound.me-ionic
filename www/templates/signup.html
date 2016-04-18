@@ -1,47 +1,41 @@
 <ion-view hide-nav-bar="true" class="login">
-    <ion-header-bar class="bar bar-header">
-        <button class="button button-icon" ui-sref="home">
-            <i class="icon ion-ios-arrow-left"></i>
+    <div class="bar bar-header bar-light nav-title-slide-ios7 transparent-nav" style="background: none; border-bottom: none;">
+        <button class="button button-icon" style="color:#fff;" ui-sref="home">
+            <i class="icon ion-ios-arrow-left text-light"></i>
         </button>
-        <h1 class="title">Signup</h1>
-    </ion-header-bar>    
-  <ion-content padding="true">
-      <div class="vbox">
-          <a class="button button-block button-positive" ng-click="loginWithFB()">
-            Login with Facebook
-          </a>
-          <p class="small-text">*We'll never post anything without your permission</p>
-          <div class="spacer10" style="border-bottom:2px solid #888;"></div>
-          <div class="spacer20"></div>
-          <p class="heading"> Or with e-mail </p>
-          <div class="spacer10"></div>
+        <h1 class="title" style="color:#fff;">Register with e-mail</h1>
+    </div>
+  <ion-content>
+      <div class="vbox login-bg padding">
+          <div class="spacer60"></div>          
           <form>
               <div class="list">
                 <label class="item item-input">
                   <input type="text" placeholder="Name..." ng-model="formData.name" required="required">
                 </label>
-                 <div class="spacer10"></div> 
+                 <div class="spacer20"></div> 
                 <label class="item item-input">
                   <input type="email" placeholder="E-mail address..." ng-model="formData.email" required="required">
                 </label>
-                  <div class="spacer10"></div>
+                  <div class="spacer20"></div>
                 <label class="item item-input">
                   <input type="password" placeholder="Password..." ng-model="formData.password" required="required">
                 </label>
-                  <div class="spacer10"></div>
+                  <div class="spacer20"></div>
                 <label class="item item-input">
                   <input type="password" placeholder="Repeat password..." ng-model="formData.repeatPW" required="required">
                 </label>              
               </div>
-              <p class="medium-text">
-                  By signing up, you agree to the 
-                  <a class="link" ng-click="openTerms()">Terms of Service</a> and 
-                  <a class="link" ng-click="openPrivacy()">Privacy Policy</a>.
-              </p>
-              <button type="submit" class="button button-block button-positive" ng-click="doSignUp()">
-                Register
-              </button>
+              <div class="text-center">
+                  <button type="submit" class="button button-outline" ng-click="doSignUp()">
+                    Register
+                  </button>
+              </div>              
           </form>
+              <p class="text-center padding">
+                  <a class="link" ng-click="openTerms()">Terms of Service</a> and 
+                  <a class="link" ng-click="openPrivacy()">Privacy Policy</a>
+              </p>          
       </div>
   </ion-content>
 </ion-view>

@@ -7703,6 +7703,10 @@ body, html {
   height: 20px;
   width: 100%; }
 
+.spacer40 {
+  height: 40px;
+  width: 100%; }
+
 .spacer60 {
   height: 60px;
   width: 100%; }
@@ -8013,47 +8017,97 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-family: 'Lato';
   color: #7d7d7d; }
 
-.home .logo {
-  height: 60%;
-  padding-top: 150px;
-  text-align: center; }
-.home .container {
-  height: 100%; }
-.home .bottom {
-  position: fixed;
-  left: 5%;
-  right: 5%;
-  bottom: 3%; }
+.home .home-bg {
+  width: 100vw;
+  height: 100vh;
+  background-image: url(../img/home.png);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat; }
+  .home .home-bg .row {
+    position: absolute !important;
+    bottom: 14vh; }
+  .home .home-bg p {
+    font-size: 14px;
+    font-family: "Lato";
+    color: #fff;
+    text-align: center;
+    position: absolute !important;
+    bottom: 6vh;
+    width: 100vw; }
+  .home .home-bg .button-outline {
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    height: 60px !important;
+    width: 130px !important;
+    border-radius: 22px !important;
+    border: 2px solid #fff !important;
+    font-size: 18px !important;
+    font-family: "Lato" !important;
+    color: #fff !important; }
+.home .link {
+  color: cornflowerblue;
+  text-decoration: none; }
 
-.login hr {
-  width: 100%; }
+.login .login-bg {
+  width: 100vw;
+  height: 100vh;
+  background-image: url(../img/auth-bg.png);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat; }
+  .login .login-bg p {
+    font-size: 14px;
+    font-family: "Lato";
+    color: #fff;
+    text-align: center; }
+  .login .login-bg input {
+    font-size: 15px;
+    font-family: "Lato" !important;
+    color: #7d7d7d;
+    font-style: italic; }
+  .login .login-bg .button-outline {
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    height: 60px !important;
+    width: 130px !important;
+    border-radius: 22px !important;
+    border: 2px solid #fff !important;
+    font-size: 18px !important;
+    font-family: "Lato" !important;
+    color: #fff !important; }
+.login .line {
+  border-bottom: 1px solid #fff;
+  height: 1px;
+  width: 100vw; }
+.login .link {
+  color: cornflowerblue;
+  text-decoration: none; }
 .login .heading {
   text-align: center;
   font-family: 'Lato';
   font-weight: bold;
   font-size: 1.2em;
-  color: #888888; }
+  color: #fff !important; }
 .login .small-text {
   text-align: center;
   font-family: 'Lato';
-  font-style: italic;
   font-size: 0.65em;
-  color: #888888; }
+  color: #fff !important; }
 .login .medium-text {
   text-align: center;
   font-family: 'Lato';
   font-size: .55em;
-  color: #888888; }
+  color: #fff !important; }
 .login .vbox {
   height: 100%;
   display: -webkit-flex;
   -webkit-flex-direction: column;
   -webkit-align-items: stretch; }
-.login .row {
-  -webkit-flex: 1; }
-.login .link {
-  color: cornflowerblue;
-  text-decoration: none; }
 
 #map {
   width: 100%;
@@ -8586,22 +8640,28 @@ div.custom_btn {
     left: 22px !important; }
 
 .intro .intro-loc {
-  width: 100%;
+  width: 100vw;
   height: 100vh;
   background-image: url(../img/intro_location.png);
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat; }
-.intro .button {
-  margin-top: 75vh; }
-.intro .button-outline {
-  height: 60px !important;
-  border-radius: 22px !important;
-  border: 3px solid #fff !important;
-  font-size: 24px !important;
-  font-family: "Lato" !important;
-  color: #fff !important;
-  text-align: center; }
+  .intro .intro-loc .row {
+    position: absolute !important;
+    bottom: 14vh;
+    margin-left: auto !important;
+    margin-right: auto !important; }
+  .intro .intro-loc .button-outline {
+    height: 60px !important;
+    border-radius: 22px !important;
+    border: 3px solid #fff !important;
+    font-size: 24px !important;
+    font-family: "Lato" !important;
+    color: #fff !important;
+    text-align: center; }
+.intro .link {
+  color: cornflowerblue;
+  text-decoration: none; }
 .intro .slider-pager {
   bottom: 50px !important; }
 .intro .slider-pager .active {

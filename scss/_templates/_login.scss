@@ -1,31 +1,70 @@
 //login.html
 
 .login {
-  hr{
-    width: 100%;
-  }
-  .heading{
-    @include centered-heading;
-  }
-
-  .small-text{
-    @include centered-small-text;
-  }
-
-  .medium-text{
-    @include centered-medium-text;
-  }
     
-  .vbox {
-    @include vbox-layout;
-  }
+    .login-bg {
+        width: 100vw;
+        height: 100vh;
 
-  .row {
-    -webkit-flex: 1;
-  }
+        background-image: url(../img/auth-bg.png);
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;  
+        
+        p {
+              font-size: 14px;
+              font-family: "Lato";
+              color: #fff;
+              text-align: center;
+        }
+        
+        input {
+            
+              font-size: 15px;
+              font-family: "Lato" !important;
+              color: rgb(125, 125, 125);
+              font-style: italic;
+        }        
 
+        .button-outline { 
+            padding-top: 6px !important;
+            padding-bottom: 6px !important;
+            padding-left: 16px !important;
+            padding-right: 16px !important;
+            height: 60px !important;
+            width: 130px !important;
+            border-radius: 22px !important;
+            border:2px solid #fff !important;
+            font-size: 18px !important;
+            font-family: "Lato" !important;
+            color: #fff !important;
+        }                
+    } 
+    
+    .line {
+        border-bottom: 1px solid #fff;
+        height: 1px;
+        width: 100vw;
+    }
+    
     .link{
         color: cornflowerblue;
         text-decoration: none;
     }
+
+      .heading{
+        @include centered-heading;
+      }
+
+      .small-text{
+        @include centered-small-text;
+      }
+
+      .medium-text{
+        @include centered-medium-text;
+      }
+
+      .vbox {
+        @include vbox-layout;
+      }
 }

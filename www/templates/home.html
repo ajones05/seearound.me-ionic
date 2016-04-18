@@ -1,13 +1,20 @@
 <ion-view view-title="" hide-nav-bar="true" class="home">
-  <div class="logo">
-    <img src="img/logo.png" height="150"></img>
-  </div>
-  <div class="bottom">
-    <a class="button button-block button-outline" ui-sref="signup">
-      Sign Up
-    </a>
-    <a class="button button-block button-outline" ui-sref="signin">
-      Log In
-    </a>          
-  </div>
+    <ion-content>
+      <div class="home-bg text-center">
+          <div class="row" style="width:100vw;">
+              <div class="col col-center">
+                <button class="button button-outline icon-left ion-social-facebook" ng-click="loginWithFB()">
+                  Facebook
+                </button>
+              </div>
+              <span class="col-10"></span>
+              <div class="col col-center">
+                <button class="button button-outline icon-left ion-ios-email" ui-sref="signup">
+                  Email
+                </button> 
+              </div>
+          </div>
+          <p>Already have an account? <a class="link" ui-sref="signin">Log in</a></p>
+      </div>
+    </ion-content>
 </ion-view>

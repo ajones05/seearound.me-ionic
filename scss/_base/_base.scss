@@ -35,6 +35,11 @@ body, html {
     width: 100%;
 }
 
+.spacer40 {
+    height:40px;
+    width: 100%;
+}
+
 .spacer60 {
     height: 60px;
     width: 100%;
@@ -78,22 +83,22 @@ body, html {
     font-family: 'Lato';
     font-weight: bold;
     font-size: $headingTextSize;
-    color: $headingTextColor;
+    color: #fff !important;
 }
 
 @mixin centered-medium-text{
     text-align: center;
     font-family: 'Lato';
     font-size: .55em;
-    color: $smallTextColor
+    color: #fff !important;
 }
 
 @mixin centered-small-text{
     text-align: center;
     font-family: 'Lato';
-    font-style: italic;
+    //font-style: italic;
     font-size: $smallTextSize;
-    color: $smallTextColor
+    color: #fff !important;
 }
 
 @mixin vbox-layout{

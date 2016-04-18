@@ -1,0 +1,42 @@
+// intro_location.html
+.intro {
+    .intro-loc {
+        width: 100vw;
+        height: 100vh;
+
+        background-image: url(../img/intro_location.png);
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;  
+        
+        .row {
+            position: absolute !important;
+            bottom: 14vh;
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+
+        .button-outline {   
+            height: 60px !important;
+            border-radius: 22px !important;
+            border:3px solid #fff !important;
+            font-size: 24px !important;
+            font-family: "Lato" !important;
+            color: #fff !important;
+            text-align: center;
+        }        
+    }
+    
+    .link{
+        color: cornflowerblue;
+        text-decoration: none;
+    }    
+        
+    .slider-pager {
+        bottom: 50px !important;
+    }
+    
+    .slider-pager .active {
+        color: $positive !important;
+    }    
+}

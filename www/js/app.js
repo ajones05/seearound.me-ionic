@@ -105,7 +105,8 @@ angular.module('SeeAroundMe', [
     
     .state('home', {
       url: "/home",
-      templateUrl: "templates/home.html"      
+      templateUrl: "templates/home.html",
+      controller: 'HomeCtrl'
     })
     
     .state('signup', {
@@ -120,11 +121,18 @@ angular.module('SeeAroundMe', [
           controller: 'SigninCtrl'
         })
     
+    .state('resetpw', {
+      url: "/resetpw",
+      templateUrl: "templates/resetpw.html",
+      controller: 'ResetPWCtrl'
+    })
+
+    /*
     .state('allowlocation', {
           url: "/allowlocation",
           templateUrl: "templates/allowlocation.html",
           controller: 'LocationCtrl'
-        })
+        })*/
 
     .state('app.postlistview', {
         url: "/post/list",
