@@ -266,7 +266,7 @@ angular.module('SeeAroundMe.controllers', [])
     }            
 })
 
-.controller('SigninCtrl', function($scope, $timeout, $rootScope, $state, $ionicLoading, AppService, $ionicModal) {
+.controller('SigninCtrl', function($scope, $timeout, $rootScope, $state, $ionicLoading, $ionicPopup, AppService, $ionicModal) {
 
   $scope.formData = {};
   //$scope.formData.email = "brandonhere123@gmail.com";
@@ -347,6 +347,37 @@ angular.module('SeeAroundMe.controllers', [])
                 }
             },{ scope:'email'});
   };
+    
+    $scope.resetPW = function(){
+        if($scope.formData.email && $scope.formData.email.length > 0){
+            $ionicPopup.alert({
+                 title: 'Reset Password',
+                 subTitle: 'Forgot your password?',
+                 template: 'No worries, you should receive an email with a link to reset your password shortly.'
+           });
+        }
+        else{
+            $ionicPopup.prompt({
+               title: 'Reset Password',
+               template: 'Please enter your email address',
+               inputType: 'email',
+               inputPlaceholder: 'Email ...'
+             }).then(function(email) {
+                if(email){
+                    $ionicPopup.alert({
+                         title: 'Reset Password',
+                         template: 'Thanks! You should receive an email with a link to reset your password shortly.'
+                   });
+                }
+                else{
+                    $ionicPopup.alert({
+                         title: 'Reset Password',
+                         template: 'This email does not seem to be a valid email address. Please enter a valid email address.'
+                   });                    
+                }
+             });
+        }
+    }; 
 })
 
 .controller('ProfileCtrl', function($scope, $rootScope, $state, AppService, $timeout, ModalService, $ionicLoading){
@@ -787,6 +818,9 @@ angular.module('SeeAroundMe.controllers', [])
           break;
         }
       }
+        
+      //Scroll to bottom
+      $ionicScrollDelegate.scrollBottom(true);
     }, function(error){
     });
   };
@@ -856,6 +890,30 @@ angular.module('SeeAroundMe.controllers', [])
     else{
        $scope.nearbyPosts = []; 
     }
+  };
+    
+  $scope.hasMore = true;    
+    
+  $scope.loadMore = function(){
+      
+        AppService.getMorePosts()
+        .then(function(response){
+            
+            if(response.result && response.result.length > 0){
+              response.result.map(function(post){
+                  
+                  post.news = post.news.replace(urlRegEx, "");
+                  post.timeAgo = moment(post.updated_date).fromNow();
+                  
+                  $scope.nearbyPosts.push(post);
+              });
+                
+              $scope.$broadcast('scroll.infiniteScrollComplete');
+            }
+            else{
+                $scope.hasMore = false;
+            }
+        });      
   };
     
   $scope.openLink = function(link){
@@ -1045,13 +1103,16 @@ angular.module('SeeAroundMe.controllers', [])
     $scope.searchTerm = "";
     
     $scope.options = [{
-        label:'View all',
-        value:''
+        label:'Most interesting',
+        value: ''
     },{
-        label:'Mine only',
+        label:'Most recent',
+        value: 3
+    },{
+        label:'My posts',
         value: 0
-    },{
-        label:'Interests',
+    },{        
+        label:'My interests',
         value: 1
     },{
         label:'Following',
@@ -1678,13 +1739,16 @@ angular.module('SeeAroundMe.controllers', [])
     };
     
     $scope.options = [{
-        label:'View all',
-        value:''
+        label:'Most interesting',
+        value: ''
     },{
-        label:'Mine only',
+        label:'Most recent',
+        value: 3
+    },{
+        label:'My posts',
         value: 0
-    },{
-        label:'Interests',
+    },{        
+        label:'My interests',
         value: 1
     },{
         label:'Following',

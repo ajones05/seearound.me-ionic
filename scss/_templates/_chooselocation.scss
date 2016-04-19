@@ -16,21 +16,21 @@
     .center-marker{
         position:absolute;
         /*url of the marker*/
-        background:url('../img/use_location.png') no-repeat;
-        background-size: 108px 60px;
+        background:url('../img/use_loc.png') no-repeat;
+        background-size: 186px 93px;
         /*center the marker*/
         top:50%;
         left:50%;
         z-index:1200;
         /*fix offset when needed*/
-        margin-left:-54px;
-        margin-top:-60px;
+        margin-left:-93px;
+        margin-top:-93px;
         /*size of the image*/
-        height:60px;
-        width:108px;
+        height:93px;
+        width:186px;
         cursor:pointer;
     }
-    
+
   .scroll-content{
       top: 0 !important;
       bottom: 0 !important;

@@ -2,12 +2,13 @@ angular.module('SeeAroundMe.services', [])
 
 .factory('AppService', function($http, $q, $rootScope, $cordovaNetwork, $cordovaCamera, $cordovaFileTransfer, $ionicPopup, API_URL) {
 
-  var userData = JSON.parse(localStorage.getItem('sam_user_data')) || {};
-  var userId = userData.id || 0;
-  var conversationUserId = null;
-  //var isCurrentUser = false; --- set it on root scope instead
-  var profileUserId = null;
-  var currentPostComments = {};
+    var userData = JSON.parse(localStorage.getItem('sam_user_data')) || {};
+    var userId = userData.id || 0;
+    var conversationUserId = null;
+    //var isCurrentUser = false; --- set it on root scope instead
+    var profileUserId = null;
+    var currentPostComments = {};
+    var pageNum = 0;
     var service = {
                 
         getImage: function(mediaType){
@@ -119,6 +120,8 @@ angular.module('SeeAroundMe.services', [])
         },                
 
         getNearbyPosts: function (data) {
+            pageNum = 0;
+            
             var url = API_URL + '/request-nearest';
              /*
                 return $http({
@@ -131,14 +134,35 @@ angular.module('SeeAroundMe.services', [])
         },
         
         getMyPosts: function (data) {
+            pageNum = 0;
+            
             var url = API_URL + '/myposts';
+            /*
             return $http({
                 method: 'POST',
                 url: url,
                 data: data,
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-            });
-        },        
+            });*/
+            return $http.post(url, data);
+        },
+        
+        getMorePosts: function(){
+            
+            pageNum++;
+            
+            var data = {
+                "latitude" : $rootScope.currentCenter.lat(),
+                "longitude" : $rootScope.currentCenter.lng(),
+                "radious" : $rootScope.inputRadius,
+                "userId" : userId,
+                "fromPage" : pageNum
+            };
+            
+            var url = API_URL + '/request-nearest';
+            
+            return $http.post(url, data);                        
+        },
         
         setCurrentComments: function(post){
           var d = $q.defer();
@@ -460,6 +484,9 @@ angular.module('SeeAroundMe.services', [])
         },
         
         showPosts: function(center, searchData) {
+            //Update current center
+            $rootScope.currentCenter = center;
+            
             var bounds = new google.maps.LatLngBounds();
             
             bounds.extend(center);
@@ -530,10 +557,16 @@ angular.module('SeeAroundMe.services', [])
                         //$rootScope.map.fitBounds(bounds);
                         
                         //Broadcast event to listen in MapController to add click events to markers - can't do it here
+                        if($rootScope.currentPosts.length == 0){
+                             AppService.showErrorAlert('No Posts!', 'There are no posts in this area, but you can be the first to post!');
+                        }
+                        
                         $rootScope.$broadcast('refreshdone');
                      }
                     else{
                         $rootScope.currentPosts = [];
+                        AppService.showErrorAlert('No Posts!', 'There are no posts in this area, but you can be the first to post!');
+
                     }
                      
                 }

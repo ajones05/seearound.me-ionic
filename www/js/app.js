@@ -121,12 +121,6 @@ angular.module('SeeAroundMe', [
           controller: 'SigninCtrl'
         })
     
-    .state('resetpw', {
-      url: "/resetpw",
-      templateUrl: "templates/resetpw.html",
-      controller: 'ResetPWCtrl'
-    })
-
     /*
     .state('allowlocation', {
           url: "/allowlocation",
