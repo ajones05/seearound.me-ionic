@@ -1,10 +1,10 @@
-<ion-modal-view class="postlistview" style="background:transparent;width:100%">
+<ion-modal-view  ng-style="viewStyle"  on-swipe-up="showFullView(post)" on-swipe-down="hideModal()">
+    
+  <ion-pane ng-show="!showMapModalBar" class="postlistview" style="width:100%;">
 
-  <ion-pane ng-show="!showMapModalBar" class="vbox" style="background:transparent;width:100%; z-index:0">
+    <!--div class="row" ng-click="hideModal()"></div -->
 
-    <div class="row" ng-click="hideModal()"></div>
-
-    <div class="post_item" on-swipe-up="showFullView(post)" on-swipe-down="hideModal()" ng-class="viewMode">
+    <div class="post_item">
       <div class="row user">
         <div class="col col-20 avatar">
           <img ng-src="{{post.Profile_image}}" alt="" ng-click="goToUser(post)">
@@ -20,13 +20,22 @@
         </div>
       </div>
       <img ng-src="{{post.images}}" class="post-iamge" ng-if="post.images" alt=""/>
+        <div class="item" style="padding-top:0;" ng-if="post.link_url" ng-click="openLink(post.link_url)">
+            <div class="item-body">
+              <img class="full-image" ng-src={{post.link_image}} ng-if="post.link_image" alt="">
+              <div class="post-link">
+                  <h3 class="link-title">{{post.link_title}}</h3>
+                  <span class="link-text">{{post.link_description}}</span>
+              </div>
+            </div>
+        </div>        
       <div class="share row">
         <span class="col col-20 chat-bubble" ng-click="goToComments(post)">
           {{post.comment_count}}
           <img src="img/chat.png" alt="">
         </span>
           <post-like-box></post-like-box>
-        <span class="col" ng-click='openShare(post.news, post.first_link)'> Share</span>
+        <span class="col" ng-click='openShare(post.id)'> Share</span>
       </div>
 
       <div class="comments" ng-if="postComments" style="background:white">
@@ -71,7 +80,7 @@
     <ion-content scroll="true" style="margin-top:64px;">
 
       <div class="post_item" ng-class="viewMode">
-        <div class="row user">
+        <div class="row user" on-swipe-down="hideModal()">
           <div class="col col-20 avatar">
             <img ng-src="{{post.Profile_image}}" alt="" ng-click="goToUser(post)">
           </div>
@@ -89,8 +98,8 @@
             <a class="icon ion-ios-location-outline" style="font-size:1.3em;"></a>
           </div>
         </div>
-        <img ng-src="{{post.images}}" class="post-iamge" ng-if="post.images" alt=""/>
-        <div class="item" style="padding-top:0;" ng-if="post.link_url" ng-click="openLink(post.link_url)">
+        <img ng-src="{{post.images}}" class="post-iamge" on-swipe-down="hideModal()" ng-if="post.images" alt=""/>
+        <div class="item" style="padding-top:0;" ng-if="post.link_url" on-swipe-down="hideModal()" ng-click="openLink(post.link_url)">
             <div class="item-body">
               <img class="full-image" ng-src={{post.link_image}} ng-if="post.link_image" alt="">
               <div class="post-link">
@@ -105,7 +114,8 @@
             <img src="img/chat.png" alt="">
           </span>
             <post-like-box></post-like-box>
-          <span class="col" ng-click='openShare(post.news, post.link_url)'> Share</span>
+            <post-edit ng-if="post.isOwnPost" post="post" from="map"></post-edit>
+          <span class="col" ng-click='openShare(post.id)'> Share</span>
         </div>
         <hr/>
 
@@ -135,6 +145,8 @@
               <!-- </div>                         -->
           </div>
         </div>
+        <ion-infinite-scroll ng-if="hasMore" immediate-check="false" on-infinite="loadMore()" distance="2%">
+        </ion-infinite-scroll>          
         <div class="write-comment row">
           <input id="commInput" type="text" class="col" ng-model="commentText" placeholder="Write a comment..">
           <div ng-click="postComment(commentText)" class="button button-small button-positive col col-20">

@@ -38,40 +38,49 @@
         </div>                        
       </div>
       <img ng-if="post.images" class="post-iamge" ng-src="{{post.images}}" alt="">
+        <div class="item" style="padding-top:0;" ng-if="post.link_url" ng-click="openLink(post.link_url)">
+            <div class="item-body">
+              <img class="full-image" ng-src={{post.link_image}} ng-if="post.link_image" alt="">
+              <div class="post-link">
+                  <h3 class="link-title">{{post.link_title}}</h3>
+                  <span class="link-text">{{post.link_description}}</span>
+              </div>
+            </div>
+        </div>        
       <div class="share row">
         <span class="col col-20 chat-bubble">
           {{post.comment_count}}
           <img src="img/chat.png" alt="">
         </span>
           <post-like-box></post-like-box>
-        <span class="col" ng-click='openShare(post.news, post.first_link)'> Share</span>
+        <span class="col" ng-click='openShare(post.id)'> Share</span>
       </div>
     </div>
 
-    <div class="comments">
-      <div class="row user" 
+    <ion-list class="comments">
+      <ion-item class="item item-avatar user" 
         style="border-bottom: 1px solid lightgray; padding-bottom: 5px;"
         ng-repeat="comment in postComments">
-        <div class="col col-20 avatar"
-          ng-click="goToProfile(comment.user_id)"
-          >
-          <img ng-src="{{comment.Profile_image}}" alt="profile image">
-        </div>
-        <div class="col"> 
+        <img ng-src="{{comment.Profile_image}}" alt="profile image" ng-click="goToProfile(comment.user_id)">
           <div class="name">
             <span>{{comment.user_name}}</span>
             <div class=" date right">
               <div>{{comment.timeAgo}}</div>
             </div>
           </div>
-            <p class="desc" ng-bind-html="comment.comment | linky | hrefToJS"></p>
+        <p class="desc" ng-bind-html="comment.comment | linky | hrefToJS"></p>
           <!--div class="desc">{{comment.comment}}</div-->
-        </div>
+        
         <!-- <div style="width:20px;padding:5px"> -->
         <!--   <a class="icon ion&#45;ios&#45;location&#45;outline" style="font&#45;size:1.3em;"></a> -->
-        <!-- </div>                         -->
-      </div>
-    </div>
+        <!-- </div> -->
+        <ion-option-button class="button-assertive" ng-click="delComment(comment)">
+            Delete
+        </ion-option-button>      
+      </ion-item>
+        <ion-infinite-scroll ng-if="hasMore" immediate-check="false" on-infinite="loadMore()" distance="2%">
+        </ion-infinite-scroll>          
+    </ion-list>
     <div class="write-comment row">
       <input type="text" class="col" ng-model="commentText" placeholder="Write a comment..">
       <div ng-click="postComment(commentText)" class="button button-small button-positive col col-20">

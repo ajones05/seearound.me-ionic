@@ -1,0 +1,24 @@
+<ion-modal-view class="col" style="background:transparent;width:100%;height:100%;">
+    
+<div class="row row-top" style="height:40%;width:100%;" ng-click="hideMenuModal()"></div>
+   <div class="row row-center" style="height:20%;width:100%;">
+       <div class="list card" style="width:100%;">
+           
+           <a ng-click="editPost(post)" class="item item-icon-left">
+               <i class="icon ion-edit"></i>
+               Edit
+           </a>
+           
+           <a ng-click="deletePost(post)" class="item item-icon-left">
+               <i class="icon ion-trash-a"></i>
+               Delete
+           </a>
+
+           <a ng-click="hideMenuModal()" class="item item-icon-left">
+               <i class="icon ion-close"></i>
+               Cancel
+           </a>
+       </div>
+   </div>
+  <div class="row row-bottom" style="height:40%;width:100%;" ng-click="hideMenuModal()"></div>
+</ion-modal-view>

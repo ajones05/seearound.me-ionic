@@ -117,6 +117,69 @@ angular.module('SeeAroundMe.directives', [])
     }
 })
 
+.directive('postEdit', function () {
+    return {
+        restrict: 'E',
+        template: '<span class="col" style="padding-left:60px;" ng-click="openMenu(post)"> Edit</span>',
+        scope:{
+            post:'=',
+            from:'@'
+        },
+        controller: function ($scope, $rootScope, $state, $ionicModal, AppService) {
+            
+            $scope.openMenu = function(post){
+                //$scope.post = post;
+                //console.log('openMenu called ...');
+                $scope.menuModal = null;
+                                
+
+                // Create the edit modal 
+                $ionicModal.fromTemplateUrl('templates/post/edit-post-options.html',{
+                    scope: $scope,
+                    animation: 'fade-in'
+                })
+                    .then(function(modal) {
+                        $scope.menuModal = modal;
+                        modal.show();
+                    });
+            };
+            
+            $scope.deletePost = function(post){
+                //console.log('deletePost called ...');
+                //console.log(JSON.stringify(post));
+                $scope.hideMenuModal();
+                $rootScope.currentPosts.splice($rootScope.currentPosts.indexOf(comment), 1);
+                AppService.deletePost(post).then(function(){
+                    console.log('Post deleted successfully');
+                });
+            };
+            
+            $scope.editPost = function(post){
+                //console.log('editPost called ...');
+                //console.log(JSON.stringify(post));
+                $scope.hideMenuModal();
+                //Set post mode to edit
+                $rootScope.postMode = 'edit';
+                
+                if($scope.from == 'map'){
+                    post.from = 'map';
+                }
+                
+                $state.go('editpostview', post);
+            };
+
+            $scope.hideMenuModal = function(){
+               $scope.menuModal.hide();
+            }; 
+            
+            $scope.$on('$destroy', function () {
+                if($scope.menuModal)
+                    $scope.menuModal.remove();
+            });
+        }
+    };
+})
+
 .directive('focusMe', function($timeout) {
   return {
     link: function(scope, element, attrs) {

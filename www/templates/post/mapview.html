@@ -9,6 +9,7 @@
             </button>
             <button class="col button button-icon" ng-click="showAlerts($event)" >
               <img src="img/alerts_off.png" height="24"/>
+              <span ng-if="unreadAlerts > 0" class="alert-badge">{{unreadAlerts}}</span>
             </button>
             <button class="col button button-icon" style="margin-right:18px" ng-click="toggleSearch()">
               <img ng-show="!isFiltered" src="img/search_off.png" height="24"/>

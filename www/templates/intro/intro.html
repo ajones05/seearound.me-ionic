@@ -1,46 +1,28 @@
 <ion-view view-title="Intro" class="intro">
-<div class="bar bar-header bar-light nav-title-slide-ios7 transparent-nav" style="background: none; border-bottom: none">
-    <!--ion-nav-buttons side="left" style="background:transparent;"-->
-            <button class="button button-clear" style="color:#345EC2;" ng-click="startApp()" ng-show="!slideIndex">
-                Skip Intro
-            </button>
-            <!--button class="button button-clear" ng-click="previous()" ng-show="slideIndex > 0">
-                Previous
-            </button-->
-        <!--/ion-nav-buttons-->
-        <!--ion-nav-buttons side="right" style="background:transparent;"-->
-            <!--button class="button button-clear" ng-click="next()" ng-show="slideIndex != 3">
-                Next
-            </button>
-            <button class="button button-clear" ng-click="startApp()" ng-show="slideIndex == 3">
-                Start using SeeAroundMe
-            </button-->
-        <!--/ion-nav-buttons-->
-    </div>
-        <ion-slide-box on-slide-changed="slideChanged(index)">
-          <ion-slide>
-            <div class="item-image">
-              <img src="img/intro_desc.png">
-            </div>
-          </ion-slide>
-          <ion-slide>
-            <div class="item-image">
-              <img src="img/intro_map.png">
-            </div>
-          </ion-slide>
-          <ion-slide>
-            <div class="item-image">
-              <img src="img/intro_details.png">
-            </div>
-          </ion-slide>
-          <ion-slide>
-                <div class="intro-loc text-center">
-                    <div class="row">
-                        <button class="button button-outline col col-center" ng-click="startApp()">
-                            Allow location access
-                        </button>
-                    </div>
+    <ion-slide-box on-slide-changed="slideChanged(index)">
+      <ion-slide>
+        <div class="item-image">
+          <img src="img/intro_desc.png">
+        </div>
+      </ion-slide>
+      <ion-slide>
+        <div class="item-image">
+          <img src="img/intro_map.png">
+        </div>
+      </ion-slide>
+      <ion-slide>
+        <div class="item-image">
+          <img src="img/intro_details.png">
+        </div>
+      </ion-slide>
+      <ion-slide>
+            <div class="intro-loc text-center">
+                <div class="row">
+                    <button class="button button-outline col col-center" ng-click="startApp()">
+                        Allow location access
+                    </button>
                 </div>
-          </ion-slide>            
-        </ion-slide-box>
-      </ion-view>
+            </div>
+      </ion-slide>            
+    </ion-slide-box>
+</ion-view>

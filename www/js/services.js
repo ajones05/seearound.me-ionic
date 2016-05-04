@@ -8,7 +8,7 @@ angular.module('SeeAroundMe.services', [])
     //var isCurrentUser = false; --- set it on root scope instead
     var profileUserId = null;
     var currentPostComments = {};
-    var pageNum = 0;
+    var pageNum = 0, commentsPageNum = 0;
     var service = {
                 
         getImage: function(mediaType){
@@ -75,6 +75,11 @@ angular.module('SeeAroundMe.services', [])
           }
 
           return $http.post(url, params);
+        },
+        
+        resetPassword: function(email){
+            var url = API_URL + '/reset-password';
+            return $http.post(url, { email: email});
         },
         
         signUp: function (data) {
@@ -149,19 +154,72 @@ angular.module('SeeAroundMe.services', [])
         
         getMorePosts: function(){
             
-            pageNum++;
+            pageNum = pageNum + 15;
             
             var data = {
                 "latitude" : $rootScope.currentCenter.lat(),
                 "longitude" : $rootScope.currentCenter.lng(),
                 "radious" : $rootScope.inputRadius,
                 "userId" : userId,
-                "fromPage" : pageNum
+                "start" : pageNum
             };
             
             var url = API_URL + '/request-nearest';
             
             return $http.post(url, data);                        
+        },
+        
+        addNewPost: function (data) {   
+            
+            var url = API_URL + '/addimobinews';
+                        
+            if($rootScope.imgUri){
+                
+                var options = {
+                    fileKey: "image",
+                    fileName: new Date().getTime() + ".jpg",
+                    httpMethod: 'POST',
+                    chunkedMode: false,
+                    mimeType: "image/jpg",
+                    params: data
+                };
+                
+                return $cordovaFileTransfer.upload(url, $rootScope.imgUri, options, true);
+            }
+            else{
+                return $http.post(url, data);
+            }
+        },        
+        
+        savePost: function(data){
+              var url = API_URL + '/save-post';
+                        
+            if($rootScope.imgUri.length > 0 && $rootScope.imgUri != $rootScope.oldImage){//Image has been changed
+                
+                var options = {
+                    fileKey: "image",
+                    fileName: new Date().getTime() + ".jpg",
+                    httpMethod: 'POST',
+                    chunkedMode: false,
+                    mimeType: "image/jpg",
+                    params: data
+                };
+                
+                return $cordovaFileTransfer.upload(url, $rootScope.imgUri, options, true);
+            }
+            else{
+                data.image = $rootScope.oldImage;
+                return $http.post(url, data);
+            }
+        },        
+        
+        deletePost: function(post){
+              var url = API_URL + '/delete-post';
+              var params = {
+                user_id: userId,
+                post_id: post.id
+              };
+              return $http.post(url, params);            
         },
         
         setCurrentComments: function(post){
@@ -180,10 +238,21 @@ angular.module('SeeAroundMe.services', [])
           };
           return $http.post(url, params);
         },
+        
+        deleteComment: function(comment){
+          var url = API_URL + '/delete-comment';
+          var params = {
+            user_id: userId,
+            comment_id: comment.id
+          };
+          return $http.post(url, params);            
+        },
 
         getCurrentComments: function(post){
+          commentsPageNum = 0;
           var d = $q.defer();
           var url = API_URL + '/get-total-comments';
+            
           if(post){
               var postId = post.id; 
           }
@@ -193,10 +262,12 @@ angular.module('SeeAroundMe.services', [])
           else{
               var postId = 0;   
           }
+            
           var params = {
-            offset: 0,
+            start: 0,
             news_id: postId
-          }
+          };
+          
           $http.post(url, params)
            .success(function(data){
              currentPostComments.comments = data.result;
@@ -204,32 +275,46 @@ angular.module('SeeAroundMe.services', [])
            })
            .error(function(error){
              console.log('comments fetching failed with error: ', error);
-             d.reject(error);
+             //d.reject(error);
+             currentPostComments.comments = [];
+             d.resolve(currentPostComments);
            });
            return d.promise;
         },
-
-        addNewPost: function (data) {   
-            
-            var url = API_URL + '/addimobinews';
-            
-            var options = {
-                fileKey: "image",
-                fileName: new Date().getTime() + ".jpg",
-                httpMethod: 'POST',
-                chunkedMode: false,
-                mimeType: "image/jpg",
-                params: data
-            };
-            
-            if($rootScope.imgUri){
-                return $cordovaFileTransfer.upload(url, $rootScope.imgUri, options, true);
-            }
-            else{
-                return $http.post(url, data);
-            }
-        },
         
+        getMoreComments: function(post){
+            commentsPageNum = commentsPageNum + 10;
+              var d = $q.defer();
+              var url = API_URL + '/get-total-comments';
+
+              if(post){
+                  var postId = post.id; 
+              }
+              else if(currentPostComments.post){
+                  var postId = currentPostComments.post.id; 
+              }
+              else{
+                  var postId = 0;   
+              }
+
+              var params = {
+                start: commentsPageNum,
+                news_id: postId
+              };
+          
+              $http.post(url, params)
+               .success(function(data){
+                 currentPostComments.comments = data.result;
+                 d.resolve(currentPostComments);
+               })
+               .error(function(error){
+                 console.log('comments fetching failed with error: ', error);
+                 d.reject(error);
+               });
+            
+               return d.promise;              
+        },
+
         showErrorAlert: function(subTitle, message){
             $ionicPopup.alert({
                  title: 'See Around Me Alert',
@@ -585,7 +670,7 @@ angular.module('SeeAroundMe.services', [])
                     "user_id" : userId,
                     "searchText": searchData.searchTerm,
                     "filter": searchData.filter,
-                    "fromPage" : 0
+                    "start" : 0
                 };
                 
                 //console.log(JSON.stringify(data));
@@ -604,7 +689,7 @@ angular.module('SeeAroundMe.services', [])
                     "longitude" : center.lng(),//-122.2635002,
                     "radious" : $rootScope.inputRadius,
                     "userId" : userId,
-                    "fromPage" : 0
+                    "start" : 0
                 };
                             
                 //console.log(JSON.stringify(data));
@@ -790,8 +875,37 @@ angular.module('SeeAroundMe.services', [])
 
         return promise;
       };
+    
+    var openMapModal = function($scope) {
 
+        var promise;
+        $scope = $scope || $rootScope.$new();
+
+        promise = $ionicModal.fromTemplateUrl('templates/post/mapmodal.html', {
+          scope: $scope,
+          viewType: 'bottom-sheet',
+          backdropClickToClose: false,
+          animation: 'slide-in-up'
+        }).then(function(modal) {
+          $scope.modal = modal;
+          return modal;
+        });
+
+        $scope.openModal = function() {
+          $scope.modal.show();
+        };
+        $scope.closeModal = function() {
+          $scope.modal.hide();
+        };
+        $scope.$on('$destroy', function() {
+          $scope.modal.remove();
+        });
+
+        return promise;
+      };
+    
       return {
-        init: init
+        init: init,
+        openMapModal: openMapModal
       };    
 });

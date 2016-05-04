@@ -1,25 +1,20 @@
 //listview.html
 
 .postlistview {
-
+    
   font-family: 'Lato';
 
-  .half-view {
-    // height: 220px;
-    height: auto;
-    max-height: 220px;
-    background: $light;
-  }
+    .alert-badge {
+        font-family:'Lato-Italic';
+        font-size: .8rem;
+        color: $positive;
+        text-align: center;
 
-  .full-view {
-    background: $light;
-    height: 100vh;
-    /* max-height is the secret to animation -- don't remove it*/
-    max-height: 100vh;
-    -webkit-transition: max-height .6s ease-in-out;
-    transition: max-height .6s ease-in-out;
-  }
-    
+        position: absolute;
+        bottom: -6px;
+        left: 48%;        
+    }
+        
   .post_item{
     border-bottom: 1px solid lightgray;
       .item {
@@ -146,8 +141,8 @@
       font-size: .7rem;
       align-items: center;
       img{
-        width: 20px;
-        margin: 0 10px;
+        width: 40px;
+        padding: 0 10px 0 10px;
       }
       i{
         font-size: 2rem;

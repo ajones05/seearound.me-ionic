@@ -165,6 +165,12 @@ angular.module('SeeAroundMe', [
            controller: 'NewPostCtrl'
     })
     
+    .state('editpostview', {
+           url: "/post/newpost/:latitude/:longitude/:address/:from/:street_number/:street_name/:city/:state/:country/:zip/:news/:images/:Address/:id",
+           templateUrl: "templates/post/edit-post.html",
+           controller: 'NewPostCtrl'
+    })    
+    
     .state('chooselocation', {
            url: "/post/chooselocation",
            templateUrl: "templates/post/chooselocation.html",

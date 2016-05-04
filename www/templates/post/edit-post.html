@@ -1,14 +1,14 @@
 <ion-view cache-view="false" class="addpost">
   <ion-header-bar>
     <div class="buttons">
-      <button class="button button-clear" ng-click="clearImage()" ui-sref="app.postmapview">          
-        <!-- i class="icon ion-ios-arrow-left"></i -->
+      <button class="button button-clear" ng-click="goBack()">          
+        <i class="icon ion-ios-arrow-left"></i>
           Cancel
       </button>
     </div>
-    <h1 class="title">New Post</h1>
+    <h1 class="title">Edit Post</h1>
     <div class="buttons">
-      <button class="button button-clear" ng-click="postNews()">
+      <button class="button button-clear" ng-click="savePost()">
           <p ng-class="textColor">Save</p>
       </button>
     </div>

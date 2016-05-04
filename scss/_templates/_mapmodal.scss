@@ -1,0 +1,24 @@
+.mapmodal {
+        width:100%;        
+    
+      .half-view {
+        // height: 220px;
+        top:60vh;
+        //height: auto;
+        //max-height: 220px;
+        background: $light;
+      }
+
+      .full-view {
+        top: 0px;
+        background: $light;
+        //height: 100vh;
+        /* max-height is the secret to animation -- don't remove it*/
+        //max-height: 100vh;
+        -webkit-transition-property: top, bottom;
+        -webkit-transition-duration: 0.5s;
+          
+        //-webkit-transition: top .3s ease-in-out;
+        //transition: top .3s ease-in-out;
+      }
+}

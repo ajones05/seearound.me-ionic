@@ -2,8 +2,7 @@
   <ion-content>
     <ion-list class="list">
       <ion-item ng-repeat="alert in alerts" class="alert">
-        <div class="row"
-          ng-click="alertActions(alert)">
+        <div class="row" ng-class="{'gray': alert.is_read}" ng-click="alertActions(alert)">
           <div ng-if="alert.user_image" class="avatar">
             <img ng-src="{{alert.user_image}}">
           </div>

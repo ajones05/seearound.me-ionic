@@ -24,7 +24,7 @@ angular.module('SeeAroundMe.controllers', [])
       AppService.setUserId(0);
       
       //Facebook logout
-      //opneFB.logout();
+      openFB.logout();
       //Loop through all the markers and remove
       if($rootScope.markers){
         $rootScope.markers.map(function(marker){
@@ -350,6 +350,11 @@ angular.module('SeeAroundMe.controllers', [])
     
     $scope.resetPW = function(){
         if($scope.formData.email && $scope.formData.email.length > 0){
+            
+            AppService.resetPassword($scope.formData.email).then(function(){
+                console.log('Email sent ...');
+            });
+            
             $ionicPopup.alert({
                  title: 'Reset Password',
                  subTitle: 'Forgot your password?',
@@ -364,6 +369,10 @@ angular.module('SeeAroundMe.controllers', [])
                inputPlaceholder: 'Email ...'
              }).then(function(email) {
                 if(email){
+                    AppService.resetPassword(email).then(function(){
+                        console.log('Email sent ...');
+                    });
+
                     $ionicPopup.alert({
                          title: 'Reset Password',
                          template: 'Thanks! You should receive an email with a link to reset your password shortly.'
@@ -592,6 +601,7 @@ angular.module('SeeAroundMe.controllers', [])
   .then(function(current){
     console.log('response', current);
     if(current){
+        $scope.hasMore = true;
         $scope.post = current.post;
         if(current.comments){
             $scope.postComments = current.comments.reverse() || [];
@@ -628,6 +638,15 @@ angular.module('SeeAroundMe.controllers', [])
     })
   };
     
+  $scope.delComment = function(comment) {
+        // Search & Destroy comment from list
+        $scope.postComments.splice($scope.postComments.indexOf(comment), 1);
+        // Save list in factory
+        AppService.deleteComment(comment).then(function(){
+            console.log('Comment deleted ...');
+        });
+  };    
+    
   $scope.showMapForPost = function(latitude, longitude){
 
       ModalService.init('templates/post/mapforpost.html', $scope).then(function(modal){
@@ -642,10 +661,33 @@ angular.module('SeeAroundMe.controllers', [])
       $scope.mapModal.remove();
   };
 
-  $scope.openShare = function(text, link){
-    var sanitizedText = $sanitize(text);
-    window.plugins.socialsharing.share( sanitizedText, null, null,link);
-  };
+    $scope.openShare = function(postId){
+        //var sanitizedText = $sanitize(text);
+        var link = 'http://www.seearound.me/post/' + postId;
+        window.plugins.socialsharing.share( null, null, null,link);
+    };
+    
+  $scope.hasMore = true;    
+    
+  $scope.loadMore = function(){
+      
+        AppService.getMoreComments($scope.post)
+        .then(function(response){
+
+            if(response.comments && response.comments.length > 0){
+                var comments = response.comments.reverse();
+              comments.map(function(comment){
+                    comment.timeAgo = moment(comment.commTime).fromNow();
+                    $scope.postComments.push(comment);
+              });
+            }
+            else{
+                $scope.hasMore = false;
+            }
+                            
+            $scope.$broadcast('scroll.infiniteScrollComplete');            
+        });      
+  };    
 })
 
 .controller('FollowingCtrl', function($scope, AppService, ModalService, $state, $ionicHistory, $ionicLoading){
@@ -856,7 +898,7 @@ angular.module('SeeAroundMe.controllers', [])
 
 })
 
-.controller('PostListCtrl', function($scope, $rootScope, $state, $ionicPopup, $ionicPopover, $compile, $timeout,  $ionicLoading, $cordovaGeolocation, $sanitize, AppService, MapService, ModalService){
+.controller('PostListCtrl', function($scope, $rootScope, $state, $ionicGesture, $ionicPopup, $ionicPopover, $compile, $timeout,  $ionicLoading, $cordovaGeolocation, $sanitize, AppService, MapService, ModalService){
   $scope.formData = {};
   var userData = JSON.parse(localStorage.getItem('sam_user_data')) || '{}';
   $scope.userData = userData;
@@ -868,8 +910,28 @@ angular.module('SeeAroundMe.controllers', [])
           "((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
        );
     
+  $scope.isSwiping = false;    
+  $scope.onListSwipe = function(){
+      console.log('Swipping ...');
+      $scope.isSwiping = true;
+  };
+    
+  var element = angular.element(document.querySelector('#eventPlaceholder'));
+            
+    $ionicGesture.on('dragstart', function (event) {
+             //console.log('Dragstart caught ...');
+             $scope.isSwiping = true;
+    }, element);
+            
+    
+    $ionicGesture.on('dragend', function (event) {
+          //console.log('Dragend caught ...');
+          $scope.isSwiping = false;        
+    }, element);
+    
   $scope.$on('$ionicView.enter', function(e) {
     getPosts ();
+    $scope.isSwiping = false;
   });
 
   var getPosts  = function (){
@@ -885,13 +947,17 @@ angular.module('SeeAroundMe.controllers', [])
         post.news = post.news.replace(urlRegEx, "");
           
         post.timeAgo = moment(post.updated_date).fromNow();
+          
+        if(post.user_id == userId){
+            post.isOwnPost = true;
+        }
       });
     }
     else{
        $scope.nearbyPosts = []; 
     }
   };
-    
+        
   $scope.hasMore = true;    
     
   $scope.loadMore = function(){
@@ -907,17 +973,40 @@ angular.module('SeeAroundMe.controllers', [])
                   
                   $scope.nearbyPosts.push(post);
               });
-                
-              $scope.$broadcast('scroll.infiniteScrollComplete');
             }
             else{
                 $scope.hasMore = false;
             }
+            
+            $scope.$broadcast('scroll.infiniteScrollComplete');                        
         });      
   };
     
+  /*************** Edit Post **********************************/
+    
+  $scope.showPostBar = false;
+    
+  $scope.openEdit = function(){
+      $scope.showPostBar = true;
+  }; 
+    
+  $scope.cancel = function(){
+      $scope.showPostBar = false;
+  };
+    
+  $scope.editPost = function(post){
+      
+  };
+    
+  $scope.deletePost = function(post){
+      
+  };
+    
+  /*************************************************************/    
+    
   $scope.openLink = function(link){
-      window.open(link, '_blank', 'location=no');
+      if(!$scope.isSwiping)
+            window.open(link, '_blank', 'location=no');
   };
 
   $rootScope.goToProfile = function(id){
@@ -938,10 +1027,11 @@ angular.module('SeeAroundMe.controllers', [])
     });
   };
 
-  $scope.openShare = function(text, link){
-    var sanitizedText = $sanitize(text);
-    window.plugins.socialsharing.share( sanitizedText, null, null,link);
-  };
+    $scope.openShare = function(postId){
+        //var sanitizedText = $sanitize(text);
+        var link = 'http://www.seearound.me/post/' + postId;
+        window.plugins.socialsharing.share( null, null, null,link);
+    };
 
   $scope.goToComments = function(post){
     AppService.setCurrentComments(post)
@@ -971,7 +1061,6 @@ angular.module('SeeAroundMe.controllers', [])
   $scope.$on('$destroy', function() {
     console.log('Destroying modals...');
     if($scope.alertsPopover){
-        $scope.alertsPopover.close();
         $scope.alertsPopover.remove();
     }
     if($scope.selectPopover){
@@ -1002,12 +1091,18 @@ angular.module('SeeAroundMe.controllers', [])
           .then(function(res){
               if(res.data.result){
                   var alerts = res.data.result;
+                  var unreadCount = 0;
                   alerts.forEach(function(alert){
+                      if(!alert.is_read){//If unread
+                          unreadCount++;
+                      }
+                      
                       var d = alert.created_at.split("-").join("/");
                       alert.created_at = new Date(d);
                   });
 
                   $rootScope.alerts = alerts;
+                  $rootScope.unreadAlerts = unreadCount;
               }
               else{
                   $rootScope.alerts = [{message: 'No alerts'}];
@@ -1157,7 +1252,7 @@ angular.module('SeeAroundMe.controllers', [])
       }    
 })
 
-.controller('NewPostCtrl', function($scope, $rootScope, $stateParams, $state, $ionicLoading, AppService){
+.controller('NewPostCtrl', function($scope, $rootScope, $stateParams, $state, $ionicHistory, $ionicLoading, AppService){
     
     var ud = localStorage.getItem('sam_user_data');
     //console.log(ud);
@@ -1188,6 +1283,7 @@ angular.module('SeeAroundMe.controllers', [])
     };
     
     $scope.clearImage = function(){
+        $rootScope.postMode = 'new';
         $rootScope.imgUri = ""; 
         $scope.showCamBar = false;
         
@@ -1207,8 +1303,27 @@ angular.module('SeeAroundMe.controllers', [])
         }
         else{
             $scope.addLocation = "        Add location";
-            if($stateParams.from == "selectlocation")
+            if($stateParams.from == "selectlocation"){
                 $scope.formData.postText = $rootScope.postText;
+            }
+            else{//Edit post case
+                $rootScope.postText = $stateParams.news;
+                $scope.formData.postText = $stateParams.news;
+                //To check if image has been changed
+                $rootScope.oldImage = $stateParams.images;
+                $rootScope.imgUri = $stateParams.images;
+                $rootScope.postId = $stateParams.id;
+                $scope.addLocation = $stateParams.Address;
+                
+                if($stateParams.from == 'map'){
+                    $scope.isFromMapView = true;
+                    //Fire event to hide map modal
+                    $rootScope.$broadcast('hidemapmodal');
+                }
+                else{
+                    $scope.isFromMapView = false;
+                }
+            }
         }        
     });
 
@@ -1261,7 +1376,7 @@ angular.module('SeeAroundMe.controllers', [])
                     $ionicLoading.hide();
                     $rootScope.postText = '';
                     $scope.formData.postText = '';
-                    $state.go('app.postlistview');
+                    $scope.refreshPosts();
                 },
                 function(error){
                     $ionicLoading.hide();
@@ -1271,6 +1386,115 @@ angular.module('SeeAroundMe.controllers', [])
                     console.log('Uploaded ' + progress.loaded + ' of ' + progress.total);
                 }
             );
+    }; 
+    
+    $scope.savePost = function () {
+        
+        if($scope.textColor == 'gray' || $scope.addLocation == "        Add location")
+            return;
+        
+        $ionicLoading.show({
+               template: '<ion-spinner class="spinner-calm"></ion-spinner><br/>Saving ...',
+               duration: 20000 //Dismiss after 20 seconds
+        });
+        
+        var data = {            
+            "user_id" : userId,
+            "post_id" : $rootScope.postId,
+            "body" : $scope.formData.postText,
+            "latitude" : $stateParams.latitude,
+            "longitude" : $stateParams.longitude,
+            "street_number" : $stateParams.street_number,
+            "street_name" : $stateParams.street_name,
+            "city" : $stateParams.city,
+            "state" : $stateParams.state,
+            "country" : $stateParams.country,
+            "zip" : $stateParams.zip
+        };
+        
+        if($rootScope.imgUri.length == 0){
+            data.delete_image = 1;
+        }
+
+        AppService.savePost(data).then(
+                function(res){
+                    //console.log('Post Success ...');
+                    //console.log(JSON.stringify(res));
+                    $ionicLoading.hide();
+                    $rootScope.postText = '';
+                    $rootScope.postMode = 'new';
+                    $scope.formData.postText = '';
+                    //$scope.goBack();
+                    $scope.refreshPosts();
+                },
+                function(error){
+                    $ionicLoading.hide();
+                    console.log(JSON.stringify(error));
+                    $rootScope.postMode = 'new';
+                },
+                function(progress){
+                    console.log('Uploaded ' + progress.loaded + ' of ' + progress.total);
+                }
+            );
+    };
+    
+    $scope.refreshPosts = function(){
+        var params = {
+            "latitude" : $rootScope.currentCenter.lat(),// 37.8088139,
+            "longitude" : $rootScope.currentCenter.lng(),//-122.2635002,
+            "radious" : $rootScope.inputRadius,
+            "userId" : userId,
+            "start" : 0
+        };
+
+        //console.log(JSON.stringify(params));
+        AppService.getNearbyPosts(params)
+        .success(function (response) {
+
+            //console.log(JSON.stringify(response));
+            if(response.status == 'SUCCESS'){
+                //console.log('Got nearby posts ..............................');
+                if(response.result){
+                  // the regex that matches urls in text
+                  var urlRegEx = new RegExp(
+                          "((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
+                       );
+
+                    response.result.forEach(function (post) {
+
+                        post.news = post.news.replace(urlRegEx, "");
+                        post.timeAgo = moment(post.updated_date).fromNow();
+
+                    });
+
+                    //To use on list view
+                    $rootScope.currentPosts = response.result;
+                    if($scope.isFromMapView){
+                        $scope.goBack();
+                    }
+                    else
+                        $state.go('app.postlistview');
+                 }
+
+            }
+             else{
+                 console.log('Failed to get nearby posts ...');
+                 $rootScope.currentPosts = [];
+             }                
+        })
+        .error(function (err) {
+            console.warn(JSON.stringify(err));
+        });
+
+    };
+    
+    $scope.goBack = function(){
+        $scope.clearImage();
+        $ionicHistory.goBack();
+        //if($scope.isFromMapView){
+            //Fire event to show map modal
+            //$rootScope.$broadcast('showmapmodal');
+        //}
     };    
 })
 
@@ -1339,8 +1563,11 @@ angular.module('SeeAroundMe.controllers', [])
                              break;                                
                     }
                 }
-
-                $state.go('newpostview', p);
+                
+                if($rootScope.postMode == 'edit')
+                    $state.go('editpostview', p);
+                else
+                   $state.go('newpostview', p); 
             });
     };
     
@@ -1423,6 +1650,7 @@ angular.module('SeeAroundMe.controllers', [])
 
 .controller('MapCtrl', function($scope, $rootScope, $state, $stateParams, $timeout, $ionicLoading, $ionicPopup, $ionicPopover, $cordovaGeolocation, $ionicScrollDelegate, $compile, AppService, MapService, ModalService) {
     
+    $rootScope.postMode = 'new';//Other mode is edit
     $rootScope.inputRadius = 0.8;
     $scope.circleRadius = 0.8;
     $rootScope.isFiltered = false;
@@ -1472,22 +1700,28 @@ angular.module('SeeAroundMe.controllers', [])
         if(id == 1)
             $scope.modal1.show();
         else if (id == 3){//Opens map modal half view
-            $scope.modal3 = function() {
-                ModalService.init('templates/post/mapmodal.html', $scope).then(function(modal) {
-                    modal.show();
-                    $scope.halfViewModal = modal;
-                });
-            };    
-            
-            $scope.modal3();
+            if(!$scope.halfViewModal){
+                $scope.modal3 = function() {
+                    ModalService.openMapModal($scope).then(function(modal) {
+                        modal.show();
+                        $scope.halfViewModal = modal;
+                    });
+                };    
+
+                $scope.modal3();
+            }
+            else{
+                $scope.$apply();
+            }
         }
     };
     
-    $scope.viewMode = 'half-view';
+    $scope.viewStyle = {top:'60%'};
     $scope.showMapModalBar = false;
 
 
     var fetchComments = function (post) {
+      $scope.hasMore = true; 
       AppService.getCurrentComments(post)
       .then(function(current){
         //console.log('response', current);
@@ -1512,6 +1746,29 @@ angular.module('SeeAroundMe.controllers', [])
       });
     };
     
+      $scope.hasMore = true;    
+
+      $scope.loadMore = function(){
+
+            AppService.getMoreComments($scope.post)
+            .then(function(response){
+
+                if(response.comments && response.comments.length > 0){
+                    var comments = response.comments.reverse();
+                  comments.map(function(comment){
+                        comment.timeAgo = moment(comment.commTime).fromNow();
+                        $scope.postComments.push(comment);
+                  });
+
+                }
+                else{
+                    $scope.hasMore = false;
+                }
+                
+                $scope.$broadcast('scroll.infiniteScrollComplete');                            
+            });      
+      };    
+    
     $scope.postComment = function (commentText){
         //console.log('commentText -> ', commentText);
         AppService.postComment(commentText, userId, $scope.post.id)
@@ -1532,7 +1789,7 @@ angular.module('SeeAroundMe.controllers', [])
     
     $scope.showFullView = function(post){
         if(!$scope.showMapModalBar){
-          $scope.viewMode = 'full-view';
+          $scope.viewStyle = {top:'0', '-webkit-transition-property' : 'top', '-webkit-transition-duration' : '0.3s'};
           $timeout(function(){
             $scope.showMapModalBar = true;
           }, 450);
@@ -1563,10 +1820,11 @@ angular.module('SeeAroundMe.controllers', [])
         window.open(link, '_blank', 'location=no');
     };    
 
-    $scope.openShare = function(text, link){
-        var sanitizedText = $sanitize(text);
-        window.plugins.socialsharing.share( sanitizedText, null, null,link);
-    }
+    $scope.openShare = function(postId){
+        //var sanitizedText = $sanitize(text);
+        var link = 'http://www.seearound.me/post/' + postId;
+        window.plugins.socialsharing.share( null, null, null,link);
+    };
 
     $scope.swipe = function(direction, thisPost){
       var index = $scope.currentPosts.indexOf(thisPost);
@@ -1582,10 +1840,13 @@ angular.module('SeeAroundMe.controllers', [])
     
     $scope.hideModal = function(){
         $scope.postComments = null;
-        $scope.viewMode = 'half-view';
+        $scope.viewStyle = {top:'60%'};
         $scope.showMapModalBar = false;
-        $scope.closeModal();
-        $scope.halfViewModal.remove();
+        if($scope.halfViewModal){
+            $scope.halfViewModal.hide();
+            $scope.halfViewModal = null;
+        }
+        
         //When modal goes down, change icon back to gray
         if($scope.selectedMarker){
             $scope.selectedMarker.setIcon({
@@ -1609,7 +1870,6 @@ angular.module('SeeAroundMe.controllers', [])
         else{
             $scope.closeModal();
             $scope.modal.remove();
-            $scope.modal3.remove();
         }
     };
             
@@ -1618,14 +1878,26 @@ angular.module('SeeAroundMe.controllers', [])
         
           for (var i = 0; i < $rootScope.markers.length; i++) {
             google.maps.event.addListener($rootScope.markers[i], 'click', function() {
+                    //If a marker is already selected, deselect it
+                    if($scope.selectedMarker){
+                        $scope.selectedMarker.setIcon({
+                            url:'img/pin-gray.png',
+                            scaledSize: new google.maps.Size(18, 25)
+                        });
+                    }
+
                     if(this.post){//It is a post location
                         //Change icon to blue
                         this.setIcon({
                             url:'img/pin-blue.png',
                             scaledSize: new google.maps.Size(18, 25)
                         });
+                        
                         $scope.selectedMarker = this;
-                        $scope.post = this.post;                    
+                        if(this.post.user_id == userId)
+                            this.post.isOwnPost = true;
+                        $scope.post = this.post; 
+                        
                         $scope.showModal(3);
                     }
                     else{//It is my location
@@ -1645,6 +1917,10 @@ angular.module('SeeAroundMe.controllers', [])
     
     $scope.$on("hidemapmodal", function(event,data) {
         $scope.close(3);
+    });
+    
+    $scope.$on("showmapmodal", function(event,data) {
+        $scope.showModal(3);
     });  
     
     $scope.$on('$destroy', function() {
@@ -1773,10 +2049,6 @@ angular.module('SeeAroundMe.controllers', [])
             $scope.showSearch = true;
     };
     
-      $scope.openShare = function(text, link){
-        var sanitizedText = $sanitize(text);
-        window.plugins.socialsharing.share( sanitizedText, null, null,link);
-      };
 
       $scope.goToComments = function(post){
         $scope.hideModal();
@@ -1813,11 +2085,32 @@ angular.module('SeeAroundMe.controllers', [])
     // for 'following' page and also refresh map
     $scope.$on('$ionicView.enter', function(e) {
         getFollowers();
-        //getAlerts();
         //Causes the map to redraw
         if($rootScope.map){
             google.maps.event.trigger($rootScope.map, 'resize');
         }
+        
+        AppService.getAlerts()
+          .then(function(res){
+              if(res.data.result){
+                  var alerts = res.data.result;
+                  var unreadCount = 0;
+                  alerts.forEach(function(alert){
+                      if(!alert.is_read){//If unread
+                          unreadCount++;
+                      }
+                      
+                      var d = alert.created_at.split("-").join("/");
+                      alert.created_at = new Date(d);
+                  });
+
+                  $rootScope.alerts = alerts;
+                  $rootScope.unreadAlerts = unreadCount;
+              }
+              else{
+                  $rootScope.alerts = [{message: 'No alerts'}];
+             }
+          });
     });
 
     $scope.$on('$ionicView.leave', function(e) {
@@ -1834,12 +2127,18 @@ angular.module('SeeAroundMe.controllers', [])
       .then(function(res){
           if(res.data.result){
               var alerts = res.data.result;
+              var unreadCount = 0;
               alerts.forEach(function(alert){
+                  if(!alert.is_read){//If unread
+                      unreadCount++;
+                  }
+
                   var d = alert.created_at.split("-").join("/");
                   alert.created_at = new Date(d);
               });
 
               $rootScope.alerts = alerts;
+              $rootScope.unreadAlerts = unreadCount;
           }
           else{
               $rootScope.alerts = [{message: 'No alerts'}];
