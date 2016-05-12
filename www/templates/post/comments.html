@@ -82,8 +82,8 @@
         </ion-infinite-scroll>          
     </ion-list>
     <div class="write-comment row">
-      <input type="text" class="col" ng-model="commentText" placeholder="Write a comment..">
-      <div ng-click="postComment(commentText)" class="button button-small button-positive col col-20">
+      <input type="text" class="col" ng-model="newComment.text" placeholder="Write a comment..">
+      <div ng-click="postComment()" class="button button-small button-positive col col-20">
         Post
         </div>
     </div>

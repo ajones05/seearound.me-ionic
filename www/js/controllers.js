@@ -588,7 +588,7 @@ angular.module('SeeAroundMe.controllers', [])
 
 })
 
-.controller('CommentsCtrl', function($scope, $ionicLoading, AppService, ModalService, MapService, $state, $rootScope) {
+.controller('CommentsCtrl', function($scope, $ionicLoading, AppService, ModalService, MapService, $state, $ionicScrollDelegate, $rootScope) {
   $ionicLoading.show({
     template: 'Fetching Comments..'
   });
@@ -620,22 +620,30 @@ angular.module('SeeAroundMe.controllers', [])
     $ionicLoading.hide();
     console.warn('error getting comments');
   });
+    
+  $scope.newComment = {
+      text : ''
+  }
 
-  $scope.postComment = function (commentText){
-    console.log('commentText -> ', commentText);
-    AppService.postComment(commentText, userId, $scope.post.id)
+  $scope.postComment = function (){
+    console.log('commentText -> ', $scope.newComment.text);
+
+    AppService.postComment($scope.newComment.text, userId, $scope.post.id)
     .success(function(res){
       //console.log('successfully posted the comment');
       //console.log(JSON.stringify(res));
       $scope.post.comment_count = res.result.totalComments;
       res.result.timeAgo = moment(res.result.commTime).fromNow();
         $scope.postComments.push(res.result);
-        //Clear text field
-        $scope.commentText = "";
+        
+        $scope.newComment.text = '';
+        
+        $ionicScrollDelegate.scrollBottom(true);
     })
     .error(function(err){
       console.log('error posting comment -> ', err);
-    })
+    });
+      
   };
     
   $scope.delComment = function(comment) {
@@ -1307,13 +1315,15 @@ angular.module('SeeAroundMe.controllers', [])
                 $scope.formData.postText = $rootScope.postText;
             }
             else{//Edit post case
-                $rootScope.postText = $stateParams.news;
-                $scope.formData.postText = $stateParams.news;
-                //To check if image has been changed
-                $rootScope.oldImage = $stateParams.images;
-                $rootScope.imgUri = $stateParams.images;
-                $rootScope.postId = $stateParams.id;
-                $scope.addLocation = $stateParams.Address;
+                if($rootScope.postMode == 'edit'){
+                    $rootScope.postText = $stateParams.news;
+                    $scope.formData.postText = $stateParams.news;
+                    //To check if image has been changed
+                    $rootScope.oldImage = $stateParams.images;
+                    $rootScope.imgUri = $stateParams.images;
+                    $rootScope.postId = $stateParams.id;
+                    $scope.addLocation = $stateParams.Address;
+                }
                 
                 if($stateParams.from == 'map'){
                     $scope.isFromMapView = true;
@@ -1767,19 +1777,23 @@ angular.module('SeeAroundMe.controllers', [])
                 
                 $scope.$broadcast('scroll.infiniteScrollComplete');                            
             });      
-      };    
+      }; 
     
-    $scope.postComment = function (commentText){
-        //console.log('commentText -> ', commentText);
-        AppService.postComment(commentText, userId, $scope.post.id)
+    
+    $scope.newComment = { text: ''};
+    
+    $scope.postComment = function (){
+        //console.log('commentText -> ', $scope.newComment.text);
+        AppService.postComment($scope.newComment.text, userId, $scope.post.id)
         .success(function(res){
-            $scope.commentText = "";
+            $scope.newComment.text = '';
           //console.log('successfully posted the comment');
           //console.log(JSON.stringify(res));
           $scope.post.comment_count = res.result.totalComments;
           res.result.timeAgo = moment(res.result.commTime).fromNow();
             $scope.postComments.push(res.result);
-            //Clear text field
+            
+            $ionicScrollDelegate.scrollBottom(true);
         })
         .error(function(err){
           console.log('error posting comment -> ', err);
@@ -1868,8 +1882,10 @@ angular.module('SeeAroundMe.controllers', [])
             },500);
         }            
         else{
-            $scope.closeModal();
-            $scope.modal.remove();
+            if($scope.modal){
+                $scope.closeModal();
+                $scope.modal.remove();
+            }
         }
     };
             
@@ -1916,7 +1932,7 @@ angular.module('SeeAroundMe.controllers', [])
     });
     
     $scope.$on("hidemapmodal", function(event,data) {
-        $scope.close(3);
+        $scope.hideModal();
     });
     
     $scope.$on("showmapmodal", function(event,data) {

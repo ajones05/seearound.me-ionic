@@ -265,7 +265,8 @@ angular.module('SeeAroundMe.services', [])
             
           var params = {
             start: 0,
-            news_id: postId
+            news_id: postId,
+            user_id: userId
           };
           
           $http.post(url, params)
@@ -299,7 +300,8 @@ angular.module('SeeAroundMe.services', [])
 
               var params = {
                 start: commentsPageNum,
-                news_id: postId
+                news_id: postId,
+                user_id: userId
               };
           
               $http.post(url, params)
@@ -819,10 +821,18 @@ angular.module('SeeAroundMe.services', [])
                             this.setZoom(14);
                             google.maps.event.removeListener(boundsListener);
                     });*/
+                
+                
+                    google.maps.event.addListener((map), 'click', 
+                        function(event) { 
+                        //console.log('map clicked'); 
+                        $rootScope.$broadcast('hidemapmodal');
+                    });
 
                     google.maps.event.addListener((map), 'dragend', 
                         function(event) { 
                         //console.log('map dragged'); 
+                        $rootScope.$broadcast('hidemapmodal');
                         var c = this.getCenter();
                         $rootScope.currentCenter = c;
                         me.centerMap(c);

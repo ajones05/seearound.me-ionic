@@ -4,7 +4,7 @@
             <button menu-toggle="left" class="button button-icon">
               <img src="img/menu_off.png" height="22"/>
             </button>
-            <button class="col button button-icon" style="margin-left:18px" ui-sref="newpostview">
+            <button class="col button button-icon" style="margin-left:18px" ng-click="hideModal();" ui-sref="newpostview">
               <img src="img/newpost_off.png" height="24"/>
             </button>
             <button class="col button button-icon" ng-click="showAlerts($event)" >
@@ -15,7 +15,7 @@
               <img ng-show="!isFiltered" src="img/search_off.png" height="24"/>
               <img ng-show="isFiltered" src="img/search_on.png" height="24"/>
             </button>
-            <button class="button button-icon" ui-sref="app.postlistview">
+            <button class="button button-icon" ng-click="hideModal();" ui-sref="app.postlistview">
               <img src="img/list_off.png" height="24"/>
             </button>
         </div>

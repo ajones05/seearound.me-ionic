@@ -148,8 +148,8 @@
         <ion-infinite-scroll ng-if="hasMore" immediate-check="false" on-infinite="loadMore()" distance="2%">
         </ion-infinite-scroll>          
         <div class="write-comment row">
-          <input id="commInput" type="text" class="col" ng-model="commentText" placeholder="Write a comment..">
-          <div ng-click="postComment(commentText)" class="button button-small button-positive col col-20">
+          <input id="commInput" type="text" class="col" ng-model="newComment.text" placeholder="Write a comment..">
+          <div ng-click="postComment()" class="button button-small button-positive col col-20">
             Post
             </div>
         </div>                  
