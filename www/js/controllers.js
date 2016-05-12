@@ -683,8 +683,8 @@ angular.module('SeeAroundMe.controllers', [])
         .then(function(response){
 
             if(response.comments && response.comments.length > 0){
-                var comments = response.comments.reverse();
-              comments.map(function(comment){
+                //var comments = response.comments.reverse();
+              response.comments.map(function(comment){
                     comment.timeAgo = moment(comment.commTime).fromNow();
                     $scope.postComments.push(comment);
               });
@@ -1764,8 +1764,8 @@ angular.module('SeeAroundMe.controllers', [])
             .then(function(response){
 
                 if(response.comments && response.comments.length > 0){
-                    var comments = response.comments.reverse();
-                  comments.map(function(comment){
+                    //var comments = response.comments.reverse();
+                  response.comments.map(function(comment){
                         comment.timeAgo = moment(comment.commTime).fromNow();
                         $scope.postComments.push(comment);
                   });

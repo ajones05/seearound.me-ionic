@@ -78,8 +78,9 @@
             Delete
         </ion-option-button>      
       </ion-item>
-        <ion-infinite-scroll ng-if="hasMore" immediate-check="false" on-infinite="loadMore()" distance="2%">
-        </ion-infinite-scroll>          
+        <div class="item" ng-if="hasMore" ng-click="loadMore()">
+            <p>See more comments</p>
+        </div>          
     </ion-list>
     <div class="write-comment row">
       <input type="text" class="col" ng-model="newComment.text" placeholder="Write a comment..">

@@ -85,7 +85,8 @@
         <span class="col" ng-click='openShare(post.id)'> Share</span>
       </div>
     </div>
-        <ion-infinite-scroll ng-if="hasMore" immediate-check="false" on-infinite="loadMore()" distance="2%">
-        </ion-infinite-scroll>          
+        <div class="item" ng-if="hasMore" ng-click="loadMore()">
+            <p>See more posts</p>
+        </div>          
   </ion-content>
 </ion-view>

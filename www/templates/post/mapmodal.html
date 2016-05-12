@@ -1,6 +1,6 @@
-<ion-modal-view  ng-style="viewStyle"  on-swipe-up="showFullView(post)" on-swipe-down="hideModal()">
+<ion-modal-view  ng-style="viewStyle"  on-swipe-up="showFullView(post)">
     
-  <ion-pane ng-show="!showMapModalBar" class="postlistview" style="width:100%;">
+  <ion-pane ng-show="!showMapModalBar" class="postlistview" style="width:100%;" on-swipe-down="hideModal()">
 
     <!--div class="row" ng-click="hideModal()"></div -->
 
@@ -145,8 +145,9 @@
               <!-- </div>                         -->
           </div>
         </div>
-        <ion-infinite-scroll ng-if="hasMore" immediate-check="false" on-infinite="loadMore()" distance="2%">
-        </ion-infinite-scroll>          
+        <div class="item" ng-if="hasMore" ng-click="loadMore()">
+            <p>See more comments</p>
+        </div>          
         <div class="write-comment row">
           <input id="commInput" type="text" class="col" ng-model="newComment.text" placeholder="Write a comment..">
           <div ng-click="postComment()" class="button button-small button-positive col col-20">
