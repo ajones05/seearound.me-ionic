@@ -1976,13 +1976,23 @@ angular.module('SeeAroundMe.controllers', [])
         window.plugins.socialsharing.share( null, null, null,link);
     };
 
-    $scope.swipe = function(direction, thisPost){
+    $scope.move = function(direction, thisPost){
         var index = $scope.currentPosts.indexOf(thisPost);
 
-        if(direction === 'left' && index < $scope.currentPosts.length - 1){
-            $scope.post = $scope.currentPosts[index+1];
-        }else if(index > 0){
-            $scope.post = $scope.currentPosts[index-1];
+        if(direction === 'up'){
+            if(index >= $scope.currentPosts.length - 1){//Last index
+                $scope.post = $scope.currentPosts[0];
+            }
+            else{
+                $scope.post = $scope.currentPosts[index+1];
+            }            
+        }else{//down
+            if(index <= 0){
+                $scope.post = $scope.currentPosts[$scope.currentPosts.length - 1];//Last post
+            }
+            else{
+                $scope.post = $scope.currentPosts[index-1];
+            }                
         } 
 
         fetchComments($scope.post);

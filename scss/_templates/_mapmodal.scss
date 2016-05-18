@@ -12,9 +12,6 @@
       .full-view {
         top: 0px;
         background: $light;
-        //height: 100vh;
-        /* max-height is the secret to animation -- don't remove it*/
-        //max-height: 100vh;
         -webkit-transition-property: top, bottom;
         -webkit-transition-duration: 0.5s;
           
