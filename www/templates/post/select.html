@@ -1,9 +1,10 @@
-<ion-popover-view style="width:130px;height:220px;">
+<ion-popover-view style="width:140px;height:220px;padding:0;">
   <ion-content>
     <ion-list>
-      <ion-item ng-repeat="option in options">
+      <ion-item ng-repeat="option in options" ng-class="option.label ==  selected.label? 'item-stable' : ''">
         <p class="text" ng-click="setOption(option)"> {{option.label}} </p>
       </ion-item>
     </ion-list>
   </ion-content>
 </ion-popover-view>
+

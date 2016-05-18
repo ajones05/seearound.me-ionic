@@ -125,7 +125,7 @@ angular.module('SeeAroundMe.directives', [])
             post:'=',
             from:'@'
         },
-        controller: function ($scope, $rootScope, $state, $ionicModal, AppService) {
+        controller: function ($scope, $rootScope, $state, $ionicModal, $ionicPopup, AppService) {
             
             $scope.openMenu = function(post){
                 //$scope.post = post;
@@ -148,10 +148,20 @@ angular.module('SeeAroundMe.directives', [])
                 //console.log('deletePost called ...');
                 //console.log(JSON.stringify(post));
                 $scope.hideMenuModal();
-                $rootScope.currentPosts.splice($rootScope.currentPosts.indexOf(comment), 1);
-                AppService.deletePost(post).then(function(){
-                    console.log('Post deleted successfully');
-                });
+                
+                $ionicPopup.confirm({
+                    title: 'See Around Me Alert',
+                    template: 'Are you sure you want to delete this post?',
+                    cancelText: 'No',
+                    okText: 'Yes'
+               }).then(function(res) {
+                 if(res) {
+                        $rootScope.currentPosts.splice($rootScope.currentPosts.indexOf(post), 1);
+                        AppService.deletePost(post).then(function(){
+                            console.log('Post deleted successfully');
+                        });
+                 } 
+               });
             };
             
             $scope.editPost = function(post){

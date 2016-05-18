@@ -1,4 +1,4 @@
-<ion-modal-view  ng-style="viewStyle"  on-swipe-up="showFullView(post)">
+<ion-modal-view  ng-style="viewStyle" on-swipe-up="showFullView(post)">
     
   <ion-pane ng-show="!showMapModalBar" class="postlistview" style="width:100%;" on-swipe-down="hideModal()">
 
@@ -116,45 +116,37 @@
             <post-like-box></post-like-box>
             <post-edit ng-if="post.isOwnPost" post="post" from="map"></post-edit>
           <span class="col" ng-click='openShare(post.id)'> Share</span>
-        </div>
-        <hr/>
-
-        <div class="comments"
-          ng-if="postComments"
-          style="background:white; padding-bottom: 100px">
-          <div class="row user" 
-            style="border-bottom: 1px solid lightgray; padding-bottom: 5px;"
-            ng-repeat="comment in postComments">
-            <div class="col col-20 avatar"
-              ng-click="goToUser(comment)"
-              >
-              <img ng-src="{{comment.Profile_image}}" alt="profile image">
-            </div>
-            <div class="col"> 
-              <div class="name">
-                <span>{{comment.user_name}}</span>
-                <div class=" date right">
-                  <div>{{comment.timeAgo}}</div>
-                </div>
-              </div>
-                <p class="desc" ng-bind-html="comment.comment | linky | hrefToJS"></p>
-              <!--div class="desc">{{comment.comment}}</div-->
-            </div>
-            <!-- <div style="width:20px;padding:5px"> -->
-              <!--   <a class="icon ion&#45;ios&#45;location&#45;outline" style="font&#45;size:1.3em;"></a> -->
-              <!-- </div>                         -->
-          </div>
-        </div>
+        </div>        
+   </div>
+    <ion-list class="comments" ng-if="postComments">
         <div class="item" ng-if="hasMore" ng-click="loadMore()">
             <p>See more comments</p>
-        </div>          
+        </div>        
+        <ion-item class="item-avatar item-text-wrap user"  ng-repeat="comment in postComments">
+            <img ng-src="{{comment.Profile_image}}" alt="profile image" ng-click="goToUser(comment)">
+                <div class="name">
+                    <span>{{comment.user_name}}</span>
+                    <div class=" date right">
+                        <div>{{comment.timeAgo}}</div>
+                    </div>
+                </div>
+                <p class="desc" ng-bind-html="comment.comment | linky | hrefToJS"></p>
+                <!--div class="desc">{{comment.comment}}</div-->
+                
+                <!-- <div style="width:20px;padding:5px"> -->
+                <!--   <a class="icon ion&#45;ios&#45;location&#45;outline" style="font&#45;size:1.3em;"></a> -->
+                <!-- </div> -->
+                <ion-option-button class="button-assertive" ng-if="comment.isOwnComment" ng-click="delComment(comment)">
+                    Delete
+                </ion-option-button>
+        </ion-item>
+    </ion-list>
         <div class="write-comment row">
           <input id="commInput" type="text" class="col" ng-model="newComment.text" placeholder="Write a comment..">
           <div ng-click="postComment()" class="button button-small button-positive col col-20">
             Post
             </div>
         </div>                  
-      </div>
-    </ion-content>
+  </ion-content>
   </ion-view>
 </ion-modal-view>

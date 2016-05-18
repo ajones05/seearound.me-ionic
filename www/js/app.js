@@ -84,6 +84,9 @@ angular.module('SeeAroundMe', [
         }
         return result.join("&");
     });
+    
+    //Disable swipe back on views
+    $ionicConfigProvider.views.swipeBackEnabled(false);    
 
     $ionicConfigProvider.backButton.previousTitleText(false).text('');
     //openFB.init({appId: '755231644585441'});

@@ -58,7 +58,10 @@
     </div>
 
     <ion-list class="comments">
-      <ion-item class="item item-avatar user" 
+        <div class="item" ng-if="hasMore" ng-click="loadMore()">
+            <p>See more comments</p>
+        </div>                  
+      <ion-item class="item item-avatar item-text-wrap user" 
         style="border-bottom: 1px solid lightgray; padding-bottom: 5px;"
         ng-repeat="comment in postComments">
         <img ng-src="{{comment.Profile_image}}" alt="profile image" ng-click="goToProfile(comment.user_id)">
@@ -74,13 +77,10 @@
         <!-- <div style="width:20px;padding:5px"> -->
         <!--   <a class="icon ion&#45;ios&#45;location&#45;outline" style="font&#45;size:1.3em;"></a> -->
         <!-- </div> -->
-        <ion-option-button class="button-assertive" ng-click="delComment(comment)">
+        <ion-option-button ng-if="comment.isOwnComment" class="button-assertive" ng-click="delComment(comment)">
             Delete
         </ion-option-button>      
       </ion-item>
-        <div class="item" ng-if="hasMore" ng-click="loadMore()">
-            <p>See more comments</p>
-        </div>          
     </ion-list>
     <div class="write-comment row">
       <input type="text" class="col" ng-model="newComment.text" placeholder="Write a comment..">

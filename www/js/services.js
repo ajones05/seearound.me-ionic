@@ -189,7 +189,14 @@ angular.module('SeeAroundMe.services', [])
             else{
                 return $http.post(url, data);
             }
-        },        
+        },
+        
+        //Check whenther the post link has already been shared or not
+        checkPost: function(data){
+            var url = API_URL + '/before-save-post';
+            
+            return $http.post(url, data);           
+        },
         
         savePost: function(data){
               var url = API_URL + '/save-post';
@@ -240,6 +247,7 @@ angular.module('SeeAroundMe.services', [])
         },
         
         deleteComment: function(comment){
+            
           var url = API_URL + '/delete-comment';
           var params = {
             user_id: userId,
@@ -828,11 +836,16 @@ angular.module('SeeAroundMe.services', [])
                         //console.log('map clicked'); 
                         $rootScope.$broadcast('hidemapmodal');
                     });
-
-                    google.maps.event.addListener((map), 'dragend', 
+                
+                    google.maps.event.addListener((map), 'dragstart', 
                         function(event) { 
                         //console.log('map dragged'); 
                         $rootScope.$broadcast('hidemapmodal');
+                    });
+                
+                    google.maps.event.addListener((map), 'dragend', 
+                        function(event) { 
+                        //console.log('map dragged'); 
                         var c = this.getCenter();
                         $rootScope.currentCenter = c;
                         me.centerMap(c);
