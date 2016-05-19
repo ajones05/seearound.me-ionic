@@ -40,6 +40,8 @@ angular.module('SeeAroundMe.controllers', [])
 
 .controller('IntroCtrl', function($scope, $state, $ionicSlideBoxDelegate) {
  
+    $scope.showPager = true;
+            
   // Called to navigate to the main app
   $scope.startApp = function() {
     $state.go('home');
@@ -51,9 +53,13 @@ angular.module('SeeAroundMe.controllers', [])
     $ionicSlideBoxDelegate.previous();
   };
 
-  // Called each time the slide changes
+  // Called each time the slide changes -- index is 0 based
   $scope.slideChanged = function(index) {
     $scope.slideIndex = index;
+         if(index == 4)
+            $scope.showPager = false;
+         else
+            $scope.showPager = true;
   };
 })
 

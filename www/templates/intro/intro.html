@@ -1,5 +1,5 @@
 <ion-view view-title="Intro" class="intro">
-    <ion-slide-box on-slide-changed="slideChanged(index)">
+    <ion-slide-box on-slide-changed="slideChanged(index)" show-pager="{{showPager}}">
       <ion-slide>
         <div class="item-image">
           <img src="img/intro_desc.png">
@@ -12,10 +12,15 @@
       </ion-slide>
       <ion-slide>
         <div class="item-image">
+          <img src="img/intro_tapping.png">
+        </div>
+      </ion-slide>                
+      <ion-slide>
+        <div class="item-image">
           <img src="img/intro_details.png">
         </div>
       </ion-slide>
-      <ion-slide>
+      <ion-slide show-pager="false">
             <div class="intro-loc text-center">
                 <div class="row">
                     <button class="button button-outline col col-center" ng-click="startApp()">
