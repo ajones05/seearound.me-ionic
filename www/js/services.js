@@ -731,7 +731,7 @@ angular.module('SeeAroundMe.services', [])
                 map: $rootScope.map,
                 icon: {
                     url:'img/pin-blue.png',
-                    scaledSize: new google.maps.Size(22, 30)
+                    scaledSize: new google.maps.Size(15, 20)
                 },
                 // animation: google.maps.Animation.BOUNCE,
                 title: "My Location"

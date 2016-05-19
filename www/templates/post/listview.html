@@ -1,22 +1,27 @@
 <ion-view hide-nav-bar="true" hide-back-button="true" class="postlistview">
     <div class="bar bar-header">
-        <div class="row" style="padding-top:10px">
-            <button menu-toggle="left" class="button button-icon">
-                <img src="img/menu_off.png" height="22"/>
+        <div class="row" style="padding-top:10px;width:100%;">
+            <button menu-toggle="left" class="button button-icon" style="padding-left:0;width:40px;">
+                <img src="img/menu_off.png" height="18"/>
+                <p class="icon-label">Menu</p>
             </button>
-            <button class="col button button-icon" style="margin-left:18px" ui-sref="newpostview">
-                <img src="img/newpost_off.png" height="24"/>
+            <button class="col button button-icon" ui-sref="newpostview">
+                <img src="img/newpost_off.png" height="20"/>
+                <p class="icon-label">Post</p>
             </button>
             <button class="col button button-icon" ng-click="showAlerts($event)" >
-                <img src="img/alerts_off.png" height="24"/>
+                <img src="img/alerts_off.png" height="20"/>
                 <span ng-if="unreadAlerts > 0" class="alert-badge">{{unreadAlerts}}</span>
+                <p class="icon-label">Alerts</p>
             </button>
-            <button class="col button button-icon" style="margin-right:18px" ng-click="toggleSearch()">
-                <img ng-show="!isFiltered" src="img/search_off.png" height="24"/>
-                <img ng-show="isFiltered" src="img/search_on.png" height="24"/>
+            <button class="col button button-icon" ng-click="toggleSearch()">
+                <img ng-show="!isFiltered" src="img/search_off.png" height="20"/>
+                <img ng-show="isFiltered" src="img/search_on.png" height="20"/>
+                <p class="icon-label">Search</p>
             </button>
-            <button class="button button-icon" ui-sref="app.postmapview">
-              <img src="img/map_off.png" height="28"/>
+            <button class="button button-icon" ui-sref="app.postmapview" style="width:54px;padding-right:0;">
+              <img src="img/map_off.png" height="20"/>
+                <p class="icon-label">Map View</p>
             </button>
         </div>
     </div>

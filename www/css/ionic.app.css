@@ -8122,6 +8122,15 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   bottom: -6px;
   left: 48%; }
 
+.icon-label {
+  font-family: 'Lato';
+  font-size: .6rem;
+  line-height: .6rem;
+  max-height: 10px;
+  color: #5A5A5A;
+  text-align: center;
+  padding: 0; }
+
 .scroll {
   height: 100%; }
 
@@ -8275,6 +8284,14 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     width: 100%;
     height: auto;
   }*/ }
+  .postlistview .icon-label {
+    font-family: 'Lato';
+    font-size: .6rem;
+    line-height: .6rem;
+    max-height: 10px;
+    color: #5A5A5A;
+    text-align: center;
+    padding: 0; }
   .postlistview .alert-badge {
     font-family: 'Lato-Italic';
     font-size: .8rem;
@@ -8348,10 +8365,10 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     float: right;
     margin-right: 10px; }
   .postlistview .user .desc {
-    color: #777777;
+    color: #222222;
     /*font-family: 'Lato-Light';*/
     font-family: 'Lato';
-    font-size: .8rem !important;
+    font-size: .9rem !important;
     padding-top: 0.6vh;
     line-height: 1rem; }
   .postlistview .share {

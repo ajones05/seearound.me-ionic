@@ -2059,7 +2059,7 @@ angular.module('SeeAroundMe.controllers', [])
                         //Change icon to blue
                         this.setIcon({
                             url:'img/pin-blue.png',
-                            scaledSize: new google.maps.Size(18, 25)
+                            scaledSize: new google.maps.Size(22, 30)
                         });
                         
                         $scope.selectedMarker = this;

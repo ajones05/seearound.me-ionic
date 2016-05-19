@@ -2,7 +2,17 @@
 
 .postlistview {
     
-  font-family: 'Lato';
+    font-family: 'Lato';
+    
+    .icon-label {
+          font-family: 'Lato';
+          font-size: .6rem;
+          line-height:.6rem;
+          max-height:10px;
+          color: #5A5A5A;
+          text-align: center;
+          padding:0;
+    }
 
     .alert-badge {
         font-family:'Lato-Italic';
@@ -111,10 +121,10 @@
     }
             
     .desc{
-      color: $messageTextColor;
+      color: $postTextColor;
       /*font-family: 'Lato-Light';*/    
       font-family: 'Lato';
-      font-size: .8rem !important;
+      font-size: .9rem !important;
       padding-top: 0.6vh;
       line-height: 1rem;
     }      
