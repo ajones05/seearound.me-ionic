@@ -382,6 +382,14 @@ angular.module('SeeAroundMe.services', [])
           var url = API_URL + '/notification';
           return $http.post(url, {user_id: userId});
         },
+        
+        markAlertRead: function(alert){
+          var url = API_URL + '/notification-read';
+          $http.post(url, {user_id: userId, id: alert.id, type: alert.type}).then(function(res){
+              console.log('Alert marked read ...');
+              console.log(JSON.stringify(res));
+          });
+        },        
 
         setUserForProfilePage: function(id){
           /*

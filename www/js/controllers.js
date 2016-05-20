@@ -40,15 +40,23 @@ angular.module('SeeAroundMe.controllers', [])
 
 .controller('IntroCtrl', function($scope, $state, $ionicSlideBoxDelegate) {
  
-    $scope.showPager = true;
-            
   // Called to navigate to the main app
   $scope.startApp = function() {
     $state.go('home');
   };
+    
+  $scope.goToAllowLocation = function(){
+      $state.go('allowlocation');
+  };
+    
+  $scope.goToIntro = function(){
+      $state.go('intro');
+  };    
+    
   $scope.next = function() {
     $ionicSlideBoxDelegate.next();
   };
+    
   $scope.previous = function() {
     $ionicSlideBoxDelegate.previous();
   };
@@ -56,10 +64,6 @@ angular.module('SeeAroundMe.controllers', [])
   // Called each time the slide changes -- index is 0 based
   $scope.slideChanged = function(index) {
     $scope.slideIndex = index;
-         if(index == 4)
-            $scope.showPager = false;
-         else
-            $scope.showPager = true;
   };
 })
 
@@ -1142,31 +1146,7 @@ angular.module('SeeAroundMe.controllers', [])
         if(!AppService.isConnected()){
          AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');
          return;
-     }
-/*
-        $ionicLoading.show($event);
-        AppService.getAlerts()
-          .then(function(res){
-              if(res.data.result){
-                  var alerts = res.data.result;
-                  var unreadCount = 0;
-                  alerts.forEach(function(alert){
-                      if(alert.is_read == 0){//If unread
-                          unreadCount++;
-                      }
-                      
-                      var d = alert.created_at.split("-").join("/");
-                      alert.created_at = new Date(d);
-                  });
-
-                  $rootScope.alerts = alerts;
-                  $rootScope.unreadAlerts = unreadCount;
-              }
-              else{
-                  $rootScope.alerts = [{message: 'No alerts'}];
-             }
-            $ionicLoading.hide($event);
-          });*/
+        }
     };
     
     //Below is the select popover code
@@ -1454,7 +1434,8 @@ angular.module('SeeAroundMe.controllers', [])
             "user_id" : userId,
             "body" : $scope.formData.postText
         }).then(function(res){
-            if(res.link_post_id == 1){//Link is already shared
+            if(res.data.link_post_id){//Link is already shared
+                $ionicLoading.hide();
                 $ionicPopup.confirm({
                     title: 'See Around Me Alert',
                     template: 'The link you are going to post has already been shared. Do you want to post it anyway?',
@@ -1463,7 +1444,11 @@ angular.module('SeeAroundMe.controllers', [])
                }).then(function(res) {
                  if(res) {
                      postNews();
-                 } 
+                 }
+                else{
+                    $rootScope.postText = '';
+                    $scope.formData.postText = '';
+                }
                });                
             }
             else{//Link not shared, proceed
@@ -1528,7 +1513,8 @@ angular.module('SeeAroundMe.controllers', [])
             "user_id" : userId,
             "body" : $scope.formData.postText
         }).then(function(res){
-            if(res.link_post_id == 1){//Link is already shared
+            if(res.data.link_post_id){//Link is already shared
+                $ionicLoading.hide();
                 $ionicPopup.confirm({
                     title: 'See Around Me Alert',
                     template: 'The link you are going to post has already been shared. Do you want to post it anyway?',
@@ -1538,6 +1524,10 @@ angular.module('SeeAroundMe.controllers', [])
                  if(res) {
                      savePost();
                  } 
+                else{
+                    $rootScope.postText = '';
+                    $scope.formData.postText = '';
+                }                    
                });                
             }
             else{//Link not shared, proceed
@@ -2122,7 +2112,7 @@ angular.module('SeeAroundMe.controllers', [])
         $scope.popover = popover;
     });
 
-    $rootScope.alertActions = function (alert){
+    $rootScope.alertActions = function (alert){      
       switch(alert.type.toLowerCase()){
         case 'friend':
           $scope.popover.hide();
@@ -2165,7 +2155,10 @@ angular.module('SeeAroundMe.controllers', [])
                     }                            
                 });
             }
-      }
+      };
+        
+      //Mark the alert as read
+        AppService.markAlertRead(alert);
     }
     
     $scope.showAlerts = function ($event) {

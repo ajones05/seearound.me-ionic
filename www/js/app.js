@@ -104,7 +104,13 @@ angular.module('SeeAroundMe', [
         url: "/intro",
         templateUrl: "templates/intro/intro.html",
         controller: 'IntroCtrl'
-      })    
+      })
+    
+    .state('allowlocation', {
+        url: "/allowlocation",
+        templateUrl: "templates/intro/allowlocation.html",
+        controller: 'IntroCtrl'
+      })        
     
     .state('home', {
       url: "/home",
