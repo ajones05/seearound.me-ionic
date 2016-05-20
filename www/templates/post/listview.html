@@ -5,7 +5,7 @@
                 <img src="img/menu_off.png" height="18"/>
                 <p class="icon-label">Menu</p>
             </button>
-            <button class="col button button-icon" ui-sref="newpostview">
+            <button class="col button button-icon" ng-click="goToNewPost()">
                 <img src="img/newpost_off.png" height="20"/>
                 <p class="icon-label">Post</p>
             </button>
@@ -19,7 +19,7 @@
                 <img ng-show="isFiltered" src="img/search_on.png" height="20"/>
                 <p class="icon-label">Search</p>
             </button>
-            <button class="button button-icon" ui-sref="app.postmapview" style="width:54px;padding-right:0;">
+            <button class="button button-icon" ui-sref="app.postmapview" style="width:58px;padding-right:0;">
               <img src="img/map_off.png" height="20"/>
                 <p class="icon-label">Map View</p>
             </button>
