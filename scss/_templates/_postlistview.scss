@@ -8,25 +8,24 @@
     
     font-family: 'Lato';
     
-    .icon-label {
-          font-family: 'Lato';
+    .alert-badge {
+          font-family: 'Lato-Italic';
           font-size: .6rem;
-          line-height:.6rem;
-          max-height:10px;
-          color: #5A5A5A;
+          color: #345EC2;
           text-align: center;
-          padding:0;
+          position: absolute;
+          bottom: 6px;
+          left: 46%; 
     }
 
-    .alert-badge {
-        font-family:'Lato-Italic';
-        font-size: .7rem;
-        color: $positive;
-        text-align: center;
-
-        position: absolute;
-        bottom: 10px;
-        left: 46%;        
+    .icon-label {
+          font-family: 'Lato';
+          font-size: .7rem;
+          line-height: .5rem;
+          max-height: 6px;
+          color: #5A5A5A;
+          text-align: center;
+          margin-top: -4px;
     }
         
   .post_item{

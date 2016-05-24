@@ -1260,6 +1260,7 @@ angular.module('SeeAroundMe.controllers', [])
     $scope.setOption = function(option){
         $scope.selected = option;
         $scope.selectPopover.hide();
+        $scope.searchPosts();
     };
     
     $scope.toggleSearch = function(){
@@ -2217,6 +2218,7 @@ angular.module('SeeAroundMe.controllers', [])
     $scope.setOption = function(option){
         $scope.selected = option;
         $scope.selectPopover.hide();
+        $scope.searchPosts();
     };
     
     $scope.toggleSearch = function(){
