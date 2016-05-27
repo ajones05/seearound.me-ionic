@@ -44,14 +44,14 @@ angular.module('SeeAroundMe.controllers', [])
   $scope.startApp = function() {
     $state.go('home');
   };
-    
+  /*  
   $scope.goToAllowLocation = function(){
       $state.go('allowlocation');
   };
     
   $scope.goToIntro = function(){
       $state.go('intro');
-  };    
+  }; */   
     
   $scope.next = function() {
     $ionicSlideBoxDelegate.next();

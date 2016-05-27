@@ -1,31 +1,30 @@
 <ion-view hide-nav-bar="true" hide-back-button="true" class="mapview">
-    <div ng-hide="isFromProfileView" class="bar bar-header">
+<div ng-hide="isFromProfileView" class="bar bar-header">
         <div class="row" style="padding-top:10px;width:100%;">
-            <button menu-toggle="left" class="button button-icon icon-left" style="padding-left:0;padding-bottom:0;padding-top:4px;width:40px;">
+            <button menu-toggle="left" class="button button-icon icon-left" style="padding-left:0;padding-bottom:0;padding-top:4px;width:40px;margin-right:10px;">
               <img src="img/menu_off.png" height="20"/>
                 <p class="icon-label">Menu</p>
             </button>
-            <button class="col button button-icon" ng-click="goToNewPost()" style="padding-top:4px;padding-bottom:0;">
+            <button class="col button button-icon" ng-click="goToNewPost()" style="padding-top:4px;padding-bottom:0;margin-right:10px;">
               <img src="img/newpost_off.png" height="22"/>
-              <p class="icon-label">Post</p>
+              <p style="margin-left:-4px;" class="icon-label">Post</p>
             </button>
             <button class="col button button-icon" ng-click="showAlerts($event)" style="padding-top:4px;padding-bottom:0;">
               <img src="img/alerts_off.png" height="22"/>
               <span ng-if="unreadAlerts > 0" class="alert-badge">{{unreadAlerts}}</span>
               <p class="icon-label">Alerts</p>
             </button>
-            <button class="col button button-icon" ng-click="toggleSearch()" style="padding-top:4px;padding-bottom:0;">
+            <button class="col button button-icon" ng-click="toggleSearch()" style="padding-top:4px;padding-bottom:0;margin-right:-4px;">
               <img ng-show="!isFiltered" src="img/search_off.png" height="22"/>
               <img ng-show="isFiltered" src="img/search_on.png" height="22"/>
                 <p class="icon-label">Search</p>
             </button>
-            <button class="button button-icon" ng-click="hideModal();" ui-sref="app.postlistview" style="width:60px;padding-right:0;padding-top:4px;padding-bottom:0;">
+            <button class="button button-icon" ng-click="hideModal();" ui-sref="app.postlistview" style="width:60px;padding-right:0;padding-top:4px;padding-bottom:0;margin-right:-6px;">
               <img src="img/list_off.png" height="22"/>
                 <p class="icon-label">List View</p>
             </button>
         </div>
-    </div>
-    
+    </div>    
     <div ng-show="isFromProfileView" class="bar bar-header">
         <div class="row" style="padding-top:10px">
             <button class="button button-clear" ui-sref="app.userprofile">
