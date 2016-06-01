@@ -1,0 +1,23 @@
+<ion-view hide-nav-bar="true" class="intro">
+    <div class="bar bar-header bar-light nav-title-slide-ios7 transparent-nav" style="background: none; border-bottom: none;">
+        <button class="button button-icon" style="color:#fff;" ui-sref="intro">
+            <i class="icon ion-ios-arrow-left text-light"></i>
+        </button>
+        <h1 class="title" style="color:#fff;">Outside of Area</h1>
+    </div>
+    <div class="intro-out">
+        <form class="text-center padding">
+            <p class="white-text">
+                Sorry, SeeAround.me is not available in your area right now. If you leave your email, we'll let you know when it is:
+            </p>
+            <div class="item item-input">
+                <input type="email" placeholder="E-mail address..." ng-model="formData.email" required="required">
+            </div>
+            <div class="text-center" style="margin-top:30px;">
+                <button type="submit" class="button button-outline" ng-click="submitEmail()">
+                    Submit
+                </button>
+            </div>
+        </form>
+    </div>
+</ion-view>

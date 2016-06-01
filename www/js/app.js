@@ -105,12 +105,12 @@ angular.module('SeeAroundMe', [
         templateUrl: "templates/intro/intro.html",
         controller: 'IntroCtrl'
       })
-    /*
-    .state('allowlocation', {
-        url: "/allowlocation",
-        templateUrl: "templates/intro/allowlocation.html",
+    
+    .state('outareaform', {
+        url: "/outareaform",
+        templateUrl: "templates/intro/outareaform.html",
         controller: 'IntroCtrl'
-      }) */       
+      })        
     
     .state('home', {
       url: "/home",

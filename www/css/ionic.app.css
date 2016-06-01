@@ -8687,6 +8687,31 @@ div.custom_btn {
     font-family: "Lato" !important;
     color: #fff !important;
     text-align: center; }
+.intro .intro-out {
+  width: 100vw;
+  height: 100vh;
+  padding-top: 64px;
+  background-image: url(../img/auth-bg.png);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat; }
+  .intro .intro-out .input {
+    font-style: italic !important; }
+  .intro .intro-out .white-text {
+    font-size: .9em;
+    font-family: "Lato";
+    color: #FFFFFF;
+    line-height: 1.1;
+    text-align: left; }
+  .intro .intro-out .button-outline {
+    height: 60px !important;
+    width: 60vw;
+    border-radius: 22px !important;
+    border: 3px solid #fff !important;
+    font-size: 24px !important;
+    font-family: "Lato" !important;
+    color: #fff !important;
+    text-align: center; }
 .intro .link {
   color: cornflowerblue;
   text-decoration: none; }

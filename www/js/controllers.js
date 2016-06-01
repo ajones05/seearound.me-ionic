@@ -38,20 +38,74 @@ angular.module('SeeAroundMe.controllers', [])
   };    
 })
 
-.controller('IntroCtrl', function($scope, $state, $ionicSlideBoxDelegate) {
+.controller('IntroCtrl', function($scope, $rootScope, $state, $ionicSlideBoxDelegate, MapService, AppService) {
  
+  $scope.location = '';
   // Called to navigate to the main app
   $scope.startApp = function() {
-    $state.go('home');
-  };
-  /*  
-  $scope.goToAllowLocation = function(){
-      $state.go('allowlocation');
+    //Check location  
+    MapService.getCurrentPosition()
+        .then(function(position){
+            //Here, we want to check whether the user's current location is within a specified area or not
+            var lat  = position.coords.latitude;//37.8088139
+            var long = position.coords.longitude;//-122.2660002
+        
+            $rootScope.loc = lat + ',' + long;
+
+            //User's location
+            var location = new google.maps.LatLng(lat, long);
+        
+            //The specified area represented by bounds rectangle
+            var bounds = new google.maps.LatLngBounds(
+                new google.maps.LatLng(37.7169, -122.5004),
+                new google.maps.LatLng(37.8948, -122.1261)
+            );
+
+            //Returns true if the location is within the area
+            var isLocInArea = bounds.contains(location);
+        
+            if(isLocInArea){//Location is within specified area
+                //Fine, lets go to the app
+                $state.go('home');
+            }
+            else{//Location is outside the specified area
+                //Can't allow this user to go inside ... show form
+                $state.go('outareaform');
+            }
+        },function(err) {
+            // error
+            console.error('Failed to get current position. Error: ' + JSON.stringify(err));
+            $ionicPopup.alert({
+                 title: 'See Around Me Alert',
+                 subTitle: 'Current Location',
+                 template: 'Failed to get your location. Make sure you are connected to the internet and allowed gelocation on your devivce.'
+            });
+        });      
   };
     
-  $scope.goToIntro = function(){
-      $state.go('intro');
-  }; */   
+  $scope.formData = { email: '' };
+              
+  $scope.submitEmail = function() {
+      
+      if($scope.formData.email){
+        //Submit email        
+        var data = {
+            "entry.1" : new Date().getTime(), 
+            "entry.364269482" : $scope.formData.email, 
+            "entry.1803428188": $rootScope.loc
+        };
+      
+        AppService.submitEmail(data).then(function(res){
+            console.log('Status: ' + res.status);
+            if(res.status == 200){
+                AppService.showErrorAlert('Email Submitted', 'The email has been submitted successfully. Thanks!');
+            }
+        });
+      }
+      else{//Invalid email
+          AppService.showErrorAlert('Invalid Email', 'The email you provided is not valid email address. Please try again.');
+      }
+  };
     
   $scope.next = function() {
     $ionicSlideBoxDelegate.next();

@@ -82,6 +82,16 @@ angular.module('SeeAroundMe.services', [])
             return $http.post(url, { email: email});
         },
         
+        submitEmail: function(data){
+            var url = 'https://docs.google.com/a/seearound.me/forms/d/1OfimXHi5VzBAT0LxQg84m5m0dwSzrQ24Cm_sHxZiFNE/formResponse';
+            return $http({
+                method: 'POST',
+                url: url,
+                dataType: 'xml',
+                data: data
+            });
+        },
+        
         signUp: function (data) {
             var url = API_URL + '/registration';
             return $http({
@@ -531,7 +541,7 @@ angular.module('SeeAroundMe.services', [])
         
         getCurrentPosition: function (){
             
-            console.log('Geolocation Service called...');
+            //console.log('Geolocation Service called...');
             var posOptions = {timeout: 30000, maximumAge:0, enableHighAccuracy: false};
 
              return $cordovaGeolocation.getCurrentPosition(posOptions);
