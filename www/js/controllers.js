@@ -709,25 +709,23 @@ angular.module('SeeAroundMe.controllers', [])
   }
 
   $scope.postComment = function (){
-    console.log('commentText -> ', $scope.newComment.text);
+    //console.log('commentText -> ', $scope.newComment.text);
 
     AppService.postComment($scope.newComment.text, userId, $scope.post.id)
-    .success(function(res){
+    .then(function(res){
       //console.log('successfully posted the comment');
       //console.log(JSON.stringify(res));
-      $scope.post.comment_count = res.result.totalComments;
-      res.result.timeAgo = moment(res.result.commTime).fromNow();
-        res.result.isOwnComment = true;
-        $scope.postComments.push(res.result);
+      if(res.data.result){
+      $scope.post.comment_count = res.data.result.totalComments;
+            res.data.result.timeAgo = moment(res.data.result.commTime).fromNow();
+            res.data.result.isOwnComment = true;
+            $scope.postComments.push(res.data.result);
         
-        $scope.newComment.text = '';
+            $scope.newComment.text = '';
         
-        $ionicScrollDelegate.scrollBottom(true);
-    })
-    .error(function(err){
-      console.log('error posting comment -> ', err);
-    });
-      
+            $ionicScrollDelegate.scrollBottom(true);
+      }
+    });      
   };
     
   $scope.delComment = function(comment) {
@@ -760,8 +758,8 @@ angular.module('SeeAroundMe.controllers', [])
       });
   };
     
-  $scope.close = function(map){
-      $scope.mapModal.remove();
+  $scope.closeMapModal = function(){
+      $scope.mapModal.remove();      
   };
 
     $scope.openShare = function(postId){
@@ -1957,19 +1955,18 @@ angular.module('SeeAroundMe.controllers', [])
     $scope.postComment = function (){
         //console.log('commentText -> ', $scope.newComment.text);
         AppService.postComment($scope.newComment.text, userId, $scope.post.id)
-        .success(function(res){
+        .then(function(res){
             $scope.newComment.text = '';
-          //console.log('successfully posted the comment');
-          //console.log(JSON.stringify(res));
-          $scope.post.comment_count = res.result.totalComments;
-          res.result.timeAgo = moment(res.result.commTime).fromNow();
-            $scope.postComments.push(res.result);
-            
-            $ionicScrollDelegate.scrollBottom(true);
-        })
-        .error(function(err){
-          console.log('error posting comment -> ', err);
-        })
+            //console.log('successfully posted the comment');
+            //console.log(JSON.stringify(res));
+            if(res.data.result){
+                $scope.post.comment_count = res.data.result.totalComments;
+                res.data.result.timeAgo = moment(res.data.result.commTime).fromNow();
+                $scope.postComments.push(res.data.result);
+
+                $ionicScrollDelegate.scrollBottom(true);
+            }
+        });
     };
     
       $scope.delComment = function(comment) {
@@ -2189,6 +2186,7 @@ angular.module('SeeAroundMe.controllers', [])
             }
             
             if(post){//Post was found in current posts
+                post.isOwnPost = true;
                 AppService.setCurrentComments(post)
                 .then(function(){
                   $state.go('app.postcomments');
@@ -2203,6 +2201,7 @@ angular.module('SeeAroundMe.controllers', [])
                 AppService.getPost(data)
                 .then(function(result){
                     if(result.data.post){
+                        result.data.post.isOwnPost = true;
                         AppService.setCurrentComments(result.data.post)
                         .then(function(){
                           $state.go('app.postcomments');

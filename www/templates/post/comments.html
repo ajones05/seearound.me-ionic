@@ -53,6 +53,7 @@
           <img src="img/chat.png" alt="">
         </span>
           <post-like-box></post-like-box>
+          <post-edit ng-if="post.isOwnPost" post="post" from="comments"></post-edit>
         <span class="col" ng-click='openShare(post.id)'> Share</span>
       </div>
     </div>

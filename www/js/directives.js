@@ -159,6 +159,9 @@ angular.module('SeeAroundMe.directives', [])
                         $rootScope.currentPosts.splice($rootScope.currentPosts.indexOf(post), 1);
                         AppService.deletePost(post).then(function(){
                             console.log('Post deleted successfully');
+                            //if($scope.from == 'comments'){
+                               //$state.go('app.postlistview'); 
+                            //}
                         });
                  } 
                });
