@@ -656,6 +656,8 @@ angular.module('SeeAroundMe.controllers', [])
   $ionicLoading.show({
     template: 'Fetching Comments..'
   });
+    
+  $scope.postComments = [];
 
   var userData = JSON.parse(localStorage.getItem('sam_user_data' ))|| '{}';
   var userId = userData.id || 0;
@@ -666,7 +668,7 @@ angular.module('SeeAroundMe.controllers', [])
     //console.log('response', current);
     if(current){        
         $scope.post = current.post;
-        if($scope.post.user_id == userId){
+        if($scope.post && $scope.post.user_id == userId){
             $scope.isOwnPost = true;
         }
         else{
@@ -716,7 +718,7 @@ angular.module('SeeAroundMe.controllers', [])
       //console.log('successfully posted the comment');
       //console.log(JSON.stringify(res));
       if(res.data.result){
-      $scope.post.comment_count = res.data.result.totalComments;
+            $scope.post.comment_count = res.data.result.totalComments;
             res.data.result.timeAgo = moment(res.data.result.commTime).fromNow();
             res.data.result.isOwnComment = true;
             $scope.postComments.push(res.data.result);
@@ -1055,13 +1057,11 @@ angular.module('SeeAroundMe.controllers', [])
 
     if($scope.nearbyPosts){
       $scope.nearbyPosts.map(function(post){
-        // get the first url from text
-        //post.first_link = post.news.match(urlRegEx);
-        //try{
-          //post.first_link = post.news.match(urlRegEx)[0];
-        //}catch(ex){}
-        post.news = post.news.replace(urlRegEx, "");
           
+      if(post.link_url){
+          post.news = post.news.replace(urlRegEx, "");
+      }
+                  
         post.timeAgo = moment(post.updated_date).fromNow();
           
         if(post.user_id == userId){
@@ -1876,13 +1876,14 @@ angular.module('SeeAroundMe.controllers', [])
     $scope.showMapModalBar = false;
 
     $scope.hasMore = false;
+    $scope.postComments = [];
     
     var fetchComments = function (post) {
       
       AppService.getCurrentComments(post)
       .then(function(current){
         //console.log('response', current);
-          if(current.comments){
+          if(current && current.comments){
               if(current.comments.length < 10){
                   $scope.hasMore = false; 
               }

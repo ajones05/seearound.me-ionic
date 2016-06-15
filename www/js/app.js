@@ -8,7 +8,7 @@ angular.module('SeeAroundMe', [
     'google.places', 
     'ngSanitize'])
 
-.run(function($ionicPlatform, $timeout, $state, $rootScope, AppService, $ionicPopup, $ionicHistory ) {
+.run(function($ionicPlatform, $timeout, $state, $rootScope, AppService, $ionicPopup, $ionicHistory, $cordovaStatusbar) {
   $ionicPlatform.ready(function() {
     //First check for internet connection
     if(!AppService.isConnected()){
@@ -21,9 +21,11 @@ angular.module('SeeAroundMe', [
         cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
         cordova.plugins.Keyboard.disableScroll(true);
     }
-    if (window.StatusBar) {
-      // org.apache.cordova.statusbar required
-      StatusBar.styleDefault();
+      
+    if (window.cordova && window.cordova.plugins.StatusBar) {
+        
+        $cordovaStatusbar.overlaysWebView(true);
+        $cordovaStatusbar.style(0);//Default
     }
 
     $rootScope.goBack = function(){
