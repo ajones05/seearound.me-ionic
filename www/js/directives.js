@@ -125,7 +125,7 @@ angular.module('SeeAroundMe.directives', [])
             post:'=',
             from:'@'
         },
-        controller: function ($scope, $rootScope, $state, $ionicModal, $ionicPopup, AppService) {
+        controller: function ($scope, $rootScope, $state, $ionicModal, $ionicPopup, AppService, MapService) {
             
             $scope.openMenu = function(post){
                 //$scope.post = post;
@@ -159,6 +159,11 @@ angular.module('SeeAroundMe.directives', [])
                         $rootScope.currentPosts.splice($rootScope.currentPosts.indexOf(post), 1);
                         AppService.deletePost(post).then(function(){
                             console.log('Post deleted successfully');
+                            if($scope.from == 'map'){
+                                $rootScope.$broadcast('hidemapmodal'); 
+                                MapService.refreshMap();
+                            }
+
                             //if($scope.from == 'comments'){
                                //$state.go('app.postlistview'); 
                             //}
@@ -176,6 +181,10 @@ angular.module('SeeAroundMe.directives', [])
                 
                 if($scope.from == 'map'){
                     post.from = 'map';
+                }
+                
+                if(post.link_url){
+                    post.news = post.news + '\n' + post.link_url;
                 }
                 
                 $state.go('editpostview', post);

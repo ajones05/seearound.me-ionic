@@ -8552,6 +8552,7 @@ div.custom_btn {
     border-bottom: 1px solid #666; }
   .alerts .alert {
     border-color: #888;
+    border-radius: 0 !important;
     padding: 6px;
     overflow: inherit;
     text-overflow: inherit; }

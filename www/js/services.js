@@ -1,6 +1,6 @@
 angular.module('SeeAroundMe.services', [])
 
-.factory('AppService', function($http, $q, $rootScope, $cordovaNetwork, $cordovaCamera, $cordovaFileTransfer, $ionicPopup, API_URL) {
+.factory('AppService', function($http, $q, $rootScope, $state, $cordovaNetwork, $cordovaCamera, $cordovaFileTransfer, $ionicPopup, API_URL) {
 
     var userData = JSON.parse(localStorage.getItem('sam_user_data')) || {};
     var userId = userData.id || 0;
@@ -14,7 +14,7 @@ angular.module('SeeAroundMe.services', [])
         getImage: function(mediaType){
             
             var cameraOptions = {
-                quality: 50,
+                quality: 60,
                 encodingType: Camera.EncodingType.JPEG,
                 destinationType: Camera.DestinationType.FILE_URI,
                 saveToPhotoAlbum: false,
@@ -399,7 +399,61 @@ angular.module('SeeAroundMe.services', [])
               console.log('Alert marked read ...');
               console.log(JSON.stringify(res));
           });
-        },        
+        }, 
+        
+        alertActions: function (alert, scope){ 
+            
+            scope.alertsPopover.hide();
+            
+            var AppService = this;
+            
+            switch(alert.type.toLowerCase()){
+                case 'friend':                  
+                  $state.go('app.userfollowing');
+                  break;
+                case 'message':
+                  AppService.setOtherUserId(alert.user_id);
+                  $state.go('app.userchat');
+                  break;
+                default: //vote or comment 
+                    var post = null;
+                    for(var i=0; i < $rootScope.currentPosts.length; i++){
+                        if(alert.post_id === $rootScope.currentPosts[i].id){
+                            post = $rootScope.currentPosts[i];
+                            break;
+                        }
+                    }
+
+                    if(post){//Post was found in current posts
+                        post.isOwnPost = true;
+                        AppService.setCurrentComments(post)
+                        .then(function(){
+                          $state.go('app.postcomments');
+                        });                              
+                    }
+                    else{//Post was not found
+                        var data = {
+                            user_id: alert.user_id,
+                            post_id: alert.post_id
+                        };
+
+                        AppService.getPost(data)
+                        .then(function(result){
+                            if(result.data.post){
+                                result.data.post.isOwnPost = true;
+                                AppService.setCurrentComments(result.data.post)
+                                .then(function(){
+                                  $state.go('app.postcomments');
+                                });  
+                            }                            
+                        });
+                    }
+              };
+
+              //Mark the alert as read
+              AppService.markAlertRead(alert);
+        },
+        
 
         setUserForProfilePage: function(id){
           /*

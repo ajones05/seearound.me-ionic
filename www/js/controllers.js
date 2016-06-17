@@ -770,6 +770,11 @@ angular.module('SeeAroundMe.controllers', [])
         window.plugins.socialsharing.share( null, null, null,link);
     };
     
+    $scope.openLink = function(link){
+        
+        window.open(link, '_blank', 'location=no');
+    };
+    
   $scope.hasMore = false;    
     
   $scope.loadMore = function(){
@@ -1153,6 +1158,19 @@ angular.module('SeeAroundMe.controllers', [])
       $state.go('app.postcomments');
     })
   };
+    
+    $scope.showImage = function(imageSrc){
+          ModalService.init('templates/post/full-image.html', $scope).then(function(modal){
+            modal.show();
+            $scope.imgModal = modal;
+          }).then(function(){
+                $scope.imageSrc = imageSrc;
+          });      
+    };
+    
+    $scope.closeImageModal = function(){
+        $scope.imgModal.remove();
+    };
 
     $scope.showMapForPost = function(latitude, longitude){
 
@@ -1199,6 +1217,11 @@ angular.module('SeeAroundMe.controllers', [])
          AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');
          return;
         }
+    };
+    
+    $scope.alertActions = function(alert){
+        
+        AppService.alertActions(alert, $scope);
     };
     
     //Below is the select popover code
@@ -1562,6 +1585,7 @@ angular.module('SeeAroundMe.controllers', [])
                duration: 20000 //Dismiss after 20 seconds
         });
         
+        /*
         AppService.checkPost({ 
             "user_id" : userId,
             "body" : $scope.formData.postText
@@ -1586,7 +1610,10 @@ angular.module('SeeAroundMe.controllers', [])
             else{//Link not shared, proceed
                 savePost();
             }
-        });        
+        }); */ 
+        
+        //Comment this out in case you need to open above code
+        savePost();
     };
     
     $scope.refreshPosts = function(){
@@ -1963,6 +1990,7 @@ angular.module('SeeAroundMe.controllers', [])
             if(res.data.result){
                 $scope.post.comment_count = res.data.result.totalComments;
                 res.data.result.timeAgo = moment(res.data.result.commTime).fromNow();
+                res.data.result.isOwnComment = true;
                 $scope.postComments.push(res.data.result);
 
                 $ionicScrollDelegate.scrollBottom(true);
@@ -2162,63 +2190,17 @@ angular.module('SeeAroundMe.controllers', [])
     $ionicPopover.fromTemplateUrl('templates/post/alerts.html', {
         scope: $scope
       }).then(function(popover) {
-        $scope.popover = popover;
+        $scope.alertsPopover = popover;
     });
-
-    $rootScope.alertActions = function (alert){      
-      switch(alert.type.toLowerCase()){
-        case 'friend':
-          $scope.popover.hide();
-          $state.go('app.userfollowing');
-          break;
-        case 'message':
-          $scope.popover.hide();
-          AppService.setOtherUserId(alert.user_id);
-          $state.go('app.userchat');
-          break;
-        default: //vote or comment 
-          $scope.popover.hide();
-            var post = null;
-            for(var i=0; i < $rootScope.currentPosts.length; i++){
-                if(alert.post_id === $rootScope.currentPosts[i].id){
-                    post = $rootScope.currentPosts[i];
-                    break;
-                }
-            }
-            
-            if(post){//Post was found in current posts
-                post.isOwnPost = true;
-                AppService.setCurrentComments(post)
-                .then(function(){
-                  $state.go('app.postcomments');
-                });                              
-            }
-            else{//Post was not found
-                var data = {
-                    user_id: alert.user_id,
-                    post_id: alert.post_id
-                };
-                
-                AppService.getPost(data)
-                .then(function(result){
-                    if(result.data.post){
-                        result.data.post.isOwnPost = true;
-                        AppService.setCurrentComments(result.data.post)
-                        .then(function(){
-                          $state.go('app.postcomments');
-                        });  
-                    }                            
-                });
-            }
-      };
+    
+    $scope.alertActions = function(alert){
         
-      //Mark the alert as read
-        AppService.markAlertRead(alert);
-    }
+        AppService.alertActions(alert, $scope);
+    };
     
     $scope.showAlerts = function ($event) {
         //console.log('showAlerts called ...');
-        $scope.popover.show($event); 
+        $scope.alertsPopover.show($event); 
         if(!AppService.isConnected()){
              AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');
              return;
