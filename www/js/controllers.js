@@ -1,6 +1,6 @@
 angular.module('SeeAroundMe.controllers', [])
 
-.controller('AppCtrl', function($scope, AppService, $timeout, $rootScope, $state) {
+.controller('AppCtrl', function($scope, AppService, $timeout, $ionicHistory, $ionicLoading, $rootScope, $state) {
   //$scope.$on('$ionicView.enter', function(e) {
   //});
       
@@ -34,8 +34,19 @@ angular.module('SeeAroundMe.controllers', [])
       
       $rootScope.markers = [];
       
-      $state.go('home');
-  };    
+        //It is important to clear cache and history
+        $ionicLoading.show({
+                template: 'Signing out ...'
+        });
+            
+        $state.go('home');
+        
+        $timeout(function () {
+                 $ionicHistory.clearCache();
+                 $ionicHistory.clearHistory();
+                 $ionicLoading.hide();
+        }, 2000);
+  };
 })
 
 .controller('IntroCtrl', function($scope, $rootScope, $state, $ionicSlideBoxDelegate, MapService, AppService) {
@@ -47,8 +58,10 @@ angular.module('SeeAroundMe.controllers', [])
     MapService.getCurrentPosition()
         .then(function(position){
             //Here, we want to check whether the user's current location is within a specified area or not
-            var lat  = position.coords.latitude;//37.8088139
-            var long = position.coords.longitude;//-122.2660002
+            var lat  = position.coords.latitude;
+            //var lat = 37.8088139;
+            var long = position.coords.longitude;
+            //var long = -122.2660002;
         
             $rootScope.loc = lat + ',' + long;
 
@@ -157,10 +170,10 @@ angular.module('SeeAroundMe.controllers', [])
                                     AppService.setUserId(response.result.id);
                                     localStorage.setItem('sam_user_data', JSON.stringify(response.result));
                                     $rootScope.isBeforeSignUp = false;
-                                    $state.go('app.postmapview');
-                                    $timeout(function(){
-                                          $rootScope.$broadcast('login',{});
-                                    }, 1000);
+                                    $state.go('app.postlistview');
+                                    //$timeout(function(){
+                                          //$rootScope.$broadcast('login',{});
+                                    //}, 1000);
 
                                  }
                                  else{
@@ -214,25 +227,28 @@ angular.module('SeeAroundMe.controllers', [])
     
     $scope.doRegister = function(userData){
         $ionicLoading.show();
-        AppService.signUp(userData)
-            .success(function (response) {
-                    console.log('SUCCESS ...... got reponse');
-                    console.log(JSON.stringify(response));
+        AppService.signUp(userData).then(
+                function (res) {
+                    //console.log('SUCCESS ...... got reponse');
+                    //console.log(JSON.stringify(res));
                     $ionicLoading.hide();
-                    if(response.status == 'SUCCESS'){
+                    var resObj = JSON.parse(res.response);
+                    console.log(resObj);
+                    if(resObj.status == 'SUCCESS'){
                         $rootScope.isBeforeSignUp = false;
                         //$state.go('app.postmapview');
                          AppService.login(userData)
                          .success(function (response) {
+                                console.log(JSON.stringify(response));
                                 $ionicLoading.hide();
                                 if(response.status == 'SUCCESS'){
                                   AppService.setUserId(response.result.id);
                                   localStorage.setItem('sam_user_data', JSON.stringify(response.result));
                                   $rootScope.isBeforeSignUp = false;
-                                  $state.go('app.postmapview');
-                                    $timeout(function(){
-                                          $rootScope.$broadcast('login',{});
-                                    }, 1000);
+                                  $state.go('app.postlistview');
+                                    //$timeout(function(){
+                                          //$rootScope.$broadcast('login',{});
+                                    //}, 1000);
                                 }
                                 else{
                                   AppService.showErrorAlert('Failed to login!', response.message);
@@ -245,17 +261,20 @@ angular.module('SeeAroundMe.controllers', [])
                         });
                     }
                     else{
-                       AppService.showErrorAlert('Failed to register!', response.message);
-                       $state.go('app.signup');
+                       AppService.showErrorAlert('Failed to register!', res.message);
+                       //$state.go('signup');
                     }
-                })
-                .error(function (err) {
+                },
+                function (err) {
                     $ionicLoading.hide();
                     AppService.showErrorAlert('Failed to register!', 'There seems to be a network problem. Please check your internet connection and try again.'); 
                     console.warn(JSON.stringify(err));
-                    $state.go('app.signup');
-                });
-
+                    //$state.go('signup');
+                },
+                function(progress){
+                    console.log('Uploaded ' + progress.loaded + ' of ' + progress.total);
+                }
+            ); 
     };
 
     $scope.prepareToRegister = function(){
@@ -327,7 +346,27 @@ angular.module('SeeAroundMe.controllers', [])
         //console.log('openPrivacy ...');
         $rootScope.isBeforeSignUp = true;
         $state.go('privacy');
-    }            
+    };
+    
+    $scope.showCamBar = false;
+    
+    $scope.toggleCamBar = function(){
+        $scope.showCamBar = !$scope.showCamBar;    
+    };
+    
+    $scope.hideCamBar = function(){
+        $scope.showCamBar = false;
+    }; 
+    
+    $scope.openMedia = function(type){
+        AppService.getImage(type);
+        $scope.toggleCamBar();
+    };
+    
+    $scope.clearImage = function(){
+        $rootScope.imgUri = ""; 
+        $scope.showCamBar = false;
+    };    
 })
 
 .controller('SigninCtrl', function($scope, $timeout, $rootScope, $state, $ionicLoading, $ionicPopup, AppService, $ionicModal) {
@@ -355,11 +394,11 @@ angular.module('SeeAroundMe.controllers', [])
             AppService.setUserId(response.result.id);
             localStorage.setItem('sam_user_data', JSON.stringify(response.result));
             $rootScope.isBeforeSignUp = false;
-            $state.go('app.postmapview');
+            $state.go('app.postlistview');
             //Fire login event to cause the map to refresh
-            $timeout(function(){
-                  $rootScope.$broadcast('login',{});
-            }, 1000);
+            //$timeout(function(){
+                  //$rootScope.$broadcast('login',{});
+            //}, 1000);
         }
         else{
            AppService.showErrorAlert('Failed to login!', response.message);
@@ -394,10 +433,10 @@ angular.module('SeeAroundMe.controllers', [])
                                     AppService.setUserId(response.result.id);
                                     localStorage.setItem('sam_user_data', JSON.stringify(response.result));
                                     $rootScope.isBeforeSignUp = false;
-                                    $state.go('app.postmapview');
-                                    $timeout(function(){
-                                          $rootScope.$broadcast('login',{});
-                                    }, 1000);
+                                    $state.go('app.postlistview');
+                                    //$timeout(function(){
+                                          //$rootScope.$broadcast('login',{});
+                                    //}, 1000);
                                  }
                                  else{
                                     AppService.showErrorAlert('Failed to login!', response.message);
@@ -573,6 +612,7 @@ angular.module('SeeAroundMe.controllers', [])
 
    // calculate age
    function calculateAge(){
+       //console.log('calculateAge called ... ');
     var today = new Date();
     var birthday = new Date($scope.User.Birth_date);
     $scope.User.Age = today.getFullYear() - birthday.getFullYear();
@@ -592,7 +632,7 @@ angular.module('SeeAroundMe.controllers', [])
   $scope.newData = angular.copy($scope.User);
 
   $scope.doEdit = function(){
-    $scope.newData.Birth_date = moment($scope.newData.Birth_date).format('DD/MM/YYYY');
+    $scope.newData.Birth_date = new Date(moment($scope.newData.Birth_date).format('DD/MM/YYYY'));
     console.log($scope.newData);
 
     // change true|false value to 0|1
@@ -601,9 +641,10 @@ angular.module('SeeAroundMe.controllers', [])
     $ionicLoading.show({ template: 'Saving changes..'});
     AppService.editProfile($scope.newData)
     .then(function(res){
-      console.log(res);
+      //console.log(JSON.stringify(res));
       $ionicLoading.hide();
-      $state.go('app.userProfile');
+      localStorage.setItem('sam_user_data', JSON.stringify($scope.newData));
+      $state.go('app.userprofile');        
     }, function(error){
       $ionicLoading.hide();
     });
@@ -748,8 +789,21 @@ angular.module('SeeAroundMe.controllers', [])
             });                 
          } 
        });
-  };        
+  }; 
     
+    $scope.showImage = function(imageSrc){
+          ModalService.init('templates/post/full-image.html', $scope).then(function(modal){
+            modal.show();
+            $scope.imgModal = modal;
+          }).then(function(){
+                $scope.imageSrc = imageSrc;
+          });      
+    };
+    
+    $scope.closeImageModal = function(){
+        $scope.imgModal.remove();
+    };
+
   $scope.showMapForPost = function(latitude, longitude){
 
       ModalService.init('templates/post/mapforpost.html', $scope).then(function(modal){
@@ -1021,18 +1075,85 @@ angular.module('SeeAroundMe.controllers', [])
 })
 
 .controller('PostListCtrl', function($scope, $rootScope, $state, $ionicGesture, $ionicPopup, $ionicPopover, $compile, $timeout,  $ionicLoading, $cordovaGeolocation, $ionicScrollDelegate, $sanitize, AppService, MapService, ModalService){
+    
+    $rootScope.postMode = 'new';//Other mode is edit
+    $rootScope.inputRadius = 1.6;
+    $rootScope.isFiltered = false;
+
   $scope.formData = {};
-  var userData = JSON.parse(localStorage.getItem('sam_user_data')) || '{}';
+  var userData = JSON.parse(localStorage.getItem('sam_user_data')) || {};
+  $rootScope.User = userData;
+  $rootScope.user = userData;
   $scope.userData = userData;
   var userId = userData.id || 0;
   AppService.setUserId(userId);
 
   // the regex that matches urls in text
   var urlRegEx = new RegExp(
-          "((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
-       );
+      "((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
+   );
     
-  $scope.isSwiping = false;    
+     var posOptions = {timeout: 30000, maximumAge:0, enableHighAccuracy: false};
+    $cordovaGeolocation.getCurrentPosition(posOptions)
+        .then(function (position) {
+            var lat  = position.coords.latitude;//37.8088139
+            var long = position.coords.longitude;//-122.2660002
+
+            var center = new google.maps.LatLng(lat, long);
+            $rootScope.myCenter = center;
+            $rootScope.currentCenter = center;
+        
+              //Get posts initially
+              var data = {
+                    "latitude" : center.lat(),// 37.8088139,
+                    "longitude" : center.lng(),//-122.2635002,
+                    "radious" : $rootScope.inputRadius,
+                    "userId" : userId,
+                    "start" : 0
+                };
+
+                //console.log(JSON.stringify(data));
+                AppService.getNearbyPosts(data)
+                .success(function (response) {
+                        response.result.forEach(function (post) {
+
+                            post.news = post.news.replace(urlRegEx, "");
+                            post.timeAgo = moment(post.updated_date).fromNow();
+                        });
+                        //To use on list view
+                        $rootScope.currentPosts = response.result;
+                    
+                        $scope.nearbyPosts = response.result;
+                    
+                        $scope.nearbyPosts.map(function(post){
+
+                            if(post.link_url){
+                                post.news = post.news.replace(urlRegEx, "");
+                            }
+
+                            post.timeAgo = moment(post.updated_date).fromNow();
+
+                            if(post.user_id == userId){
+                                post.isOwnPost = true;
+                            }
+                        });
+                })
+                .error(function (err) {
+                    console.warn(JSON.stringify(err));
+                });
+
+        }, function(err) {
+            // error
+            console.error('Failed to get current position. Error: ' + JSON.stringify(err));
+            $ionicPopup.alert({
+                 title: 'See Around Me Alert',
+                 subTitle: 'Current Location',
+                 template: 'Failed to get your location. Make sure you are connected to the internet and allowed gelocation on your devivce.'
+           });                
+    });            
+        
+  $scope.isSwiping = false; 
+  $scope.isShowMorePostsTapped = false;
   $scope.onListSwipe = function(){
       console.log('Swipping ...');
       $scope.isSwiping = true;
@@ -1054,7 +1175,10 @@ angular.module('SeeAroundMe.controllers', [])
   $scope.$on('$ionicView.enter', function(e) {
         getPosts ();
         $scope.isSwiping = false;
-        //$ionicScrollDelegate.scrollTop(true);
+        if($scope.isShowMorePostsTapped){
+            $ionicScrollDelegate.scrollTop(true);
+            $scope.isShowMorePostsTapped = false;
+        }
   });
 
   var getPosts  = function (){
@@ -1100,7 +1224,9 @@ angular.module('SeeAroundMe.controllers', [])
             }
             
             $scope.$broadcast('scroll.infiniteScrollComplete');                        
-        });      
+        }); 
+      
+        $scope.isShowMorePostsTapped = true;
   };
     
   $scope.goToNewPost = function(){
@@ -1832,8 +1958,8 @@ angular.module('SeeAroundMe.controllers', [])
 .controller('MapCtrl', function($scope, $rootScope, $state, $stateParams, $timeout, $ionicLoading, $ionicPopup, $ionicPopover, $cordovaGeolocation, $ionicScrollDelegate, $compile, AppService, MapService, ModalService) {
     
     $rootScope.postMode = 'new';//Other mode is edit
-    $rootScope.inputRadius = 0.8;
-    $scope.circleRadius = 0.8;
+    $rootScope.inputRadius = 1.6;
+    $scope.circleRadius = 1.6;
     $rootScope.isFiltered = false;
     $scope.userData = JSON.parse(localStorage.getItem('sam_user_data')) || '{}';
     $scope.onRadiusChange = function(){
@@ -1884,7 +2010,14 @@ angular.module('SeeAroundMe.controllers', [])
             if(!$scope.halfViewModal){
                 $scope.modal3 = function() {
                     ModalService.openMapModal($scope).then(function(modal) {
-                        modal.show();
+                    modal.show().then(function(){
+                        $scope.viewStyle = {
+                            top : '60%',
+                            '-webkit-transition-property' : 'top',
+                            '-webkit-transition-timing-function' : 'ease-in-out',
+                            '-webkit-transition-duration' : '0.3s'
+                        };
+                    });
                         $scope.halfViewModal = modal;
                     });
                 };    
@@ -1897,9 +2030,11 @@ angular.module('SeeAroundMe.controllers', [])
         }
     };
     
+    //Initially, set map modal to be out of the view so that it can be animated in later
     $scope.viewStyle = {
-       top:'60%'
+       top:'100%'
     };
+            
     $scope.showMapModalBar = false;
 
     $scope.hasMore = false;
@@ -2020,20 +2155,21 @@ angular.module('SeeAroundMe.controllers', [])
     
     $scope.showFullView = function(post){
         if(!$scope.showMapModalBar){
-          $scope.viewStyle = {
-              top : '0',
-               '-webkit-transition-property' : 'top', 
-               '-webkit-transition-timing-function' : 'ease-in',
-               '-webkit-transition-duration' : '0.4s'              
-          };
-          $timeout(function(){
             $scope.showMapModalBar = true;
-          }, 400);
+            $scope.viewStyle = {
+                 top : '0',
+                 '-webkit-transition-property' : 'top',
+                 '-webkit-transition-timing-function' : 'ease-in-out',
+                 '-webkit-transition-duration' : '0.4s'
+            };
             
-          fetchComments(post);
+            $timeout(function(){
+                     fetchComments(post);
+            }, 400);
+            
         }
     };
-
+            
     $scope.goToUser = function(post){
         
         console.log('goto profile called with id= ', post.user_id);
@@ -2088,26 +2224,34 @@ angular.module('SeeAroundMe.controllers', [])
     };
     
     $scope.hideModal = function(){
-        $scope.postComments = null;
+        
         $scope.viewStyle = {
-            top:'60%',
+            top:'100%',
             '-webkit-transition-property' : 'top', 
-            '-webkit-transition-timing-function' : 'ease-in',
+            '-webkit-transition-timing-function' : 'ease-out',
             '-webkit-transition-duration' : '0.4s'
         };
-        $scope.showMapModalBar = false;
-        if($scope.halfViewModal){
-            $scope.halfViewModal.hide();
-            $scope.halfViewModal = null;
-        }
         
-        //When modal goes down, change icon back to gray
-        if($scope.selectedMarker){
-            $scope.selectedMarker.setIcon({
-                url:'img/pin-gray.png',
-                scaledSize: new google.maps.Size(18, 25)
-            });
-        }
+        $timeout(function(){
+                 
+             $scope.showMapModalBar = false;
+                 
+             $scope.postComments = null;
+                 
+             //When modal goes down, change icon back to gray
+             if($scope.selectedMarker){
+                 $scope.selectedMarker.setIcon({
+                       url:'img/pin-gray.png',
+                       scaledSize: new google.maps.Size(18, 25)
+                });
+             }
+                 
+            if($scope.halfViewModal){
+                 $scope.halfViewModal.hide();
+                 $scope.halfViewModal = null;
+            }
+                                  
+        }, 400);            
     };
     
     $scope.close = function(id) {
@@ -2274,20 +2418,6 @@ angular.module('SeeAroundMe.controllers', [])
         });
       };
 
-    // Load map on login
-    $rootScope.$on('login', function(event, data) {
-        //console.log('login event received ....');
-        $rootScope.User = JSON.parse(localStorage.getItem('sam_user_data')) || {};
-        
-        if(AppService.isConnected()){
-            //Make map at the start
-            MapService.initMap();
-        }
-        else{
-            AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');        
-        }    
-    });
-
     document.addEventListener("resume", function(e) {//Cordova event
         //console.log('App activated ... Cordova');
         if(AppService.isConnected()){
@@ -2396,4 +2526,13 @@ angular.module('SeeAroundMe.controllers', [])
   $scope.focusInput = function(){    
       $ionicScrollDelegate.scrollBottom(true);
   };  
+    
+  //Initialize map
+    if(AppService.isConnected()){
+        //Make map at the start
+        MapService.initMap();
+    }
+    else{
+        AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');        
+    }    
 });

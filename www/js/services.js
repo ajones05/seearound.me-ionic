@@ -94,12 +94,29 @@ angular.module('SeeAroundMe.services', [])
         
         signUp: function (data) {
             var url = API_URL + '/registration';
-            return $http({
-                method: 'POST',
-                url: url,
-                data: data,
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-            });
+            console.log($rootScope.imgUri);
+            if($rootScope.imgUri){
+                console.log('Signup with image ...');
+                var options = {
+                    fileKey: "image",
+                    fileName: new Date().getTime() + ".jpg",
+                    httpMethod: 'POST',
+                    chunkedMode: false,
+                    mimeType: "image/jpg",
+                    params: data
+                };
+                
+                return $cordovaFileTransfer.upload(url, $rootScope.imgUri, options, true);
+            }
+            else{
+                console.log('Signup without image ...');
+                return $http({
+                    method: 'POST',
+                    url: url,
+                    data: data,
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                });
+            }
         },
         
         login: function (data) {
@@ -870,73 +887,54 @@ angular.module('SeeAroundMe.services', [])
         },        
         
         initMap: function(){
+            var mapOptions = {
+                //center: center,
+                zoom: 13,//Sits well with radius of 1.6
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                disableDefaultUI: true,
+                zoomControl: false//,
+                //zoomControlOptions: {
+                  //style: google.maps.ZoomControlStyle.SMALL
+                //}
+            };
+
+            // console.log(mapOptions);
+            var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+            /*
+            // Override our map zoom level once our fitBounds function runs (Make sure it only runs once)
+            var boundsListener = google.maps.event.addListener((map), 'bounds_changed',
+                function(event) {
+                    this.setZoom(14);
+                    google.maps.event.removeListener(boundsListener);
+            });*/
+
+
+            google.maps.event.addListener((map), 'click', 
+                function(event) { 
+                //console.log('map clicked'); 
+                $rootScope.$broadcast('hidemapmodal');
+            });
+
+            google.maps.event.addListener((map), 'dragstart', 
+                function(event) { 
+                //console.log('map dragged'); 
+                $rootScope.$broadcast('hidemapmodal');
+            });
+            
             var me = this;
-            var posOptions = {timeout: 30000, maximumAge:0, enableHighAccuracy: false};
-            $cordovaGeolocation.getCurrentPosition(posOptions)
-                .then(function (position) {
-                    var lat  = position.coords.latitude;//37.8088139
-                    var long = position.coords.longitude;//-122.2660002
-                                    
-                    var center = new google.maps.LatLng(lat, long);
-                    $rootScope.myCenter = center;
-                    $rootScope.currentCenter = center;
-                
-                    var mapOptions = {
-                        //center: center,
-                        zoom: 14,
-                        mapTypeId: google.maps.MapTypeId.ROADMAP,
-                        disableDefaultUI: true,
-                        zoomControl: false//,
-                        //zoomControlOptions: {
-                          //style: google.maps.ZoomControlStyle.SMALL
-                        //}
-                    };
 
-                    // console.log(mapOptions);
-                    var map = new google.maps.Map(document.getElementById("map"), mapOptions);
-                    /*
-                    // Override our map zoom level once our fitBounds function runs (Make sure it only runs once)
-                    var boundsListener = google.maps.event.addListener((map), 'bounds_changed',
-                        function(event) {
-                            this.setZoom(14);
-                            google.maps.event.removeListener(boundsListener);
-                    });*/
-                
-                
-                    google.maps.event.addListener((map), 'click', 
-                        function(event) { 
-                        //console.log('map clicked'); 
-                        $rootScope.$broadcast('hidemapmodal');
-                    });
-                
-                    google.maps.event.addListener((map), 'dragstart', 
-                        function(event) { 
-                        //console.log('map dragged'); 
-                        $rootScope.$broadcast('hidemapmodal');
-                    });
-                
-                    google.maps.event.addListener((map), 'dragend', 
-                        function(event) { 
-                        //console.log('map dragged'); 
-                        var c = this.getCenter();
-                        $rootScope.currentCenter = c;
-                        me.centerMap(c);
-                    });
+            google.maps.event.addListener((map), 'dragend', 
+                function(event) { 
+                //console.log('map dragged'); 
+                var c = this.getCenter();
+                $rootScope.currentCenter = c;
+                me.centerMap(c);
+            });
 
-                    $rootScope.map = map;
-                
-                    //Now add circle and post locations on the map
-                    me.refreshMap();
-                
-                }, function(err) {
-                    // error
-                    console.error('Failed to get current position. Error: ' + JSON.stringify(err));
-                    $ionicPopup.alert({
-                         title: 'See Around Me Alert',
-                         subTitle: 'Current Location',
-                         template: 'Failed to get your location. Make sure you are connected to the internet and allowed gelocation on your devivce.'
-                   });                
-            });            
+            $rootScope.map = map;
+
+            //Now add circle and post locations on the map
+            this.refreshMap();
         }
     };
     

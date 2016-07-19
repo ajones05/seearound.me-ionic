@@ -55,11 +55,11 @@ angular.module('SeeAroundMe', [
     var isAuthenticated = localStorage.hasOwnProperty('sam_user_data');
 
     if(isAuthenticated){        
-        $state.go('app.postmapview');
+        $state.go('app.postlistview');
         //Login event causes map initialization
-       $timeout(function(){
-              $rootScope.$broadcast('login',{});
-        }, 1000);
+       //$timeout(function(){
+              //$rootScope.$broadcast('login',{});
+        //}, 1000);
     }
     else{
       $state.go('intro');

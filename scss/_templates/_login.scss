@@ -41,6 +41,32 @@
         }                
     } 
     
+    .image-round{
+        position: relative;
+        margin-top:0;
+        margin-bottom: 20px;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 50%;
+        overflow: hidden;
+        width: 60px;
+        height: 60px; 
+        background: transparent;
+    }
+    
+    .image-round img {  
+        max-height: 100%;  
+        max-width: 100%; 
+        width: auto;
+        height: auto;
+        position: absolute;  
+        top: 0;  
+        bottom: 0;  
+        left: 0;  
+        right: 0;  
+        margin: auto;
+    }    
+    
     .line {
         border-bottom: 1px solid #fff;
         height: 1px;

@@ -7,7 +7,19 @@
     </div>
   <ion-content>
       <div class="vbox login-bg padding">
-          <div class="spacer60"></div>          
+          <div class="spacer40"></div>
+        <div class="text-center" style="height:60px;width:100%;">
+            <div class="image-round" ng-click="toggleCamBar()">
+                <img ng-show="imgUri" ng-src="{{imgUri}}"/>
+                <img ng-show="!imgUri" ng-src="img/photo_plus.png"/>
+            </div>
+        </div>
+        <div class="spacer10" ng-hide="showCamBar"></div>
+        <div class="row row-center" width="100%" style="background:transparent;" ng-show="showCamBar">
+            <button class="col button button-clear button-light" ng-click="openMedia('camera')" style="width:200px;">Camera</button>
+            <button class="col button button-clear button-light" ng-click="openMedia('gallery')">Gallery</button>
+            <button class="col button button-clear button-light" ng-click="clearImage()">Clear</button>
+        </div>
           <form>
               <div class="list">
                 <label class="item item-input">

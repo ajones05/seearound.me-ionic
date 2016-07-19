@@ -8080,6 +8080,28 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     font-size: 18px !important;
     font-family: "Lato" !important;
     color: #fff !important; }
+.login .image-round {
+  position: relative;
+  margin-top: 0;
+  margin-bottom: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 50%;
+  overflow: hidden;
+  width: 60px;
+  height: 60px;
+  background: transparent; }
+.login .image-round img {
+  max-height: 100%;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto; }
 .login .line {
   border-bottom: 1px solid #fff;
   height: 1px;
@@ -8303,7 +8325,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     text-align: center;
     margin-top: -4px; }
   .postlistview .post_item {
-    border-bottom: 1px solid lightgray; }
+    border-bottom: 1px solid #7d7d7d;
+    border-top: 1px solid #c8c8c8; }
     .postlistview .post_item .item {
       border: 0 !important;
       padding-top: 0 !important;
@@ -8677,7 +8700,7 @@ div.custom_btn {
   background-repeat: no-repeat; }
   .intro .intro-loc .row {
     position: absolute !important;
-    bottom: 14vh;
+    bottom: 18vh;
     margin-left: auto !important;
     margin-right: auto !important; }
   .intro .intro-loc .button-outline {
@@ -8723,6 +8746,6 @@ div.custom_btn {
   color: cornflowerblue;
   text-decoration: none; }
 .intro .slider-pager {
-  bottom: 50px !important; }
+  bottom: 26px !important; }
 .intro .slider-pager .active {
   color: #345EC2 !important; }

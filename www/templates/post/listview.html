@@ -70,11 +70,10 @@
           <a class="icon ion-ios-location-outline" style="font-size:1.3em;"></a>
         </div>
       </div>
-      <img ng-if="post.images" class="post-iamge" ng-src={{post.images}} ng-click="showImage(post.images)" alt="">
+      <img ng-if="post.thumb" class="post-iamge" ng-src={{post.thumb}} ng-click="showImage(post.image)" alt="">
         <div class="item" style="padding-top:0;" ng-if="post.link_url" on-swipe="onListSwipe()" on-tap="openLink(post.link_url)">
             <div class="item-body">
-              <img class="full-image" ng-src={{post.link_image}} ng-if="post.link_image" 
-                   ng-click="showImage(post.link_image)" alt="">
+              <img class="full-image" ng-src={{post.link_image}} ng-if="post.link_image" alt="">
               <div class="post-link">
                   <h3 class="link-title">{{post.link_title}}</h3>
                   <span class="link-text">{{post.link_description}}</span>
