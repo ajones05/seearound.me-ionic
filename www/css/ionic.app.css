@@ -8746,6 +8746,7 @@ div.custom_btn {
   color: cornflowerblue;
   text-decoration: none; }
 .intro .slider-pager {
-  bottom: 26px !important; }
+  bottom: 26px !important;
+  color: #EEEEEE !important; }
 .intro .slider-pager .active {
   color: #345EC2 !important; }

@@ -5,7 +5,7 @@
         </button>
         <h1 class="title" style="color:#fff;">Register with e-mail</h1>
     </div>
-  <ion-content>
+  <ion-content has-header="true" class="login-bg">
       <div class="vbox login-bg padding">
           <div class="spacer40"></div>
         <div class="text-center" style="height:60px;width:100%;">
@@ -33,10 +33,12 @@
                 <label class="item item-input">
                   <input type="password" placeholder="Password..." ng-model="formData.password" required="required">
                 </label>
+                  <!--
                   <div class="spacer20"></div>
                 <label class="item item-input">
                   <input type="password" placeholder="Repeat password..." ng-model="formData.repeatPW" required="required">
-                </label>              
+                </label> 
+                    -->
               </div>
               <div class="text-center">
                   <button type="submit" class="button button-outline" ng-click="doSignUp()">

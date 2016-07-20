@@ -8,7 +8,9 @@
     </div>
     
     <ion-content class="has-header">
-        <img class="full-image" ng-src="{{imageSrc}}">
+        <ion-scroll zooming="true" min-zoom="1" direction="xy">
+            <img class="full-image" ng-src="{{imageSrc}}">
+        </ion-scroll>
     </ion-content>
     
 </ion-modal-view>

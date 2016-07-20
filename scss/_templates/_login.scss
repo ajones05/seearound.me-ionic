@@ -5,11 +5,10 @@
     .login-bg {
         width: 100vw;
         height: 100vh;
-
         background-image: url(../img/auth-bg.png);
         background-position: center;
         background-size: cover;
-        background-repeat: no-repeat;  
+        background-repeat: no-repeat; 
         
         p {
               font-size: 14px;
@@ -22,7 +21,7 @@
             
               font-size: 15px;
               font-family: "Lato" !important;
-              color: rgb(125, 125, 125);
+              color: #7d7d7d;
               font-style: italic;
         }        
 

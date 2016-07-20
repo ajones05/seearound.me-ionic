@@ -196,17 +196,18 @@ angular.module('SeeAroundMe.controllers', [])
     $scope.formData = {};
             
     $scope.doSignUp = function(user){
-        console.log('Signup ...');
+        //console.log('Signup ...');
         if(!AppService.isConnected()){
             AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');
             
             return;
         }
         
+        /*
         if($scope.formData.password !== $scope.formData.repeatPW){
             AppService.showErrorAlert('Passwrod Mismatch', 'Repeated password does not match the value in password field!');            
             return;
-        }
+        }*/
         
         var data = {
             name: $scope.formData.name,
