@@ -4,13 +4,15 @@ angular.module('SeeAroundMe.services', [])
 
     var userData = JSON.parse(localStorage.getItem('sam_user_data')) || {};
     var userId = userData.id || 0;
+    var authToken = userData.token || '';
     var conversationUserId = null;
+    
     //var isCurrentUser = false; --- set it on root scope instead
     var profileUserId = null;
     var currentPostComments = {};
     var pageNum = 0, commentsPageNum = 0;
     var service = {
-                
+        
         getImage: function(mediaType){
             
             var cameraOptions = {
@@ -41,7 +43,7 @@ angular.module('SeeAroundMe.services', [])
         vote: function(newsId, v){        
           var url = API_URL + '/post-like';
           var postData = {
-            user_id: userId,
+            token: authToken,
             news_id: newsId,
             vote: v
           }
@@ -60,7 +62,7 @@ angular.module('SeeAroundMe.services', [])
           var url = API_URL + '/sendmessage';
 
           var params = {
-            sender_id: userId,
+            token: authToken,
             reciever_id: otherUserId,
             subject: subject,
             message: message
@@ -120,7 +122,7 @@ angular.module('SeeAroundMe.services', [])
         },
         
         login: function (data) {
-            var url = API_URL + '/index';
+            var url = API_URL + '/login';
             return $http({
                 method: 'POST',
                 url: url,
@@ -250,7 +252,7 @@ angular.module('SeeAroundMe.services', [])
         deletePost: function(post){
               var url = API_URL + '/delete-post';
               var params = {
-                user_id: userId,
+                token: authToken,
                 post_id: post.id
               };
               return $http.post(url, params);            
@@ -277,7 +279,7 @@ angular.module('SeeAroundMe.services', [])
             
           var url = API_URL + '/delete-comment';
           var params = {
-            user_id: userId,
+            token: authToken,
             comment_id: comment.id
           };
           return $http.post(url, params);            
@@ -301,7 +303,7 @@ angular.module('SeeAroundMe.services', [])
           var params = {
             start: 0,
             news_id: postId,
-            user_id: userId
+            token: authToken
           };
           
           $http.post(url, params)
@@ -336,7 +338,7 @@ angular.module('SeeAroundMe.services', [])
               var params = {
                 start: commentsPageNum,
                 news_id: postId,
-                user_id: userId
+                token: authToken
               };
           
               $http.post(url, params)
@@ -383,14 +385,14 @@ angular.module('SeeAroundMe.services', [])
            * logged in user is following
            */
           var url = API_URL + '/myfriendlist';
-          var data = { user_id: userId};
+          var data = { token: authToken};
           return $http.post(url, data);
         },
         
         followUser: function(id){
           var url = API_URL + '/follow';
           var data = { 
-              user_id: userId,
+              token: authToken,
               receiver_id: id
           };
           return $http.post(url, data);
@@ -399,7 +401,7 @@ angular.module('SeeAroundMe.services', [])
         unfollowUser: function(id){
           var url = API_URL + '/unfollow';
           var data = { 
-              user_id: userId,
+              token: authToken,
               receiver_id: id
           };
           return $http.post(url, data);
@@ -407,14 +409,14 @@ angular.module('SeeAroundMe.services', [])
 
         getAlerts: function(){
           var url = API_URL + '/notification';
-          return $http.post(url, {user_id: userId});
+          return $http.post(url, {token: authToken});
         },
         
         markAlertRead: function(alert){
           var url = API_URL + '/notification-read';
-          $http.post(url, {user_id: userId, id: alert.id, type: alert.type}).then(function(res){
-              console.log('Alert marked read ...');
-              console.log(JSON.stringify(res));
+          $http.post(url, {token: authToken, id: alert.id, type: alert.type}).then(function(res){
+              //console.log('Alert marked read ...');
+              //console.log(JSON.stringify(res));
           });
         }, 
         
@@ -497,7 +499,7 @@ angular.module('SeeAroundMe.services', [])
             var url = API_URL + '/getotheruserprofile'
 
             var params = {
-              user_id: userId,
+              token: authToken,
               other_user_id: profileUserId,
             };
 
@@ -509,7 +511,7 @@ angular.module('SeeAroundMe.services', [])
           console.log(newData)
 
           var params = {
-            user_id: newData.id,
+            token: authToken,
             name: newData.Name,
             email: newData.Email_id,
             birth_date: newData.Birth_date,
@@ -532,7 +534,7 @@ angular.module('SeeAroundMe.services', [])
         getConversation: function(){
           var url = API_URL + '/message-conversation';
           var params = {
-            user_id: userId,
+            token: authToken,
             other_user_id: conversationUserId,
             start: 0,
           }
@@ -700,9 +702,9 @@ angular.module('SeeAroundMe.services', [])
             console.log(ud);
 
             var userData = JSON.parse(ud) || '{}';
-
+            var authToken = userData.token || '';
             var userId = userData.id || 0;
-            console.log('userId: ' + userId);
+            //console.log('userId: ' + userId);
             
             function onSuccess(response){
                 
@@ -760,13 +762,12 @@ angular.module('SeeAroundMe.services', [])
                  }                
             };
             
-            //Note the difference of user id param userId and user_id -- the api is incosistent
             if(searchData){                
                 var data = {
                     "latitude" : center.lat(),// 37.8088139,
                     "longitude" : center.lng(),//-122.2635002,
                     "radious" : $rootScope.inputRadius,
-                    "user_id" : userId,
+                    "token" : authToken,
                     "searchText": searchData.searchTerm,
                     "filter": searchData.filter,
                     "start" : 0
@@ -787,7 +788,7 @@ angular.module('SeeAroundMe.services', [])
                     "latitude" : center.lat(),// 37.8088139,
                     "longitude" : center.lng(),//-122.2635002,
                     "radious" : $rootScope.inputRadius,
-                    "userId" : userId,
+                    "token" : authToken,
                     "start" : 0
                 };
                             

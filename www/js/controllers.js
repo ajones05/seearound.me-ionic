@@ -493,7 +493,7 @@ angular.module('SeeAroundMe.controllers', [])
     }; 
 })
 
-.controller('ProfileCtrl', function($scope, $rootScope, $state, AppService, $timeout, ModalService, $ionicLoading){
+.controller('ProfileCtrl', function($scope, $rootScope, $state, AppService, $timeout, ModalService, $ionicLoading, $ionicHistory){
   // isCurrentUser var is set to differentiate the loggedIn user
   // from other users.
   $scope.User = null;
@@ -609,7 +609,11 @@ angular.module('SeeAroundMe.controllers', [])
         'There was an error sending your message'
       )
     });
-  }
+  };
+    
+  $scope.goBack = function(){
+      $ionicHistory.goBack();
+  };
 
    // calculate age
    function calculateAge(){
@@ -1087,6 +1091,7 @@ angular.module('SeeAroundMe.controllers', [])
   $rootScope.user = userData;
   $scope.userData = userData;
   var userId = userData.id || 0;
+  var authToken = userData.token || '';
   AppService.setUserId(userId);
 
   // the regex that matches urls in text
@@ -1109,7 +1114,7 @@ angular.module('SeeAroundMe.controllers', [])
                     "latitude" : center.lat(),// 37.8088139,
                     "longitude" : center.lng(),//-122.2635002,
                     "radious" : $rootScope.inputRadius,
-                    "userId" : userId,
+                    "token" : authToken,
                     "start" : 0
                 };
 
@@ -1180,6 +1185,28 @@ angular.module('SeeAroundMe.controllers', [])
             $ionicScrollDelegate.scrollTop(true);
             $scope.isShowMorePostsTapped = false;
         }
+      
+        AppService.getAlerts()
+          .then(function(res){
+              if(res.data.result){
+                  var alerts = res.data.result;
+                  var unreadCount = 0;
+                  alerts.forEach(function(alert){
+                      if(alert.is_read == 0){//If unread
+                          unreadCount++;
+                      }
+                      
+                      var d = alert.created_at.split("-").join("/");
+                      alert.created_at = new Date(d);
+                  });
+
+                  $rootScope.alerts = alerts;
+                  $rootScope.unreadAlerts = unreadCount;
+              }
+              else{
+                  $rootScope.alerts = [{message: 'No alerts'}];
+             }
+          });
   });
 
   var getPosts  = function (){
@@ -1366,7 +1393,7 @@ angular.module('SeeAroundMe.controllers', [])
             "latitude" :  $rootScope.currentCenter.lat(),//37.8088139,
             "longitude" : $rootScope.currentCenter.lng(), //-122.2635002,
             "radious" : $rootScope.inputRadius,
-            "userId" : userId,
+            "token" : authToken,
             "fromPage" : 0
         };
 
@@ -1402,7 +1429,7 @@ angular.module('SeeAroundMe.controllers', [])
             "latitude" :  $rootScope.currentCenter.lat(),//37.8088139,
             "longitude" : $rootScope.currentCenter.lng(), //-122.2635002,
             "radious" : $rootScope.inputRadius,
-            "user_id" : userId,
+            "token" : authToken,
             "searchText": $scope.searchTerm,
             "filter": $scope.selected.value,
             "fromPage" : 0
@@ -1501,6 +1528,7 @@ angular.module('SeeAroundMe.controllers', [])
     var userData = JSON.parse(ud) || '{}';
 
     var userId = userData.id || 0;
+    var authToken = userData.token || '';
     
     AppService.setUserId(userId);
 
@@ -1597,8 +1625,8 @@ angular.module('SeeAroundMe.controllers', [])
         
         function postNews(){
             var data = {
-                "news" : $scope.formData.postText,
-                "user_id" : userId,
+                "body" : $scope.formData.postText,
+                "token" : authToken,
                 "latitude" : $stateParams.latitude,
                 "longitude" : $stateParams.longitude,
                 "street_number" : $stateParams.street_number,
@@ -1634,7 +1662,7 @@ angular.module('SeeAroundMe.controllers', [])
         });
         
         AppService.checkPost({ 
-            "user_id" : userId,
+            "token" : authToken,
             "body" : $scope.formData.postText
         }).then(function(res){
             if(res.data.link_post_id){//Link is already shared
@@ -1667,7 +1695,7 @@ angular.module('SeeAroundMe.controllers', [])
         
         function savePost(){
             var data = {            
-                "user_id" : userId,
+                "token" : authToken,
                 "post_id" : $rootScope.postId,
                 "body" : $scope.formData.postText,
                 "latitude" : $stateParams.latitude,
@@ -1755,7 +1783,7 @@ angular.module('SeeAroundMe.controllers', [])
                 "latitude" : $rootScope.currentCenter.lat(),// 37.8088139,
                 "longitude" : $rootScope.currentCenter.lng(),//-122.2635002,
                 "radious" : $rootScope.inputRadius,
-                "userId" : userId,
+                "token" : authToken,
                 "start" : 0
             };
 
@@ -2435,29 +2463,7 @@ angular.module('SeeAroundMe.controllers', [])
         //Causes the map to redraw
         if($rootScope.map){
             google.maps.event.trigger($rootScope.map, 'resize');
-        }
-        
-        AppService.getAlerts()
-          .then(function(res){
-              if(res.data.result){
-                  var alerts = res.data.result;
-                  var unreadCount = 0;
-                  alerts.forEach(function(alert){
-                      if(alert.is_read == 0){//If unread
-                          unreadCount++;
-                      }
-                      
-                      var d = alert.created_at.split("-").join("/");
-                      alert.created_at = new Date(d);
-                  });
-
-                  $rootScope.alerts = alerts;
-                  $rootScope.unreadAlerts = unreadCount;
-              }
-              else{
-                  $rootScope.alerts = [{message: 'No alerts'}];
-             }
-          });
+        }        
     });
 
     $scope.$on('$ionicView.leave', function(e) {

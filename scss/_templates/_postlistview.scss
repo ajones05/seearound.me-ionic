@@ -29,8 +29,12 @@
     }
         
   .post_item{
-        border-bottom: 1px solid rgb(125, 125, 125);
-        border-top: 1px solid rgb(200, 200, 200);
+      
+        margin-bottom: 6px;
+        -webkit-box-shadow: 0px 6px 0px 0px rgba(160, 160, 160, 1);
+        box-shadow: 0px 6px 0px 0px rgba(160, 160, 160, 1);
+        border-top: 1px solid #999;
+        border-bottom: 1px solid #999;
 
       .item {
             border: 0 !important;

@@ -15,11 +15,12 @@
             </div>
         </div>
         <div class="spacer10" ng-hide="showCamBar"></div>
-        <div class="row row-center" width="100%" style="background:transparent;" ng-show="showCamBar">
-            <button class="col button button-clear button-light" ng-click="openMedia('camera')" style="width:200px;">Camera</button>
-            <button class="col button button-clear button-light" ng-click="openMedia('gallery')">Gallery</button>
-            <button class="col button button-clear button-light" ng-click="clearImage()">Clear</button>
+        <div class="button-bar" width="100%" style="background:transparent;max-height:40px;" ng-show="showCamBar">
+            <a class="button button-dark" ng-click="openMedia('camera')" style="font-weight:bold;">Camera</a>
+            <a class="button button-dark" ng-click="openMedia('gallery')" style="font-weight:bold;">Gallery</a>
+            <a class="button button-dark" ng-click="clearImage()" style="font-weight:bold;">Clear</a>
         </div>
+        <div class="spacer20" ng-show="showCamBar"></div>
           <form>
               <div class="list">
                 <label class="item item-input">
