@@ -7731,9 +7731,6 @@ body, html {
   background: #006AA5 !important;
   background-color: #006AA5 !important; }
 
-.slider-pager .slider-pager-page {
-  color: aaa !important; }
-
 @font-face {
   font-family: 'Lato';
   src: url('../fonts/Lato-Regular.ttf');
@@ -8755,3 +8752,5 @@ div.custom_btn {
   bottom: 26px !important; }
 .intro .slider-pager .active {
   color: #345EC2 !important; }
+.intro .slider-pager .slider-pager-page {
+  color: #aaa !important; }
