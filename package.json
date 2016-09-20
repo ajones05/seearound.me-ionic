@@ -41,10 +41,12 @@
     "cordova-plugin-network-information",
     "cordova-plugin-camera",
     "cordova-plugin-inappbrowser",
-    "cordova-plugin-splashscreen"
+    "cordova-plugin-splashscreen",
+    "cordova-plugin-statusbar",
+    "cordova-plugin-crosswalk-webview"
   ],
   "cordovaPlatforms": [
-    "android",
-    "ios"
+    "ios",
+    "android"
   ]
 }

@@ -1,6 +1,6 @@
 <ion-modal-view  ng-style="viewStyle" on-swipe-up="showFullView(post)">
     
-  <ion-pane ng-show="!showMapModalBar" class="postlistview" style="width:100%;" on-swipe-down="hideModal()">
+  <ion-pane ng-show="!showMapModalBar" class="mapmodal" style="width:100%;" on-swipe-down="hideModal()">
 
     <!--div class="row" ng-click="hideModal()"></div -->
 
@@ -13,7 +13,7 @@
           <div class="name">
             <span>{{post.Name}}</span>
             <div class="date right">
-              <div> {{post.timeAgo}} </div>
+              <div> {{post.created_date}} </div>
             </div>
           </div>
             <p class="desc">{{post.news}}</p>       
@@ -52,7 +52,7 @@
             <div class="name">
               <span>{{comment.user_name}}</span>
               <div class=" date right">
-                <div>{{comment.timeAgo}}</div>
+                <div>{{comment.commTimeAgo}}</div>
               </div>
             </div>
             <div class="desc">{{comment.comment}}</div>
@@ -64,7 +64,7 @@
       </div>
     </div>
   </ion-pane>
-  <ion-view ng-show="showMapModalBar" class="postlistview">
+  <ion-view ng-show="showMapModalBar" class="mapmodal">
       <div class="bar bar-header modal_header row">
           <div class="left col col-20" ng-click="hideModal()">
               <i class="icon ion-close"></i>
@@ -88,7 +88,7 @@
             <div class="name">
               <span>{{post.Name}}</span>
               <div class="date right">
-                <div> {{post.timeAgo}} </div>
+                <div> {{post.created_date}} </div>
               </div>
             </div>
               <p class="desc">{{post.news}}</p>
@@ -114,7 +114,7 @@
             <img src="img/chat.png" alt="">
           </span>
             <post-like-box></post-like-box>
-            <post-edit ng-if="post.isOwnPost" post="post" from="map"></post-edit>
+            <post-edit ng-if="post.canEdit" post="post" from="map"></post-edit>
           <span class="col" ng-click='openShare(post.id)'> Share</span>
         </div>        
    </div>
@@ -127,7 +127,7 @@
                 <div class="name">
                     <span>{{comment.user_name}}</span>
                     <div class=" date right">
-                        <div>{{comment.timeAgo}}</div>
+                        <div>{{comment.commTimeAgo}}</div>
                     </div>
                 </div>
                 <p class="desc" ng-bind-html="comment.comment | linky | hrefToJS"></p>
@@ -136,7 +136,7 @@
                 <!-- <div style="width:20px;padding:5px"> -->
                 <!--   <a class="icon ion&#45;ios&#45;location&#45;outline" style="font&#45;size:1.3em;"></a> -->
                 <!-- </div> -->
-                <ion-option-button class="button-assertive" ng-if="comment.isOwnComment" ng-click="delComment(comment)">
+                <ion-option-button class="button-assertive" ng-if="comment.canEdit" ng-click="delComment(comment)">
                     Delete
                 </ion-option-button>
         </ion-item>

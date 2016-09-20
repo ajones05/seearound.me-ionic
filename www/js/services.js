@@ -1,17 +1,41 @@
 angular.module('SeeAroundMe.services', [])
 
 .factory('AppService', function($http, $q, $rootScope, $state, $cordovaNetwork, $cordovaCamera, $cordovaFileTransfer, $ionicPopup, API_URL) {
-
-    var userData = JSON.parse(localStorage.getItem('sam_user_data')) || {};
+    
+    var data = localStorage.getItem('sam_user_data');
+    if(data && data !== 'undefined')
+        var userData = JSON.parse(data);
+    else
+        var userData = {};
+    
     var userId = userData.id || 0;
-    var authToken = userData.token || '';
+    var authToken = userData.token;
     var conversationUserId = null;
+    var conversation = null;
+    var otherUser = null;
     
     //var isCurrentUser = false; --- set it on root scope instead
     var profileUserId = null;
     var currentPostComments = {};
     var pageNum = 0, commentsPageNum = 0;
+    var imageUri = null;
     var service = {
+        
+        getAuthToken: function(){
+            return authToken;   
+        },
+        
+        setAuthToken: function(token){
+            authToken = token;
+        },
+        
+        getImageUri: function(){
+            return imageUri;
+        },
+        
+        clearImageUri: function(){
+            imageUri = null;    
+        },
         
         getImage: function(mediaType){
             
@@ -35,8 +59,9 @@ angular.module('SeeAroundMe.services', [])
             //console.info(cameraOptions);
             $cordovaCamera.getPicture(cameraOptions)
             .then(function(imgUri){
-                console.log('image uri: '+ imgUri);
+                //console.log('image uri: '+ imgUri);
                 $rootScope.imgUri = imgUri;
+                imageUri = imgUri;
             });
         },
         
@@ -52,9 +77,11 @@ angular.module('SeeAroundMe.services', [])
         
         getMessages: function(){
           var  url = API_URL + '/message-conversation';
-          var params = {
-            user_id : userId, 
+          var params = {              
+              token: authToken,
+              user_id : userId
           }
+          
           return $http.post(url, params);
         },
 
@@ -96,9 +123,9 @@ angular.module('SeeAroundMe.services', [])
         
         signUp: function (data) {
             var url = API_URL + '/registration';
-            console.log($rootScope.imgUri);
+            //console.log($rootScope.imgUri);
             if($rootScope.imgUri){
-                console.log('Signup with image ...');
+                //console.log('Signup with image ...');
                 var options = {
                     fileKey: "image",
                     fileName: new Date().getTime() + ".jpg",
@@ -111,7 +138,7 @@ angular.module('SeeAroundMe.services', [])
                 return $cordovaFileTransfer.upload(url, $rootScope.imgUri, options, true);
             }
             else{
-                console.log('Signup without image ...');
+                //console.log('Signup without image ...');
                 return $http({
                     method: 'POST',
                     url: url,
@@ -268,7 +295,7 @@ angular.module('SeeAroundMe.services', [])
         postComment: function(commentText, userId, newsId){
           var url = API_URL + '/post-comment';
           var params = {
-            user_id: userId,
+            token: authToken,
             news_id: newsId,
             comment: commentText
           };
@@ -312,7 +339,7 @@ angular.module('SeeAroundMe.services', [])
              d.resolve(currentPostComments);
            })
            .error(function(error){
-             console.log('comments fetching failed with error: ', error);
+             //console.log('comments fetching failed with error: ', error);
              //d.reject(error);
              currentPostComments.comments = [];
              d.resolve(currentPostComments);
@@ -347,7 +374,7 @@ angular.module('SeeAroundMe.services', [])
                  d.resolve(currentPostComments);
                })
                .error(function(error){
-                 console.log('comments fetching failed with error: ', error);
+                 //console.log('comments fetching failed with error: ', error);
                  d.reject(error);
                });
             
@@ -385,7 +412,7 @@ angular.module('SeeAroundMe.services', [])
            * logged in user is following
            */
           var url = API_URL + '/myfriendlist';
-          var data = { token: authToken};
+          var data = { token: authToken };
           return $http.post(url, data);
         },
         
@@ -414,9 +441,30 @@ angular.module('SeeAroundMe.services', [])
         
         markAlertRead: function(alert){
           var url = API_URL + '/notification-read';
+          var me = this;
           $http.post(url, {token: authToken, id: alert.id, type: alert.type}).then(function(res){
               //console.log('Alert marked read ...');
               //console.log(JSON.stringify(res));
+                me.getAlerts().then(function(res){
+                      if(res.data.result){
+                          var alerts = res.data.result;
+                          var unreadCount = 0;
+                          alerts.forEach(function(alert){
+                              if(alert.is_read == 0){//If unread
+                                  unreadCount++;
+                              }
+
+                              var d = alert.created_at.split("-").join("/");
+                              alert.created_at = new Date(d);
+                          });
+
+                          $rootScope.alerts = alerts;
+                          $rootScope.unreadAlerts = unreadCount;
+                      }
+                      else{
+                          $rootScope.alerts = [{message: 'No alerts'}];
+                     }
+                });              
           });
         }, 
         
@@ -432,7 +480,10 @@ angular.module('SeeAroundMe.services', [])
                   break;
                 case 'message':
                   AppService.setOtherUserId(alert.user_id);
-                  $state.go('app.userchat');
+                  AppService.getUserById(alert.user_id).then(function(res){
+                      AppService.setOtherUser(res.data.result);
+                      $state.go('app.userchat');
+                  });                  
                   break;
                 default: //vote or comment 
                     var post = null;
@@ -506,22 +557,25 @@ angular.module('SeeAroundMe.services', [])
             return $http.post(url, params);
         },
 
-        editProfile: function(newData){
+        editProfile: function(data){
           var url = API_URL + '/edit-profile';
-          console.log(newData)
-
-          var params = {
-            token: authToken,
-            name: newData.Name,
-            email: newData.Email_id,
-            birth_date: newData.Birth_date,
-            public_profile: newData.public_profile,
-            gender: newData.Gender,
-            image: newData.Profile_image,
-          }
-
-          return $http.post(url, params);
+          //console.log(newData)
+          data.token = authToken;
+          return $http.post(url, data);
         },
+         
+         getUserById: function(id){
+                //console.log('.................... getUserById called ....');
+             var url = API_URL + '/getotheruserprofile'
+             
+             var params = {
+                 token: authToken,
+                 other_user_id: id
+             };
+
+             return $http.post(url, params);
+         },
+
         
         setUserId: function(id){
             userId = id;
@@ -530,16 +584,37 @@ angular.module('SeeAroundMe.services', [])
         setOtherUserId: function(otherUserId){
           conversationUserId = otherUserId;
         },
+        
+        getOtherUserId: function(){
+            return conversationUserId;
+        },
+        
+        setOtherUser: function(user){
+            otherUser = user;  
+        },
+        
+        getOtherUser: function(){
+            return otherUser;
+        },
 
-        getConversation: function(){
-          var url = API_URL + '/message-conversation';
+        getConversation: function(id){
+          var url = API_URL + '/conversation-message';
           var params = {
             token: authToken,
-            other_user_id: conversationUserId,
-            start: 0,
-          }
+            id: id,
+            start: 0
+          };
+          
           return $http.post(url, params);
-        }
+        },
+        
+        setConv: function(c){
+            conversation = c;
+        },
+        
+        getConv: function(){
+            return conversation;
+        }        
     };
 
     return service;
@@ -600,11 +675,11 @@ angular.module('SeeAroundMe.services', [])
                   if (results) {
                         d.resolve(results[0]);
                   } else {
-                    console.log('No results found');
+                    //console.log('No results found');
                       d.resolve(results);
                   }
                 } else {
-                    console.log('Geocoder failed due to: ' + status);
+                    //console.log('Geocoder failed due to: ' + status);
                     d.reject(status)
                 }
               });
@@ -699,7 +774,7 @@ angular.module('SeeAroundMe.services', [])
             }
             
             var ud = localStorage.getItem('sam_user_data');
-            console.log(ud);
+            //console.log(ud);
 
             var userData = JSON.parse(ud) || '{}';
             var authToken = userData.token || '';
@@ -710,7 +785,7 @@ angular.module('SeeAroundMe.services', [])
                 
                 //console.log(JSON.stringify(response));
                 if(response.status == 'SUCCESS'){
-                    console.log('Got nearby posts ..............................');
+                    //console.log('Got nearby posts ..............................');
                     if(response.result){
                       // the regex that matches urls in text
                       var urlRegEx = new RegExp(
@@ -729,7 +804,6 @@ angular.module('SeeAroundMe.services', [])
                             });
                             
                             post.news = post.news.replace(urlRegEx, "");
-                            post.timeAgo = moment(post.updated_date).fromNow();
                             marker.post = post;
                             
                             $rootScope.markers.push(marker);
@@ -757,7 +831,7 @@ angular.module('SeeAroundMe.services', [])
                      
                 }
                  else{
-                     console.log('Failed to get nearby posts ...');
+                     //console.log('Failed to get nearby posts ...');
                      $rootScope.currentPosts = [];
                  }                
             };
@@ -780,7 +854,7 @@ angular.module('SeeAroundMe.services', [])
                     onSuccess(response);
                 })
                 .error(function (err) {
-                    console.warn(JSON.stringify(err));
+                    //console.warn(JSON.stringify(err));
                 });
             }
             else{            

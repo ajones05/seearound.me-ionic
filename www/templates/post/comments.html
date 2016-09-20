@@ -1,4 +1,4 @@
-<ion-view hide-nav-bar cache-view="false" class="postlistview">
+<ion-view hide-nav-bar cache-view="false" class="mapmodal">
     
   <ion-nav-bar >
     <ion-nav-back-button class="button-clear">
@@ -26,7 +26,7 @@
           <div class="name">
             <span>{{post.Name}}</span>
             <div class="date">
-              {{post.timeAgo}}
+              {{post.created_date}}
             </div>
           </div>
           <p class="desc"> {{post.news}} </p>
@@ -53,7 +53,7 @@
           <img src="img/chat.png" alt="">
         </span>
           <post-like-box></post-like-box>
-          <post-edit ng-if="post.isOwnPost" post="post" from="comments"></post-edit>
+          <post-edit ng-if="post.canEdit" post="post" from="comments"></post-edit>
         <span class="col" ng-click='openShare(post.id)'> Share</span>
       </div>
     </div>
@@ -68,8 +68,8 @@
         <img ng-src="{{comment.Profile_image}}" alt="profile image" ng-click="goToProfile(comment.user_id)">
           <div class="name">
             <span>{{comment.user_name}}</span>
-            <div class=" date right">
-              <div>{{comment.timeAgo}}</div>
+            <div class="date right">
+              <div>{{comment.commTimeAgo}}</div>
             </div>
           </div>
         <p class="desc" ng-bind-html="comment.comment | linky | hrefToJS"></p>
@@ -78,7 +78,7 @@
         <!-- <div style="width:20px;padding:5px"> -->
         <!--   <a class="icon ion&#45;ios&#45;location&#45;outline" style="font&#45;size:1.3em;"></a> -->
         <!-- </div> -->
-        <ion-option-button ng-if="comment.isOwnComment" class="button-assertive" ng-click="delComment(comment)">
+        <ion-option-button ng-if="comment.canEdit" class="button-assertive" ng-click="delComment(comment)">
             Delete
         </ion-option-button>      
       </ion-item>

@@ -1,11 +1,12 @@
 //login.html
 
 .login {
-    
+    background-color: #000;
     .login-bg {
         width: 100vw;
         height: 100vh;
         background-image: url(../img/auth-bg.png);
+        background-color: #000;
         background-position: center;
         background-size: cover;
         background-repeat: no-repeat; 
@@ -23,7 +24,8 @@
               font-family: "Lato" !important;
               color: #7d7d7d;
               font-style: italic;
-        }        
+              background-color: #fff !important;
+        }         
 
         .button-outline { 
             padding-top: 6px !important;

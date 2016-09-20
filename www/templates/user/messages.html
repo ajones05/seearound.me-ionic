@@ -21,14 +21,14 @@
         ng-class="{'gray': c.reciever_read == '1'}"
         class="message">
         <div class="row"
-          ng-click='viewConversation(c.sender_id)'>
+          ng-click='viewConversation(c)'>
           <div class="avatar">
             <img
-            ng-src="{{c.Profile_image}}">
+            ng-src="{{c.profileImage}}">
           </div>
           <div class="col top">
             <div class="row">
-              <span class="col name">{{c.Name}}</span>
+              <span class="col name">{{c.name}}</span>
               <span class="col time">{{ c.formatted_date }}</span>
             </div>
             <div class="row">

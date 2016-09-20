@@ -7,10 +7,10 @@
     </ion-nav-buttons>
     <ion-nav-buttons side="right">
       <label class="row user">
-        <span>{{other_user.name}}</span>
+        <span>{{other_user.Name}}</span>
         <img
          class="profile_image"
-         ng-src=" {{other_user.profile_image}} ">
+         ng-src=" {{other_user.Profile_image}} ">
       </label>
     </ion-nav-buttons>
   </ion-nav-bar>
@@ -22,7 +22,7 @@
           <div class="date" ng-bind="m.formatted_date"></div>
           <div class="bubble-left">
               <div class="message" autolinker>
-              {{m.message}}
+              {{m.body}}
               </div>
           </div>
       </div>
@@ -30,7 +30,7 @@
           <div class="date" ng-bind="m.formatted_date"></div>
           <div class="bubble-right">
               <div class="message" autolinker>
-              {{m.message}}
+              {{m.body}}
               </div>
           </div>
       </div>

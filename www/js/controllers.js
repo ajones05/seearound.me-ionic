@@ -17,14 +17,26 @@ angular.module('SeeAroundMe.controllers', [])
   };
     
   $scope.signOut = function(){
+        //It is important to clear cache and history
+        $ionicLoading.show({
+                template: 'Signing out ...'
+        });
+
       //Remove user login id and data
       localStorage.removeItem('sam_user_location');
       localStorage.removeItem('sam_user_data');
       
       AppService.setUserId(0);
+      AppService.setAuthToken(null);
       
       //Facebook logout
-      openFB.logout();
+      facebookConnectPlugin.logout(function(){
+          //console.log('FB logout success ...');
+      },
+      function(fail){
+          //console.log('FB logout error ...');
+      });
+      
       //Loop through all the markers and remove
       if($rootScope.markers){
         $rootScope.markers.map(function(marker){
@@ -34,13 +46,9 @@ angular.module('SeeAroundMe.controllers', [])
       
       $rootScope.markers = [];
       
-        //It is important to clear cache and history
-        $ionicLoading.show({
-                template: 'Signing out ...'
-        });
             
         $state.go('home');
-        
+
         $timeout(function () {
                  $ionicHistory.clearCache();
                  $ionicHistory.clearHistory();
@@ -66,8 +74,9 @@ angular.module('SeeAroundMe.controllers', [])
             $rootScope.loc = lat + ',' + long;
 
             //User's location
-            var location = new google.maps.LatLng(lat, long);
+            //var location = new google.maps.LatLng(lat, long);
         
+        /*
             //The specified area represented by bounds rectangle
             var bounds = new google.maps.LatLngBounds(
                 new google.maps.LatLng(37.7169, -122.5004),
@@ -76,18 +85,18 @@ angular.module('SeeAroundMe.controllers', [])
 
             //Returns true if the location is within the area
             var isLocInArea = bounds.contains(location);
-        
-            if(isLocInArea){//Location is within specified area
+        */
+            //if(isLocInArea){//Location is within specified area
                 //Fine, lets go to the app
                 $state.go('home');
-            }
-            else{//Location is outside the specified area
+            //}
+            //else{//Location is outside the specified area
                 //Can't allow this user to go inside ... show form
-                $state.go('outareaform');
-            }
+                //$state.go('outareaform');
+            //}
         },function(err) {
             // error
-            console.error('Failed to get current position. Error: ' + JSON.stringify(err));
+            //console.error('Failed to get current position. Error: ' + JSON.stringify(err));
             $ionicPopup.alert({
                  title: 'See Around Me Alert',
                  subTitle: 'Current Location',
@@ -109,7 +118,7 @@ angular.module('SeeAroundMe.controllers', [])
         };
       
         AppService.submitEmail(data).then(function(res){
-            console.log('Status: ' + res.status);
+            //console.log('Status: ' + res.status);
             if(res.status == 200){
                 AppService.showErrorAlert('Email Submitted', 'The email has been submitted successfully. Thanks!');
             }
@@ -145,36 +154,82 @@ angular.module('SeeAroundMe.controllers', [])
 
             localStorage.setItem('sam_user_location', mylocation);
 
-            console.log(mylocation);
+            //console.log(mylocation);
     });
     
     $scope.loginWithFB = function(){
+            //console.log('loginWithFB called ...');
         if(!AppService.isConnected()){
             AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');
         
             return;
         }
-    
-            openFB.login(function(fbData){
-                 //console.log('openFB login callback called ....');
-                 //console.log(JSON.stringify(fbData));
-                 if(fbData.status == 'connected'){
-                     //console.log(fbData.authResponse.token);
-                     var data = {token: fbData.authResponse.token};
-                     $ionicLoading.show();
+        
+        // This is the success callback from the login method
+        var fbLoginSuccess = function(response) {
+            if (!response.authResponse){
+              fbLoginError("Cannot find the authResponse");
+              return;
+            }
+
+            var authResponse = response.authResponse;
+
+             //console.log(authResponse.accessToken);
+             var data = {token: authResponse.accessToken};
+             //$ionicLoading.show();
+             AppService.fbLogin(data)
+                .success(function (response) {
+                    $ionicLoading.hide();
+                     //console.log(JSON.stringify(response));
+                     if(response.status == 'SUCCESS'){
+                        AppService.setUserId(response.result.id);
+                        AppService.setAuthToken(response.result.token);
+                        localStorage.setItem('sam_user_data', JSON.stringify(response.result));
+                        $rootScope.isBeforeSignUp = false;
+                        $state.go('app.postlistview');
+                     }
+                     else{
+                        AppService.showErrorAlert('Failed to login!', response.message);
+                     }
+             })
+             .error(function (err) {
+                    $ionicLoading.hide();
+                    AppService.showErrorAlert('Failed to login!', 'There seems to be a network problem. Please check your internet connection and try again.');
+                    //console.warn(JSON.stringify(err));
+            });
+        };
+
+          // This is the fail callback from the login method
+          var fbLoginError = function(error){
+                //console.log('fbLoginError', error);
+                $ionicLoading.hide();
+          };
+
+         //Now check login status and login if required
+            //console.log('Going to call facebookConnectPlugin ...');
+         facebookConnectPlugin.getLoginStatus(function(fbData){
+              if(fbData.status === 'connected'){
+                    // The user is logged in and has authenticated your app, and response.authResponse supplies
+                    // the user's ID, a valid access token, a signed request, and the time the access token
+                    // and signed request each expire
+                    //console.log('getLoginStatus', fbData.status);
+                    //console.log('success.authResponse: ' + fbData.authResponse);  
+
+                     //console.log(fbData.authResponse.accessToken);
+                     var data = {token: fbData.authResponse.accessToken};
+                    $ionicLoading.show({
+                            template: 'Logging in...'
+                    });
                      AppService.fbLogin(data)
                         .success(function (response) {
                                 $ionicLoading.hide();
                                  //console.log(JSON.stringify(response));
                                  if(response.status == 'SUCCESS'){
                                     AppService.setUserId(response.result.id);
+                                    AppService.setAuthToken(response.result.token);
                                     localStorage.setItem('sam_user_data', JSON.stringify(response.result));
                                     $rootScope.isBeforeSignUp = false;
                                     $state.go('app.postlistview');
-                                    //$timeout(function(){
-                                          //$rootScope.$broadcast('login',{});
-                                    //}, 1000);
-
                                  }
                                  else{
                                     AppService.showErrorAlert('Failed to login!', response.message);
@@ -183,16 +238,32 @@ angular.module('SeeAroundMe.controllers', [])
                          .error(function (err) {
                                 $ionicLoading.hide();
                                 AppService.showErrorAlert('Failed to login!', 'There seems to be a network problem. Please check your internet connection and try again.');
-                                console.warn(JSON.stringify(err));
+                                //console.warn(JSON.stringify(err));
                         });
-                }
-            },{ scope:'email'});
+                  
+              } else {
+                    // If (fbData.status === 'not_authorized') the user is logged in to Facebook,
+                    // but has not authenticated your app
+                    // Else the person is not logged into Facebook,
+                    // so we're not sure if they are logged into this app or not.
+
+                    //console.log('getLoginStatus', fbData.status);
+
+                    $ionicLoading.show({
+                            template: 'Logging in...'
+                    });
+
+                    // Ask the permissions you need. You can learn more about
+                    // FB permissions here: https://developers.facebook.com/docs/facebook-login/permissions/v2.4
+                    facebookConnectPlugin.login(['email'], fbLoginSuccess, fbLoginError);
+              }
+            });        
     };                    
 
 })
 
 .controller('SignupCtrl', function($scope, $rootScope, $timeout, $state, $ionicLoading, MapService, AppService) {
-    console.log('Signup controller called ...');
+    //console.log('Signup controller called ...');
     $scope.formData = {};
             
     $scope.doSignUp = function(user){
@@ -233,17 +304,26 @@ angular.module('SeeAroundMe.controllers', [])
                     //console.log('SUCCESS ...... got reponse');
                     //console.log(JSON.stringify(res));
                     $ionicLoading.hide();
-                    var resObj = JSON.parse(res.response);
-                    console.log(resObj);
+                    if(res.data)
+                        var resObj = res.data;
+                    else
+                        var resObj = JSON.parse(res.response);
+                    
+                    //console.log(resObj);
                     if(resObj.status == 'SUCCESS'){
                         $rootScope.isBeforeSignUp = false;
+                        //Set user thumbnail
+                        
                         //$state.go('app.postmapview');
                          AppService.login(userData)
                          .success(function (response) {
-                                console.log(JSON.stringify(response));
+                                //console.log(JSON.stringify(response));
                                 $ionicLoading.hide();
                                 if(response.status == 'SUCCESS'){
                                   AppService.setUserId(response.result.id);
+                                  AppService.setAuthToken(response.result.token);
+                                    //Set user thumbnail
+                                    response.result.Profile_image = resObj.data.thumb;
                                   localStorage.setItem('sam_user_data', JSON.stringify(response.result));
                                   $rootScope.isBeforeSignUp = false;
                                   $state.go('app.postlistview');
@@ -258,18 +338,18 @@ angular.module('SeeAroundMe.controllers', [])
                          .error(function (err) {
                                 $ionicLoading.hide();
                                 AppService.showErrorAlert('Failed to login!', 'There seems to be a network problem. Please check your internet connection and try again.'); 
-                                console.warn(JSON.stringify(err));
+                                //console.warn(JSON.stringify(err));
                         });
                     }
                     else{
-                       AppService.showErrorAlert('Failed to register!', res.message);
+                       AppService.showErrorAlert('Failed to register!', resObj.message);
                        //$state.go('signup');
                     }
                 },
                 function (err) {
                     $ionicLoading.hide();
                     AppService.showErrorAlert('Failed to register!', 'There seems to be a network problem. Please check your internet connection and try again.'); 
-                    console.warn(JSON.stringify(err));
+                    //console.warn(JSON.stringify(err));
                     //$state.go('signup');
                 },
                 function(progress){
@@ -279,7 +359,7 @@ angular.module('SeeAroundMe.controllers', [])
     };
 
     $scope.prepareToRegister = function(){
-        console.log('prepareToRegister ...');
+        //console.log('prepareToRegister ...');
         //Get geolocation -- stores in local storage
         MapService.getCurrentPosition()
             .then(function (position) {
@@ -290,7 +370,7 @@ angular.module('SeeAroundMe.controllers', [])
 
                 localStorage.setItem('sam_user_location', mylocation);
 
-                console.log(mylocation);
+                //console.log(mylocation);
             
                 //Get place from location coordinates
                 MapService.getPlace(lat, long).then(function(place){
@@ -301,7 +381,7 @@ angular.module('SeeAroundMe.controllers', [])
                     userData.longitude = long;
                     //Get address components
                     for (var i = 0; i < components.length; i++) {
-                        console.log(components[i]);
+                        //console.log(components[i]);
                         switch(components[i].types[0]){
                                 
                             case 'street_number':
@@ -332,7 +412,7 @@ angular.module('SeeAroundMe.controllers', [])
 
             }, function(err) {
                 // error
-                console.error('Failed to get current position. Error: ' + JSON.stringify(err));
+                //console.error('Failed to get current position. Error: ' + JSON.stringify(err));
             });
             
     };    
@@ -393,6 +473,7 @@ angular.module('SeeAroundMe.controllers', [])
         if(response.status == 'SUCCESS'){
             //console.log('data -> ', JSON.stringify(response.result));
             AppService.setUserId(response.result.id);
+            AppService.setAuthToken(response.result.token);
             localStorage.setItem('sam_user_data', JSON.stringify(response.result));
             $rootScope.isBeforeSignUp = false;
             $state.go('app.postlistview');
@@ -412,17 +493,62 @@ angular.module('SeeAroundMe.controllers', [])
     });
   };
     
-  $scope.loginWithFB = function(){
+    $scope.loginWithFB = function(){
         if(!AppService.isConnected()){
             AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');
-
+        
             return;
         }
-      
-            openFB.login(function(fbData){
-                 //console.log('openFB login callback called ....');
-                 //console.log(JSON.stringify(fbData));
-                 if(fbData.status == 'connected'){
+        
+        // This is the success callback from the login method
+        var fbLoginSuccess = function(response) {
+            if (!response.authResponse){
+              fbLoginError("Cannot find the authResponse");
+              return;
+            }
+
+            var authResponse = response.authResponse;
+
+             //console.log(authResponse.accessToken);
+             var data = {token: authResponse.accessToken};
+             $ionicLoading.show();
+             AppService.fbLogin(data)
+                .success(function (response) {
+                    $ionicLoading.hide();
+                     //console.log(JSON.stringify(response));
+                     if(response.status == 'SUCCESS'){
+                        AppService.setUserId(response.result.id);
+                        AppService.setAuthToken(response.result.token);
+                        localStorage.setItem('sam_user_data', JSON.stringify(response.result));
+                        $rootScope.isBeforeSignUp = false;
+                        $state.go('app.postlistview');
+                     }
+                     else{
+                        AppService.showErrorAlert('Failed to login!', response.message);
+                     }
+             })
+             .error(function (err) {
+                    $ionicLoading.hide();
+                    AppService.showErrorAlert('Failed to login!', 'There seems to be a network problem. Please check your internet connection and try again.');
+                    //console.warn(JSON.stringify(err));
+            });
+        };
+
+          // This is the fail callback from the login method
+          var fbLoginError = function(error){
+                //console.log('fbLoginError', error);
+                $ionicLoading.hide();
+          };
+
+         //Now check login status and login if required
+         facebookConnectPlugin.getLoginStatus(function(fbData){
+              if(fbData.status === 'connected'){
+                    // The user is logged in and has authenticated your app, and response.authResponse supplies
+                    // the user's ID, a valid access token, a signed request, and the time the access token
+                    // and signed request each expire
+                    //console.log('getLoginStatus', fbData.status);
+                    //console.log('success.authResponse: ' + fbData.authResponse);  
+
                      //console.log(fbData.authResponse.token);
                      var data = {token: fbData.authResponse.token};
                      $ionicLoading.show();
@@ -432,12 +558,10 @@ angular.module('SeeAroundMe.controllers', [])
                                  //console.log(JSON.stringify(response));
                                  if(response.status == 'SUCCESS'){
                                     AppService.setUserId(response.result.id);
+                                    AppService.setAuthToken(response.result.token);
                                     localStorage.setItem('sam_user_data', JSON.stringify(response.result));
                                     $rootScope.isBeforeSignUp = false;
                                     $state.go('app.postlistview');
-                                    //$timeout(function(){
-                                          //$rootScope.$broadcast('login',{});
-                                    //}, 1000);
                                  }
                                  else{
                                     AppService.showErrorAlert('Failed to login!', response.message);
@@ -445,18 +569,34 @@ angular.module('SeeAroundMe.controllers', [])
                         })
                          .error(function (err) {
                                 $ionicLoading.hide();
-                                AppService.showErrorAlert('Failed to login!', 'There was an error during login process. Please contact support with the following information : ' + JSON.stringify(err)); 
-                                console.warn(JSON.stringify(err));
+                                AppService.showErrorAlert('Failed to login!', 'There seems to be a network problem. Please check your internet connection and try again.');
+                                //console.warn(JSON.stringify(err));
                         });
-                }
-            },{ scope:'email'});
-  };
+                  
+              } else {
+                    // If (fbData.status === 'not_authorized') the user is logged in to Facebook,
+                    // but has not authenticated your app
+                    // Else the person is not logged into Facebook,
+                    // so we're not sure if they are logged into this app or not.
+
+                    //console.log('getLoginStatus', fbData.status);
+
+                    $ionicLoading.show({
+                            template: 'Logging in...'
+                    });
+
+                    // Ask the permissions you need. You can learn more about
+                    // FB permissions here: https://developers.facebook.com/docs/facebook-login/permissions/v2.4
+                    facebookConnectPlugin.login(['email', 'public_profile'], fbLoginSuccess, fbLoginError);
+              }
+            });        
+    };                    
     
     $scope.resetPW = function(){
         if($scope.formData.email && $scope.formData.email.length > 0){
             
             AppService.resetPassword($scope.formData.email).then(function(){
-                console.log('Email sent ...');
+                //console.log('Email sent ...');
             });
             
             $ionicPopup.alert({
@@ -474,7 +614,7 @@ angular.module('SeeAroundMe.controllers', [])
              }).then(function(email) {
                 if(email){
                     AppService.resetPassword(email).then(function(){
-                        console.log('Email sent ...');
+                        //console.log('Email sent ...');
                     });
 
                     $ionicPopup.alert({
@@ -498,13 +638,27 @@ angular.module('SeeAroundMe.controllers', [])
   // from other users.
   $scope.User = null;
   $scope.$on('$ionicView.enter', function(e) {
-    console.log('is the logged in user => ', $rootScope.isCurrentUser);
+    //console.log('is the logged in user => ', $rootScope.isCurrentUser);
     $scope.User = null;
     if ($rootScope.isCurrentUser){
       //Must set this
       $scope.isCurrentUser = true;
       $scope.User = JSON.parse(localStorage.getItem('sam_user_data'));
-      $timeout(calculateAge(), 200);
+        if($scope.User.Birth_date){
+             $timeout(function(){
+                      var today = new Date();
+                      var dob = $scope.User.Birth_date.replace(/-/g,'/');
+                      var birthday = new Date(dob);
+                      $scope.User.Age = today.getFullYear() - birthday.getFullYear();
+                      var diffMonths = today.getMonth() - birthday.getMonth();
+                      if (diffMonths < 0 || ( diffMonths === 0 && today.getDate() < birthday.getDate())) {
+                        $scope.User.Age = $scope.User.Age - 1;
+                      }
+            }, 200);            
+        }
+        else{
+            $scope.User.Age = '';
+        }
     } else{
       //Must set this
       $scope.isCurrentUser = false;
@@ -519,13 +673,27 @@ angular.module('SeeAroundMe.controllers', [])
         //   $scope.User = JSON.parse(localStorage.getItem('sam_user_data'));
         //   calculateAge();
         // }else{
-        console.log('other user-> ', res.data);
+        //console.log('other user-> ', res.data);
         $scope.User = res.data.result;
         $scope.isFriend = res.data.friends;
-        calculateAge();
-        // }
+        if($scope.User.Birth_date){
+             $timeout(function(){
+                      var today = new Date();
+                      var dob = $scope.User.Birth_date.replace(/-/g,'/');
+                      var birthday = new Date(dob);
+                      $scope.User.Age = today.getFullYear() - birthday.getFullYear();
+                      var diffMonths = today.getMonth() - birthday.getMonth();
+                      if (diffMonths < 0 || ( diffMonths === 0 && today.getDate() < birthday.getDate())) {
+                        $scope.User.Age = $scope.User.Age - 1;
+                      }
+            }, 200);            
+        }
+        else{
+            $scope.User.Age = '';
+        }
+          // }
       }, function(err){
-        console.log(err);
+        //console.log(err);
         $ionicLoading.hide();
         AppService.showErrorAlert(
           'Profile',
@@ -539,7 +707,7 @@ angular.module('SeeAroundMe.controllers', [])
       AppService.followUser($scope.User.id).then(function(result){
           if(result.data.status == 'SUCCESS')
             $scope.isFriend = true;
-          console.log(JSON.stringify(result));
+          //console.log(JSON.stringify(result));
       });
   };
     
@@ -547,7 +715,7 @@ angular.module('SeeAroundMe.controllers', [])
       AppService.unfollowUser($scope.User.id).then(function(result){
           if(result.data.status == 'SUCCESS')
             $scope.isFriend = false;
-          console.log(JSON.stringify(result));
+          //console.log(JSON.stringify(result));
       });      
   };
     
@@ -563,11 +731,13 @@ angular.module('SeeAroundMe.controllers', [])
   };
 
   $scope.showNewMessageModal = function(user){
+    //console.log(JSON.stringify(user));
+    AppService.setOtherUser(user);
     $scope.newMessage = {};
-
+    $scope.user = user;
+      
     ModalService.init('templates/new_conversation.html', $scope).then(function(modal) {
-      $scope.modal = modal;
-      $scope.user = user;
+      $scope.modal = modal;      
       modal.show();
     });
   }
@@ -588,19 +758,18 @@ angular.module('SeeAroundMe.controllers', [])
       if($scope.newMessage.subject.length == 0)
           return;
     //console.log($scope.newMessage, $scope.user);
-    $ionicLoading.show();
-    AppService
-    .sendMessage(
+    $ionicLoading.show({template: 'Sending ...'});
+    AppService.sendMessage(
       $scope.user.id,
       $scope.newMessage.subject,
       $scope.newMessage.message
     ).then(function(res){
-      // not an error, just to avoid code duplication
       $ionicLoading.hide();
       if(res.data.status == 'SUCCESS'){
-          AppService.setOtherUserId($scope.user.id);
-          $state.go('app.userchat');
+          
+            $state.go('app.userchat', { from: res.data.result.conversation_id });
       }
+        
       $scope.modal.remove();        
     }, function(error){
       $ionicLoading.hide();
@@ -615,41 +784,54 @@ angular.module('SeeAroundMe.controllers', [])
       $ionicHistory.goBack();
   };
 
-   // calculate age
-   function calculateAge(){
-       //console.log('calculateAge called ... ');
-    var today = new Date();
-    var birthday = new Date($scope.User.Birth_date);
-    $scope.User.Age = today.getFullYear() - birthday.getFullYear();
-    var diffMonths = today.getMonth() - birthday.getMonth();
-    if (diffMonths < 0 || ( diffMonths === 0 && today.getDate() < birthday.getDate())) {
-      $scope.User.Age = $scope.User.Age - 1;
-    }
-  }
 })
 
 .controller('EditProfileCtrl', function($scope, $state, $rootScope, AppService, $ionicLoading, $ionicPopover){
-  $scope.User = JSON.parse(localStorage.getItem('sam_user_data'));
-  $scope.User.Birth_date = new Date($scope.User.Birth_date );
-  if (!$scope.User.public_profile)
-    $scope.User.public_profile = false;
+    
+    $scope.$on('$ionicView.enter', function(e) {        
+          $scope.User = JSON.parse(localStorage.getItem('sam_user_data'));
+        
+        if($scope.User.Birth_date){
+           var dob = $scope.User.Birth_date.replace(/-/g,'/');
+           //console.log('DOB: ' + dob);
+           $scope.User.Birth_date = new Date(dob);
+           //console.log($scope.User.Birth_date);
+        }
+        
+          if (!$scope.User.public_profile)
+            $scope.User.public_profile = false;
 
-  $scope.newData = angular.copy($scope.User);
+          $scope.newData = angular.copy($scope.User);
+    });
 
   $scope.doEdit = function(){
-    $scope.newData.Birth_date = new Date(moment($scope.newData.Birth_date).format('DD/MM/YYYY'));
-    console.log($scope.newData);
+      
+    var dob = moment($scope.newData.Birth_date).format('DD-MM-YYYY');
+    
+      var data = {
+        name: $scope.newData.Name,
+        email: $scope.newData.Email_id,
+        birth_date: dob,
+        public_profile: $scope.newData.public_profile,
+        gender: $scope.newData.Gender,
+        interest: $scope.newData.Activities,
+        image: $scope.newData.Profile_image
+      };
 
     // change true|false value to 0|1
     ($scope.newData.public_profile)? ($scope.newData.public_profile = 1) : ($scope.newData.public_profile = 0);
 
     $ionicLoading.show({ template: 'Saving changes..'});
-    AppService.editProfile($scope.newData)
+    AppService.editProfile(data)
     .then(function(res){
       //console.log(JSON.stringify(res));
       $ionicLoading.hide();
-      localStorage.setItem('sam_user_data', JSON.stringify($scope.newData));
-      $state.go('app.userprofile');        
+      if(res.data.result){
+          $scope.newData.Birth_date = res.data.result.Birth_date;
+          localStorage.setItem('sam_user_data', JSON.stringify($scope.newData));
+          $state.go('app.userprofile'); 
+      }
+             
     }, function(error){
       $ionicLoading.hide();
     });
@@ -725,7 +907,7 @@ angular.module('SeeAroundMe.controllers', [])
             $scope.postComments = current.comments.reverse() || [];
 
             $scope.postComments.map(function(comment){
-              comment.timeAgo = moment(comment.commTime).fromNow();
+              //comment.timeAgo = moment(comment.commTime).fromNow();
                 if(comment.user_id == userId){
                     comment.isOwnComment = true;
                 }
@@ -749,7 +931,7 @@ angular.module('SeeAroundMe.controllers', [])
     }
   }, function(error){
     $ionicLoading.hide();
-    console.warn('error getting comments');
+    //console.warn('error getting comments');
   });
     
   $scope.newComment = {
@@ -758,8 +940,9 @@ angular.module('SeeAroundMe.controllers', [])
 
   $scope.postComment = function (){
     //console.log('commentText -> ', $scope.newComment.text);
+      var user = JSON.parse(localStorage.getItem('sam_user_data' ));
 
-    AppService.postComment($scope.newComment.text, userId, $scope.post.id)
+    AppService.postComment($scope.newComment.text, user.id, $scope.post.id)
     .then(function(res){
       //console.log('successfully posted the comment');
       //console.log(JSON.stringify(res));
@@ -767,6 +950,7 @@ angular.module('SeeAroundMe.controllers', [])
             $scope.post.comment_count = res.data.result.totalComments;
             res.data.result.timeAgo = moment(res.data.result.commTime).fromNow();
             res.data.result.isOwnComment = true;
+            res.data.result.canEdit = true;
             $scope.postComments.push(res.data.result);
         
             $scope.newComment.text = '';
@@ -790,7 +974,7 @@ angular.module('SeeAroundMe.controllers', [])
             $scope.post.comment_count = $scope.postComments.length;
             // Save list in factory
             AppService.deleteComment(comment).then(function(){
-                console.log('Comment deleted ...');
+                //console.log('Comment deleted ...');
             });                 
          } 
        });
@@ -851,7 +1035,7 @@ angular.module('SeeAroundMe.controllers', [])
                 }
                 
               comments.map(function(comment){
-                    comment.timeAgo = moment(comment.commTime).fromNow();
+                    //comment.timeAgo = moment(comment.commTime).fromNow();
                     if(comment.user_id == userId){
                         comment.isOwnComment = true;
                     }
@@ -873,8 +1057,10 @@ angular.module('SeeAroundMe.controllers', [])
 
 .controller('FollowingCtrl', function($scope, AppService, ModalService, $state, $ionicHistory, $ionicLoading){
     
-  $scope.showNewMessageModal = function(user){
+  $scope.showNewMessageModal = function(user){      
     $scope.newMessage = {};
+      
+    AppService.setOtherUser(user);
 
     ModalService.init('templates/new_conversation.html', $scope).then(function(modal) {
       $scope.modal = modal;
@@ -907,19 +1093,12 @@ angular.module('SeeAroundMe.controllers', [])
       $scope.newMessage.subject,
       $scope.newMessage.message
     ).then(function(res){
-      // not an error, just to avoid code duplication
       $ionicLoading.hide();
-        if(res.data.status == 'SUCCESS'){
-              AppService.setOtherUserId($scope.user.id);
-              $state.go('app.userchat');            
-        }
-        else{
-        AppService.showErrorAlert(
-        'SeeAroundMe',
-        'Oops! Something went wrong! Please try again later.'
-       );
-
-        }
+      if(res.data.status == 'SUCCESS'){
+          
+            $state.go('app.userchat', { from: res.data.result.conversation_id });
+      }
+        
       $scope.modal.remove();        
     }, function(error){
       $ionicLoading.hide();
@@ -944,9 +1123,20 @@ angular.module('SeeAroundMe.controllers', [])
     AppService.getMessages()
     .success(function(res){
         if(res.result){
-          $scope.conversations = res.result.map(function(m){
-            m.formatted_date = moment(m.created).fromNow();
-            return m;
+            var me = JSON.parse(localStorage.getItem('sam_user_data'));
+            $scope.conversations = res.result.map(function(m){
+              
+                  if(me.id == m.sender_id){
+                        m.name = m.receiverName;
+                        m.profileImage = m.receiverImage;  
+                  }
+                  else{
+                       m.name = m.senderName;
+                       m.profileImage = m.senderImage; 
+                  }              
+
+                //m.formatted_date = moment(m.created).fromNow();
+                return m;
           });
         }
         else{
@@ -954,8 +1144,8 @@ angular.module('SeeAroundMe.controllers', [])
         }
     })
     .error(function(err){
-      console.log('there was an error getting messages');
-    })
+      //console.log('there was an error getting messages');
+    });
   });
 
   //Compose message view modal
@@ -966,7 +1156,7 @@ angular.module('SeeAroundMe.controllers', [])
   };
 
   $scope.goToFollowing = function(){
-    console.log($rootScope)
+    //console.log($rootScope)
     $state.go('app.userfollowing')
   }
 
@@ -978,10 +1168,29 @@ angular.module('SeeAroundMe.controllers', [])
     $scope.closeModal();
   };    
 
-  $scope.viewConversation = function(otherUserId){
-    AppService.setOtherUserId(otherUserId);
-    $state.go('app.userchat', {from: 'messages'});
-  }
+  $scope.viewConversation = function(c){
+            //console.log(JSON.stringify(c));
+            AppService.setConv(c);
+      /*
+            var me = JSON.parse(localStorage.getItem('sam_user_data'));
+            if(c.sender_id == me.id){//I am the sender
+                AppService.setOtherUserId(c.receiver_id);
+                AppService.getUserById(c.receiver_id).then(function(res){
+                    //console.log('Got user ...');
+                    AppService.setOtherUser(res.data.result);
+                });
+            }
+            else {
+                //console.log('otherUserId: ', otherUserId);
+                AppService.setOtherUserId(c.sender_id);
+                AppService.getUserById(c.sender_id).then(function(res){
+                    //console.log('Got user ...');
+                    AppService.setOtherUser(res.data.result);
+                });
+            }*/
+            
+            $state.go('app.userchat', {from: 'messages'});
+  };
 
   // set post button to blue when typing
   $scope.checkInput = function(){
@@ -1016,36 +1225,34 @@ angular.module('SeeAroundMe.controllers', [])
       if($stateParams.from == 'messages')
           $state.go('app.usermessages');
       else
-          $state.go('app.postmapview');
+          $state.go('app.postlistview');
   };
 
   // fetches messages from API and populates scope vars
   function fetchMessages(){
-    AppService.getConversation()
+      
+    AppService.getConversation($scope.c.id)
     .then(function(res){
-      $scope.messages = res.data.result.reverse();
-      $scope.messages.map(function(m){
-        m.formatted_date = moment(m.created).format('MMMM Do[ at ]h:mm a');
-      });
+          //console.log('Got messages ...');
+          //console.log(JSON.stringify(res));
+          if(res.data.result)
+            $scope.messages = res.data.result.reverse();
+          else
+            $scope.messages = [];
+          //console.log(JSON.stringify($scope.messages));
+          $scope.messages.map(function(m){
+            m.formatted_date = moment(m.created_at).format('MMMM Do[ at ]h:mm a');
+          });
 
-      // quick hack to get the other user's name
-      for (m in $scope.messages){
-        if ($scope.messages[m].sender_id !== $scope.Self.id) {
-          $scope.other_user.name = $scope.messages[m].Name;
-          $scope.other_user.id = $scope.messages[m].sender_id;
-          $scope.other_user.profile_image = $scope.messages[m].Profile_image;
-          
-          // we need the subject and conversation id to reply to the thread
-          $scope.newMessage.conversationId =  $scope.messages[m].id;
-          $scope.newMessage.subject =  $scope.messages[m].subject;
-          break;
-        }
-      }
+            $scope.newMessage.conversationId =  $scope.c.id;
+            $scope.newMessage.subject =  $scope.c.subject;
         
-      //Scroll to bottom
-      $ionicScrollDelegate.scrollBottom(true);
-    }, function(error){
-    });
+          //Scroll to bottom
+          $ionicScrollDelegate.scrollBottom(true);
+        }, 
+        function(error){
+            console.log('Error ...');
+        });
   };
 
   $scope.sendMessage = function(){
@@ -1060,8 +1267,9 @@ angular.module('SeeAroundMe.controllers', [])
       ).then(function(res){    
         
         $scope.messages.push({
+          id: res.data.result.message_id,
           sender_id: $scope.Self.id,
-          message: $scope.newMessage.text,
+          body: $scope.newMessage.text,
         });
         
         $scope.newMessage.text = "";
@@ -1072,9 +1280,36 @@ angular.module('SeeAroundMe.controllers', [])
       });
   };
 
-  // fetch messages every time user navigates to this page
+  
   $scope.$on('$ionicView.enter', function(e) {
-    fetchMessages();
+             
+          $scope.messages = [];
+          $scope.Self = JSON.parse(localStorage.getItem('sam_user_data')) || '{}';
+          $scope.newMessage = {
+            text: '',
+            subject: null,
+            conversationId: null
+          }
+        
+          if($stateParams.from == 'messages'){
+              $scope.c = AppService.getConv(); 
+              if($scope.Self.id == $scope.c.sender_id){
+                    $scope.other_user.Name = $scope.c.receiverName;
+                    $scope.other_user.Profile_image = $scope.c.receiverImage;  
+                    $scope.other_user.id = $scope.c.receiver_id;
+              }
+              else{
+                   $scope.other_user.Name = $scope.c.senderName;
+                   $scope.other_user.Profile_image = $scope.c.senderImage;  
+                   $scope.other_user.id = $scope.c.sender_id; 
+              }              
+          }
+          else{
+              $scope.other_user = AppService.getOtherUser();
+              $scope.c = { id: $stateParams.from, subject: 'New conversation'};
+          }
+                           
+           fetchMessages();      
   });
 
 })
@@ -1124,7 +1359,6 @@ angular.module('SeeAroundMe.controllers', [])
                         response.result.forEach(function (post) {
 
                             post.news = post.news.replace(urlRegEx, "");
-                            post.timeAgo = moment(post.updated_date).fromNow();
                         });
                         //To use on list view
                         $rootScope.currentPosts = response.result;
@@ -1137,20 +1371,18 @@ angular.module('SeeAroundMe.controllers', [])
                                 post.news = post.news.replace(urlRegEx, "");
                             }
 
-                            post.timeAgo = moment(post.updated_date).fromNow();
-
                             if(post.user_id == userId){
                                 post.isOwnPost = true;
                             }
                         });
                 })
                 .error(function (err) {
-                    console.warn(JSON.stringify(err));
+                    //console.warn(JSON.stringify(err));
                 });
 
         }, function(err) {
             // error
-            console.error('Failed to get current position. Error: ' + JSON.stringify(err));
+            //console.error('Failed to get current position. Error: ' + JSON.stringify(err));
             $ionicPopup.alert({
                  title: 'See Around Me Alert',
                  subTitle: 'Current Location',
@@ -1161,7 +1393,7 @@ angular.module('SeeAroundMe.controllers', [])
   $scope.isSwiping = false; 
   $scope.isShowMorePostsTapped = false;
   $scope.onListSwipe = function(){
-      console.log('Swipping ...');
+      //console.log('Swipping ...');
       $scope.isSwiping = true;
   };
     
@@ -1219,8 +1451,6 @@ angular.module('SeeAroundMe.controllers', [])
           post.news = post.news.replace(urlRegEx, "");
       }
                   
-        post.timeAgo = moment(post.updated_date).fromNow();
-          
         if(post.user_id == userId){
             post.isOwnPost = true;
         }
@@ -1242,7 +1472,6 @@ angular.module('SeeAroundMe.controllers', [])
               response.data.result.map(function(post){
                   
                   post.news = post.news.replace(urlRegEx, "");
-                  post.timeAgo = moment(post.updated_date).fromNow();
                   
                   $scope.nearbyPosts.push(post);
               });
@@ -1283,7 +1512,7 @@ angular.module('SeeAroundMe.controllers', [])
   };
 
   $rootScope.goToProfile = function(id){
-    console.log('goto profile called with id= ', id);
+    //console.log('goto profile called with id= ', id);
     var userData = JSON.parse(localStorage.getItem('sam_user_data')) || {};
     var userId = userData.id || 0;
     AppService.setUserId(userId);
@@ -1345,7 +1574,7 @@ angular.module('SeeAroundMe.controllers', [])
     };
 
   $scope.$on('$destroy', function() {
-    console.log('Destroying modals...');
+    //console.log('Destroying modals...');
     if($scope.alertsPopover){
         $scope.alertsPopover.remove();
     }
@@ -1415,11 +1644,10 @@ angular.module('SeeAroundMe.controllers', [])
                   //post.first_link = post.news.match(urlRegEx)[0];
                 //}catch(ex){}
                 post.news = post.news.replace(urlRegEx, "");
-                post.timeAgo = moment(post.updated_date).fromNow();
             });
         })
         .error(function (err) {
-            console.warn(JSON.stringify(err));
+            //console.warn(JSON.stringify(err));
         });        
     };    
     
@@ -1457,7 +1685,6 @@ angular.module('SeeAroundMe.controllers', [])
                 //post.sanitizedText = post.news.replace(urlRegEx, '').replace(/\"/g, '')
                 
                 post.news = post.news.replace(urlRegEx, "");
-                post.timeAgo = moment(post.updated_date).fromNow();
             });
         });        
     };
@@ -1522,6 +1749,7 @@ angular.module('SeeAroundMe.controllers', [])
 
 .controller('NewPostCtrl', function($scope, $rootScope, $stateParams, $state, $ionicPopup, $ionicHistory, $ionicLoading, AppService, MapService){
     
+    $rootScope.imgUri = "";
     var ud = localStorage.getItem('sam_user_data');
     //console.log(ud);
 
@@ -1554,6 +1782,7 @@ angular.module('SeeAroundMe.controllers', [])
     $scope.clearImage = function(){
         $rootScope.postMode = 'new';
         $rootScope.imgUri = ""; 
+        AppService.clearImageUri();
         $scope.showCamBar = false;
         
           if (!$scope.formData.postText){
@@ -1563,7 +1792,9 @@ angular.module('SeeAroundMe.controllers', [])
     };
     
     $scope.$on('$ionicView.enter', function(e) {
-                
+        //Fix for a weird bug: -- For some reason, $rootScope.imgUri becomes empty after returning from set location view, so we are resetting it here
+        $rootScope.imgUri = AppService.getImageUri();
+        
         if($stateParams.address){
             $scope.addLocation = $stateParams.address;
             if($rootScope.postText || $rootScope.imgUri != ""){
@@ -1643,15 +1874,16 @@ angular.module('SeeAroundMe.controllers', [])
                         //console.log(JSON.stringify(res));
                         $ionicLoading.hide();
                         $rootScope.postText = '';
+                        $rootScope.imgUri = "";
                         $scope.formData.postText = '';
                         $scope.refreshPosts();
                     },
                     function(error){
                         $ionicLoading.hide();
-                        console.log(JSON.stringify(error));
+                        //console.log(JSON.stringify(error));
                     },
                     function(progress){
-                        console.log('Uploaded ' + progress.loaded + ' of ' + progress.total);
+                        //console.log('Uploaded ' + progress.loaded + ' of ' + progress.total);
                     }
                 );            
         };
@@ -1725,11 +1957,11 @@ angular.module('SeeAroundMe.controllers', [])
                     },
                     function(error){
                         $ionicLoading.hide();
-                        console.log(JSON.stringify(error));
+                        //console.log(JSON.stringify(error));
                         $rootScope.postMode = 'new';
                     },
                     function(progress){
-                        console.log('Uploaded ' + progress.loaded + ' of ' + progress.total);
+                        //console.log('Uploaded ' + progress.loaded + ' of ' + progress.total);
                     }
             );
             
@@ -1774,8 +2006,7 @@ angular.module('SeeAroundMe.controllers', [])
     $scope.refreshPosts = function(){
         
         if($scope.isFromMapView || $rootScope.page == 'map'){            
-            $state.go('app.postmapview');
-            MapService.refreshMap();
+            $state.go('app.postmapview');            
         }
         else{
             
@@ -1803,7 +2034,6 @@ angular.module('SeeAroundMe.controllers', [])
                         response.result.forEach(function (post) {
 
                             post.news = post.news.replace(urlRegEx, "");
-                            post.timeAgo = moment(post.updated_date).fromNow();
 
                         });
 
@@ -1814,12 +2044,12 @@ angular.module('SeeAroundMe.controllers', [])
 
                 }
                  else{
-                     console.log('Failed to get nearby posts ...');
+                     //console.log('Failed to get nearby posts ...');
                      $rootScope.currentPosts = [];
                  }                
             })
             .error(function (err) {
-                console.warn(JSON.stringify(err));
+                //console.warn(JSON.stringify(err));
             });
         }
     };
@@ -1840,7 +2070,7 @@ angular.module('SeeAroundMe.controllers', [])
     $scope.place.formatted_address = '';
             
     $scope.onChange = function(){
-        console.log($scope.place);
+        //console.log($scope.place);
         if(angular.isObject($scope.place)){
             $scope.setPlace($scope.place);
         }
@@ -1977,7 +2207,7 @@ angular.module('SeeAroundMe.controllers', [])
                 }, 500);
             }, function(err) {
                 // error
-                console.error('Failed to get current position. Error: ' + JSON.stringify(err));
+                //console.error('Failed to get current position. Error: ' + JSON.stringify(err));
                 //deferred.reject(err.message);
                 // return err;
             });        
@@ -1992,7 +2222,7 @@ angular.module('SeeAroundMe.controllers', [])
     $rootScope.isFiltered = false;
     $scope.userData = JSON.parse(localStorage.getItem('sam_user_data')) || '{}';
     $scope.onRadiusChange = function(){
-        console.log('$scope.circleRadius: ' + $scope.circleRadius);
+        //console.log('$scope.circleRadius: ' + $scope.circleRadius);
         $rootScope.inputRadius = $scope.circleRadius;
         //Redraw circle and fetch new post locations
         if(AppService.isConnected()){
@@ -2017,7 +2247,7 @@ angular.module('SeeAroundMe.controllers', [])
     $scope.searchTerm = "";
     
     var ud = localStorage.getItem('sam_user_data');
-    console.log(ud);
+    //console.log(ud);
 
     var userData = JSON.parse(ud) || '{}';
 
@@ -2089,7 +2319,7 @@ angular.module('SeeAroundMe.controllers', [])
           
         try{
           $scope.postComments.map(function(comment){
-            comment.timeAgo = moment(comment.commTime).fromNow();
+            //comment.timeAgo = moment(comment.commTime).fromNow();
             if(comment.user_id == userId){
                 comment.isOwnComment = true;
             }
@@ -2098,12 +2328,12 @@ angular.module('SeeAroundMe.controllers', [])
             }                
           })
         } catch (err){
-          console.log(err);
+          //console.log(err);
         }
 
       }, function(error){
         $ionicLoading.hide();
-        console.warn('error getting comments');
+        //console.warn('error getting comments');
       });
     };
     
@@ -2121,7 +2351,7 @@ angular.module('SeeAroundMe.controllers', [])
                         $scope.hasMore = true;
                     }
                   comments.map(function(comment){
-                        comment.timeAgo = moment(comment.commTime).fromNow();
+                        //comment.timeAgo = moment(comment.commTime).fromNow();
                         if(comment.user_id == userId){
                             comment.isOwnComment = true;
                         }
@@ -2155,6 +2385,7 @@ angular.module('SeeAroundMe.controllers', [])
                 $scope.post.comment_count = res.data.result.totalComments;
                 res.data.result.timeAgo = moment(res.data.result.commTime).fromNow();
                 res.data.result.isOwnComment = true;
+                res.data.result.canEdit = true;
                 $scope.postComments.push(res.data.result);
 
                 $ionicScrollDelegate.scrollBottom(true);
@@ -2176,7 +2407,7 @@ angular.module('SeeAroundMe.controllers', [])
                 $scope.post.comment_count = $scope.postComments.length;
                 // Save list in factory
                 AppService.deleteComment(comment).then(function(){
-                    console.log('Comment deleted ...');
+                    //console.log('Comment deleted ...');
                 });                 
              } 
            });
@@ -2201,7 +2432,7 @@ angular.module('SeeAroundMe.controllers', [])
             
     $scope.goToUser = function(post){
         
-        console.log('goto profile called with id= ', post.user_id);
+        //console.log('goto profile called with id= ', post.user_id);
         var userData = JSON.parse(localStorage.getItem('sam_user_data')) || {};
         var userId = userData.id || 0;
         if(userId == post.user_id){
@@ -2353,7 +2584,7 @@ angular.module('SeeAroundMe.controllers', [])
     });  
     
     $scope.$on('$destroy', function() {
-      console.log('Destroying modals...');
+      //console.log('Destroying modals...');
       //$scope.modal1.remove();
       $scope.popover.remove();
       $scope.selectPopover.remove();  
@@ -2462,6 +2693,7 @@ angular.module('SeeAroundMe.controllers', [])
         getFollowers();
         //Causes the map to redraw
         if($rootScope.map){
+            MapService.refreshMap();
             google.maps.event.trigger($rootScope.map, 'resize');
         }        
     });
@@ -2507,7 +2739,7 @@ angular.module('SeeAroundMe.controllers', [])
         // this should be following and not followers
         // but let's keep it this way for now. :)
         $rootScope.followers = data.result;
-        console.log('following', data);
+        //console.log('following', data);
       })
     };
     

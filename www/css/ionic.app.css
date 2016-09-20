@@ -8017,119 +8017,126 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-family: 'Lato';
   color: #7d7d7d; }
 
-.home .home-bg {
-  width: 100vw;
-  height: 100vh;
-  background-image: url(../img/home.png);
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat; }
-  .home .home-bg .row {
-    position: absolute !important;
-    bottom: 14vh; }
-  .home .home-bg p {
-    font-size: 14px;
-    font-family: "Lato";
-    color: #fff;
-    text-align: center;
-    position: absolute !important;
-    bottom: 6vh;
-    width: 100vw; }
-  .home .home-bg .button-outline {
-    padding-top: 6px !important;
-    padding-bottom: 6px !important;
-    padding-left: 16px !important;
-    padding-right: 16px !important;
-    height: 60px !important;
-    width: 130px !important;
-    border-radius: 22px !important;
-    border: 2px solid #fff !important;
-    font-size: 18px !important;
-    font-family: "Lato" !important;
-    color: #fff !important; }
-.home .link {
-  color: cornflowerblue;
-  text-decoration: none; }
+.home {
+  background-color: #000; }
+  .home .home-bg {
+    width: 100vw;
+    height: 100vh;
+    background-image: url(../img/home.png);
+    background-color: #000;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat; }
+    .home .home-bg .row {
+      position: absolute !important;
+      bottom: 14vh; }
+    .home .home-bg p {
+      font-size: 14px;
+      font-family: "Lato";
+      color: #fff;
+      text-align: center;
+      position: absolute !important;
+      bottom: 6vh;
+      width: 100vw; }
+    .home .home-bg .button-outline {
+      padding-top: 6px !important;
+      padding-bottom: 6px !important;
+      padding-left: 16px !important;
+      padding-right: 16px !important;
+      height: 60px !important;
+      width: 130px !important;
+      border-radius: 22px !important;
+      border: 2px solid #fff !important;
+      font-size: 18px !important;
+      font-family: "Lato" !important;
+      color: #fff !important; }
+  .home .link {
+    color: cornflowerblue;
+    text-decoration: none; }
 
-.login .login-bg {
-  width: 100vw;
-  height: 100vh;
-  background-image: url(../img/auth-bg.png);
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat; }
-  .login .login-bg p {
-    font-size: 14px;
-    font-family: "Lato";
-    color: #fff;
-    text-align: center; }
-  .login .login-bg input {
-    font-size: 15px;
-    font-family: "Lato" !important;
-    color: #7d7d7d;
-    font-style: italic; }
-  .login .login-bg .button-outline {
-    padding-top: 6px !important;
-    padding-bottom: 6px !important;
-    padding-left: 16px !important;
-    padding-right: 16px !important;
-    height: 60px !important;
-    width: 130px !important;
-    border-radius: 22px !important;
-    border: 2px solid #fff !important;
-    font-size: 18px !important;
-    font-family: "Lato" !important;
+.login {
+  background-color: #000; }
+  .login .login-bg {
+    width: 100vw;
+    height: 100vh;
+    background-image: url(../img/auth-bg.png);
+    background-color: #000;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat; }
+    .login .login-bg p {
+      font-size: 14px;
+      font-family: "Lato";
+      color: #fff;
+      text-align: center; }
+    .login .login-bg input {
+      font-size: 15px;
+      font-family: "Lato" !important;
+      color: #7d7d7d;
+      font-style: italic;
+      background-color: #fff !important; }
+    .login .login-bg .button-outline {
+      padding-top: 6px !important;
+      padding-bottom: 6px !important;
+      padding-left: 16px !important;
+      padding-right: 16px !important;
+      height: 60px !important;
+      width: 130px !important;
+      border-radius: 22px !important;
+      border: 2px solid #fff !important;
+      font-size: 18px !important;
+      font-family: "Lato" !important;
+      color: #fff !important; }
+  .login .image-round {
+    position: relative;
+    margin-top: 0;
+    margin-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 50%;
+    overflow: hidden;
+    width: 60px;
+    height: 60px;
+    background: transparent; }
+  .login .image-round img {
+    max-height: 100%;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto; }
+  .login .line {
+    border-bottom: 1px solid #fff;
+    height: 1px;
+    width: 100vw; }
+  .login .link {
+    color: cornflowerblue;
+    text-decoration: none; }
+  .login .heading {
+    text-align: center;
+    font-family: 'Lato';
+    font-weight: bold;
+    font-size: 1.2em;
     color: #fff !important; }
-.login .image-round {
-  position: relative;
-  margin-top: 0;
-  margin-bottom: 20px;
-  margin-left: auto;
-  margin-right: auto;
-  border-radius: 50%;
-  overflow: hidden;
-  width: 60px;
-  height: 60px;
-  background: transparent; }
-.login .image-round img {
-  max-height: 100%;
-  max-width: 100%;
-  width: auto;
-  height: auto;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto; }
-.login .line {
-  border-bottom: 1px solid #fff;
-  height: 1px;
-  width: 100vw; }
-.login .link {
-  color: cornflowerblue;
-  text-decoration: none; }
-.login .heading {
-  text-align: center;
-  font-family: 'Lato';
-  font-weight: bold;
-  font-size: 1.2em;
-  color: #fff !important; }
-.login .small-text {
-  text-align: center;
-  font-family: 'Lato';
-  font-size: 0.65em;
-  color: #fff !important; }
-.login .medium-text {
-  text-align: center;
-  font-family: 'Lato';
-  font-size: .55em;
-  color: #fff !important; }
-.login .vbox {
-  height: 100%;
-  display: -webkit-flex;
-  -webkit-flex-direction: column;
-  -webkit-align-items: stretch; }
+  .login .small-text {
+    text-align: center;
+    font-family: 'Lato';
+    font-size: 0.65em;
+    color: #fff !important; }
+  .login .medium-text {
+    text-align: center;
+    font-family: 'Lato';
+    font-size: .55em;
+    color: #fff !important; }
+  .login .vbox {
+    height: 100%;
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    -webkit-align-items: stretch; }
 
 #map {
   width: 100%;
@@ -8754,3 +8761,159 @@ div.custom_btn {
   color: #345EC2 !important; }
 .intro .slider-pager .slider-pager-page {
   color: #aaa !important; }
+
+.mapmodal {
+  font-family: 'Lato';
+  /*    
+  img{
+    width: 100%;
+    height: auto;
+  }*/ }
+  .mapmodal .item-complex .item-content {
+    padding-right: 16px !important; }
+  .mapmodal .alert-badge {
+    font-family: 'Lato-Italic';
+    font-size: .6rem;
+    color: #345EC2;
+    text-align: center;
+    position: absolute;
+    bottom: 6px;
+    left: 46%; }
+  .mapmodal .icon-label {
+    font-family: 'Lato';
+    font-size: .7rem;
+    line-height: .5rem;
+    max-height: 6px;
+    color: #5A5A5A;
+    text-align: center;
+    margin-top: -4px; }
+  .mapmodal .post_item {
+    border-top: 1px solid #999;
+    border-bottom: 1px solid #999; }
+    .mapmodal .post_item .item {
+      border: 0 !important;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important; }
+    .mapmodal .post_item .item-body {
+      border: 1px solid lightgray;
+      padding: 0 !important; }
+  .mapmodal .post-iamge {
+    max-width: 100%;
+    min-height: 100px;
+    background: lightgray; }
+  .mapmodal .post-link {
+    max-height: 66px;
+    overflow: hidden;
+    text-overflow: ellipsis !important;
+    padding: 4px; }
+  .mapmodal .link-title {
+    font-family: 'Lato';
+    padding: 0 !important;
+    margin: 0 !important; }
+  .mapmodal .link-text {
+    color: #777777;
+    /*font-family: 'Lato-Light';*/
+    font-family: 'Lato';
+    font-size: .9rem !important;
+    line-height: 1rem;
+    white-space: nowrap !important; }
+  .mapmodal .row {
+    padding: 4px !important; }
+  .mapmodal .modal_header {
+    width: 100vw;
+    background: white;
+    height: 40px;
+    padding: 0 5px;
+    opacity: 0.7;
+    display: -webkit-flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #DDDDDD; }
+    .mapmodal .modal_header .right i {
+      margin-right: 5px;
+      font-size: 25px; }
+    .mapmodal .modal_header .left i {
+      padding: 5px;
+      font-size: 20px; }
+  .mapmodal .user img {
+    height: 50px !important;
+    width: 50px !important;
+    border-radius: 100%;
+    border: 2px solid #345EC2; }
+  .mapmodal .user .avatar {
+    text-align: center; }
+  .mapmodal .user .name {
+    /*margin-top: 1vh;*/
+    font-size: .8rem;
+    font-style: italic;
+    font-weight: bold; }
+  .mapmodal .user .date {
+    font-size: .7rem;
+    font-weight: normal;
+    float: right;
+    margin-right: 10px; }
+  .mapmodal .user .desc {
+    color: #222222;
+    /*font-family: 'Lato-Light';*/
+    font-family: 'Lato';
+    font-size: .9rem !important;
+    padding-top: 0.6vh;
+    line-height: 1rem; }
+  .mapmodal .share {
+    display: flex;
+    display: -webkit-flex;
+    align-items: center;
+    padding: 5px 20px; }
+    .mapmodal .share .chat-bubble {
+      display: flex;
+      display: -webkit-flex;
+      align-items: center;
+      font-size: .7rem; }
+      .mapmodal .share .chat-bubble img {
+        margin-left: 5px;
+        font-size: 1.4rem;
+        height: 20px;
+        width: 20px; }
+    .mapmodal .share .arrows {
+      display: flex;
+      display: -webkit-flex;
+      font-size: .7rem;
+      align-items: center; }
+      .mapmodal .share .arrows img {
+        width: 40px;
+        padding: 0 10px 0 10px; }
+      .mapmodal .share .arrows i {
+        font-size: 2rem;
+        font-weight: 800;
+        padding: 0 10px; }
+    .mapmodal .share .col:last-child {
+      text-align: right;
+      font-family: 'Lato';
+      font-size: .8rem; }
+  .mapmodal .write-comment {
+    border: 2px solid #EEEEEE;
+    padding: 0; }
+    .mapmodal .write-comment input {
+      font-family: 'Lato-Italic';
+      width: 80%;
+      padding-left: 20px;
+      padding-top: 10px; }
+  .mapmodal .post-select {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: #fff !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 6px !important;
+    color: #999 !important; }
+
+.left-buttons {
+  display: flex;
+  display: -webkit-flex;
+  width: 100vw;
+  justify-content: space-between; }
+  .left-buttons img {
+    padding-top: 4px; }

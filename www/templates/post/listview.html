@@ -49,16 +49,14 @@
       
     <div class="post_item" ng-repeat='post in nearbyPosts track by $index'>
       <div class="row user">
-        <div class="col col-20 avatar"
-          ng-click="goToProfile(post.user_id)"
-          >
+        <div class="col col-20 avatar" ng-click="goToProfile(post.user_id)">
           <img ng-src={{post.Profile_image}}>
         </div>
         <div class="col"> 
           <div class="name">
             <span>{{post.Name}}</span>
             <div class="date">
-              {{post.timeAgo}}
+              {{post.created_date}}
             </div>
           </div>
             <p class="desc" ng-if="!post.link_url" ng-bind-html="post.news | linky | hrefToJS"></p>
@@ -86,7 +84,7 @@
           <img src="img/chat.png" alt="">
         </span>
         <post-like-box></post-like-box>
-          <post-edit ng-if="post.isOwnPost" post="post" from="list"></post-edit>
+          <post-edit ng-if="post.canEdit" post="post" from="list"></post-edit>
         <span class="col" ng-click='openShare(post.id)'> Share</span>
       </div>
     </div>

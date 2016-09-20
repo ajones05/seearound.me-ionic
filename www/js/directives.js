@@ -25,7 +25,7 @@ angular.module('SeeAroundMe.directives', [])
                     }
                     else if(post.isLikedByUser == -1 && myVote == 1){
                         post.isLikedByUser = 1;
-                        post.vote = post.vote + 2;
+                        post.vote = parseInt(post.vote) + 2;
                         
                         //Vote twice: one to cancel negative vote and the other to vote plus
                         //AppService.vote(post.id, myVote)
@@ -47,7 +47,7 @@ angular.module('SeeAroundMe.directives', [])
                     }
                     else if(post.isLikedByUser == 1 && myVote == -1){
                         post.isLikedByUser = -1;
-                        post.vote = post.vote - 2;
+                        post.vote = parseInt(post.vote) - 2;
                         //Vote twice: one to cancel positive vote and the other to vote negative
                         //AppService.vote(post.id, myVote)
                             //.then(function(response){
@@ -60,7 +60,7 @@ angular.module('SeeAroundMe.directives', [])
                     //console.log('V: ' + v);
                     // pass v => '1' for upvote
                     // and v=> '-1' for downvote
-                    if($scope.nearbyPosts.map){//List view case
+                    if($scope.nearbyPosts && $scope.nearbyPosts.map){//List view case
                             $scope.nearbyPosts.map(function(post){
                               if (post.id === newsId){
                                   $scope.updateUpVote(post, v);
@@ -75,13 +75,13 @@ angular.module('SeeAroundMe.directives', [])
                     .then(function(response){
                           
                       if (response.data.reasonfailed){
-                          console.log(JSON.stringify(response.data.message));
+                          //console.log(JSON.stringify(response.data.message));
                       }else if (response.data.success){
-                          console.log(JSON.stringify(response));
+                          //console.log(JSON.stringify(response));
                       }
 
                     }, function(err){
-                      console.log('error upvoting', JSON.stringify(err));
+                      //console.log('error upvoting', JSON.stringify(err));
                     });
               };
             
@@ -89,7 +89,7 @@ angular.module('SeeAroundMe.directives', [])
                     console.log('V: ' + v);
                     // pass v => '1' for upvote
                     // and v=> '-1' for downvote
-                      if($scope.nearbyPosts.map){//List view case
+                      if($scope.nearbyPosts && $scope.nearbyPosts.map){//List view case
                             $scope.nearbyPosts.map(function(post){
                               if (post.id === newsId){
                                   $scope.updateDownVote(post, v);
@@ -104,13 +104,13 @@ angular.module('SeeAroundMe.directives', [])
                     .then(function(response){
                           
                       if (response.data.reasonfailed){
-                          console.log(JSON.stringify(response.data.message));
+                          //console.log(JSON.stringify(response.data.message));
                       }else if (response.data.success){
-                          console.log(JSON.stringify(response));
+                          //console.log(JSON.stringify(response));
                       }
 
                     }, function(err){
-                      console.log('error upvoting', JSON.stringify(err));
+                      //console.log('error upvoting', JSON.stringify(err));
                     });
               }            
         }
@@ -158,7 +158,7 @@ angular.module('SeeAroundMe.directives', [])
                  if(res) {
                         $rootScope.currentPosts.splice($rootScope.currentPosts.indexOf(post), 1);
                         AppService.deletePost(post).then(function(){
-                            console.log('Post deleted successfully');
+                            //console.log('Post deleted successfully');
                             if($scope.from == 'map'){
                                 $rootScope.$broadcast('hidemapmodal'); 
                                 MapService.refreshMap();

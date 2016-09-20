@@ -34,7 +34,7 @@ angular.module('SeeAroundMe', [
     }
 
     $rootScope.goToProfile = function(id){
-      console.log('goto profile called with id= ', id);
+      //console.log('goto profile called with id= ', id);
       AppService.setIsCurrentUserFlag(false);
       AppService.setUserForProfilePage(id)
       .then(function(){
@@ -51,10 +51,14 @@ angular.module('SeeAroundMe', [
     $rootScope.toggleSearchBar = function(){
       $rootScope.showInputBar = !$rootScope.showInputBar;
     }
+    
+    var hasData = localStorage.hasOwnProperty('sam_user_data');
+    var data = localStorage.getItem('sam_user_data');
+    var isAuthenticated = hasData && data && data !== 'undefined' ? true : false;
 
-    var isAuthenticated = localStorage.hasOwnProperty('sam_user_data');
-
-    if(isAuthenticated){        
+    if(isAuthenticated){ 
+        var userData = JSON.parse(data);
+        AppService.setAuthToken(userData.token);
         $state.go('app.postlistview');
         //Login event causes map initialization
        //$timeout(function(){
@@ -69,7 +73,7 @@ angular.module('SeeAroundMe', [
 })
 
 .constant('$ionicLoadingConfig', { template: 'Loading...'})
-.constant('API_URL','http://www.seearound.me/mobile')
+.constant('API_URL','http://www.seearoundgo.com/mobile')
 
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $httpProvider) {
     // Use x-www-form-urlencoded Content-Type
@@ -91,8 +95,7 @@ angular.module('SeeAroundMe', [
     $ionicConfigProvider.views.swipeBackEnabled(false);    
 
     $ionicConfigProvider.backButton.previousTitleText(false).text('');
-    //openFB.init({appId: '755231644585441'});
-    openFB.init({appId: '380169185437308'});
+    
     $stateProvider
 
     .state('app', {
