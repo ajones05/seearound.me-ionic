@@ -7,6 +7,21 @@
     </ion-header-bar>
   <ion-content class="edit_profile">
     <ion-list>
+      <ion-item class="profile_image row">
+        <div class="col" ng-click="toggleCamBar()">
+          <img ng-src="{{imgUri}}">
+        </div> 
+          <div class="col text-center">
+              Tap image to edit
+          </div>
+      </ion-item>
+        <ion-item ng-show="showCamBar">
+            <div class="button-bar" width="100%" style="background:transparent;max-height:40px;">
+                <a class="button button-dark" ng-click="openMedia('camera')" style="font-weight:bold;">Camera</a>
+                <a class="button button-dark" ng-click="openMedia('gallery')" style="font-weight:bold;">Gallery</a>
+                <a class="button button-dark" ng-click="clearImage()" style="font-weight:bold;">Clear</a>
+            </div>
+        </ion-item>    
       <ion-item class="row no-top-border">
         <span class="col col-33">Name</span>
         <input class="col" type="text" value="{{User.Name}}" ng-model="newData.Name"/>

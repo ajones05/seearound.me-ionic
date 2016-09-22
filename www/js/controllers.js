@@ -1,8 +1,10 @@
 angular.module('SeeAroundMe.controllers', [])
 
 .controller('AppCtrl', function($scope, AppService, $timeout, $ionicHistory, $ionicLoading, $rootScope, $state) {
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
+    
+  $scope.$on('$ionicView.enter', function(e) {
+      $scope.User = JSON.parse(localStorage.getItem('sam_user_data'));
+  });
       
   $rootScope.isBeforeSignUp = false;
 
@@ -798,10 +800,12 @@ angular.module('SeeAroundMe.controllers', [])
            //console.log($scope.User.Birth_date);
         }
         
-          if (!$scope.User.public_profile)
+        if (!$scope.User.public_profile)
             $scope.User.public_profile = false;
 
-          $scope.newData = angular.copy($scope.User);
+        $scope.newData = angular.copy($scope.User);
+        
+        $rootScope.imgUri = $scope.User.Profile_image;
     });
 
   $scope.doEdit = function(){
@@ -814,9 +818,12 @@ angular.module('SeeAroundMe.controllers', [])
         birth_date: dob,
         public_profile: $scope.newData.public_profile,
         gender: $scope.newData.Gender,
-        interest: $scope.newData.Activities,
-        image: $scope.newData.Profile_image
+        interest: $scope.newData.Activities
       };
+      
+      if($rootScope.imgUri && $rootScope.imgUri != 'http://www.seearound.me/uploads/default.jpg' && $rootScope.imgUri != " "){
+          data.image = $rootScope.imgUri;
+      }
 
     // change true|false value to 0|1
     ($scope.newData.public_profile)? ($scope.newData.public_profile = 1) : ($scope.newData.public_profile = 0);
@@ -825,12 +832,30 @@ angular.module('SeeAroundMe.controllers', [])
     AppService.editProfile(data)
     .then(function(res){
       //console.log(JSON.stringify(res));
+        
       $ionicLoading.hide();
-      if(res.data.result){
-          $scope.newData.Birth_date = res.data.result.Birth_date;
-          localStorage.setItem('sam_user_data', JSON.stringify($scope.newData));
-          $state.go('app.userprofile'); 
-      }
+        
+        if($rootScope.imgUri && $rootScope.imgUri != 'http://www.seearound.me/uploads/default.jpg' && $rootScope.imgUri != " "){//Case when image is uploaded
+                  var resObj = JSON.parse(res.response);
+                  console.log(resObj);
+                    //console.log('DOB: ' + dob);
+          try{
+                $scope.newData.Profile_image = resObj.result.Profile_image;
+                $scope.newData.Birth_date = resObj.result.Birth_date;
+                localStorage.setItem('sam_user_data', JSON.stringify($scope.newData));
+                $state.go('app.userprofile');
+          }
+          catch(err){
+            //Do nothing
+          }
+        }
+        else if(res.data.result){//Case without image
+              $scope.newData.Birth_date = res.data.result.Birth_date;
+              localStorage.setItem('sam_user_data', JSON.stringify($scope.newData));
+              $state.go('app.userprofile');
+        }
+          
+        $rootScope.imgUri = "";
              
     }, function(error){
       $ionicLoading.hide();
@@ -877,7 +902,27 @@ angular.module('SeeAroundMe.controllers', [])
   $scope.$on('$destroy', function() {
     $scope.popover.remove();
   });
-
+    
+  //Camera functions
+    $scope.showCamBar = false;
+    
+    $scope.toggleCamBar = function(){
+        $scope.showCamBar = !$scope.showCamBar;    
+    };
+    
+    $scope.hideCamBar = function(){
+        $scope.showCamBar = false;
+    }; 
+    
+    $scope.openMedia = function(type){
+        AppService.getImage(type);
+        $scope.toggleCamBar();
+    };
+    
+    $scope.clearImage = function(){
+        $rootScope.imgUri = " ";//Space is important otherwise not working 
+        $scope.showCamBar = false;
+    };        
 })
 
 .controller('CommentsCtrl', function($scope, $ionicLoading, $ionicPopup, AppService, ModalService, MapService, $state, $ionicScrollDelegate, $rootScope) {
@@ -2751,6 +2796,19 @@ angular.module('SeeAroundMe.controllers', [])
         MapService.showPostMap(latitude, longitude);
       });
   };
+    
+    $scope.showImage = function(imageSrc){
+          ModalService.init('templates/post/full-image.html', $scope).then(function(modal){
+            modal.show();
+            $scope.imgModal = modal;
+          }).then(function(){
+                $scope.imageSrc = imageSrc;
+          });      
+    };
+    
+    $scope.closeImageModal = function(){
+        $scope.imgModal.remove();
+    };    
     
   $scope.goToNewPost = function(){
         $scope.hideModal();

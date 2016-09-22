@@ -73,7 +73,7 @@ angular.module('SeeAroundMe', [
 })
 
 .constant('$ionicLoadingConfig', { template: 'Loading...'})
-.constant('API_URL','http://www.seearoundgo.com/mobile')
+.constant('API_URL','http://www.seearound.me/mobile')
 
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $httpProvider) {
     // Use x-www-form-urlencoded Content-Type

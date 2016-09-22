@@ -98,7 +98,7 @@
             <a class="icon ion-ios-location-outline" style="font-size:1.3em;"></a>
           </div>
         </div>
-        <img ng-src="{{post.thumb}}" class="post-iamge" on-swipe-down="hideModal()" ng-if="post.thumb" alt=""/>
+        <img ng-src="{{post.thumb}}" class="post-iamge" on-swipe-down="hideModal()" ng-click="showImage(post.image)" ng-if="post.thumb" alt=""/>
         <div class="item" style="padding-top:0;" ng-if="post.link_url" on-swipe-down="hideModal()" ng-click="openLink(post.link_url)">
             <div class="item-body">
               <img class="full-image" ng-src={{post.link_image}} ng-if="post.link_image" alt="">

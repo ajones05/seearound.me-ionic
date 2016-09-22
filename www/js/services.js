@@ -124,7 +124,7 @@ angular.module('SeeAroundMe.services', [])
         signUp: function (data) {
             var url = API_URL + '/registration';
             //console.log($rootScope.imgUri);
-            if($rootScope.imgUri){
+            if($rootScope.imgUri && $rootScope.imgUri != " "){
                 //console.log('Signup with image ...');
                 var options = {
                     fileKey: "image",
@@ -229,7 +229,7 @@ angular.module('SeeAroundMe.services', [])
             
             var url = API_URL + '/addimobinews';
                         
-            if($rootScope.imgUri){
+            if($rootScope.imgUri && $rootScope.imgUri != " "){
                 
                 var options = {
                     fileKey: "image",
@@ -559,9 +559,26 @@ angular.module('SeeAroundMe.services', [])
 
         editProfile: function(data){
           var url = API_URL + '/edit-profile';
-          //console.log(newData)
-          data.token = authToken;
-          return $http.post(url, data);
+           data.token = authToken;
+            
+          //console.log($rootScope.imgUri);
+            if($rootScope.imgUri && $rootScope.imgUri != 'http://www.seearound.me/uploads/default.jpg' && $rootScope.imgUri != " "){
+                //console.log('Edit with image ...');
+                var options = {
+                    fileKey: "image",
+                    fileName: new Date().getTime() + ".jpg",
+                    httpMethod: 'POST',
+                    chunkedMode: false,
+                    mimeType: "image/jpg",
+                    params: data
+                };
+                
+                return $cordovaFileTransfer.upload(url, $rootScope.imgUri, options, true);
+            }
+            else{
+                //console.log('Edit without image ...');
+                return $http.post(url, data);
+            }
         },
          
          getUserById: function(id){
