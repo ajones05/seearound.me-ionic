@@ -267,7 +267,7 @@ angular.module('SeeAroundMe.controllers', [])
 .controller('SignupCtrl', function($scope, $rootScope, $timeout, $state, $ionicLoading, MapService, AppService) {
     //console.log('Signup controller called ...');
     $scope.formData = {};
-            
+    $scope.imgUri = '';        
     $scope.doSignUp = function(user){
         //console.log('Signup ...');
         if(!AppService.isConnected()){
@@ -301,7 +301,7 @@ angular.module('SeeAroundMe.controllers', [])
     
     $scope.doRegister = function(userData){
         $ionicLoading.show();
-        AppService.signUp(userData).then(
+        AppService.signUp(userData, $scope.imgUri).then(
                 function (res) {
                     //console.log('SUCCESS ...... got reponse');
                     //console.log(JSON.stringify(res));
@@ -442,12 +442,15 @@ angular.module('SeeAroundMe.controllers', [])
     }; 
     
     $scope.openMedia = function(type){
-        AppService.getImage(type);
+        AppService.getImage(type).then(function(imgUri){
+            $scope.imgUri = imgUri;
+        });
+        
         $scope.toggleCamBar();
     };
     
     $scope.clearImage = function(){
-        $rootScope.imgUri = ""; 
+        $scope.imgUri = ""; 
         $scope.showCamBar = false;
     };    
 })
@@ -805,7 +808,7 @@ angular.module('SeeAroundMe.controllers', [])
 
         $scope.newData = angular.copy($scope.User);
         
-        $rootScope.imgUri = $scope.User.Profile_image;
+        $scope.imgUri = $scope.User.Profile_image;        
     });
 
   $scope.doEdit = function(){
@@ -821,21 +824,21 @@ angular.module('SeeAroundMe.controllers', [])
         interest: $scope.newData.Activities
       };
       
-      if($rootScope.imgUri && $rootScope.imgUri != 'http://www.seearound.me/uploads/default.jpg' && $rootScope.imgUri != " "){
-          data.image = $rootScope.imgUri;
+      if($scope.imgUri && $scope.imgUri != 'http://www.seearound.me/uploads/default.jpg' && $scope.imgUri != " "){
+          data.image = $scope.imgUri;
       }
 
     // change true|false value to 0|1
     ($scope.newData.public_profile)? ($scope.newData.public_profile = 1) : ($scope.newData.public_profile = 0);
 
     $ionicLoading.show({ template: 'Saving changes..'});
-    AppService.editProfile(data)
+    AppService.editProfile(data, $scope.imgUri)
     .then(function(res){
       //console.log(JSON.stringify(res));
         
       $ionicLoading.hide();
         
-        if($rootScope.imgUri && $rootScope.imgUri != 'http://www.seearound.me/uploads/default.jpg' && $rootScope.imgUri != " "){//Case when image is uploaded
+        if($scope.imgUri && !$scope.imgUri.startsWith('http') && $scope.imgUri != " "){//Case when image is uploaded
                   var resObj = JSON.parse(res.response);
                   console.log(resObj);
                     //console.log('DOB: ' + dob);
@@ -855,7 +858,7 @@ angular.module('SeeAroundMe.controllers', [])
               $state.go('app.userprofile');
         }
           
-        $rootScope.imgUri = "";
+        $scope.imgUri = "";
              
     }, function(error){
       $ionicLoading.hide();
@@ -915,12 +918,16 @@ angular.module('SeeAroundMe.controllers', [])
     }; 
     
     $scope.openMedia = function(type){
-        AppService.getImage(type);
+        
+        AppService.getImage(type).then(function(imgUri){
+            $scope.imgUri = imgUri;
+        });
+        
         $scope.toggleCamBar();
     };
     
     $scope.clearImage = function(){
-        $rootScope.imgUri = " ";//Space is important otherwise not working 
+        $scope.imgUri = " ";//Space is important otherwise not working 
         $scope.showCamBar = false;
     };        
 })
@@ -1794,7 +1801,7 @@ angular.module('SeeAroundMe.controllers', [])
 
 .controller('NewPostCtrl', function($scope, $rootScope, $stateParams, $state, $ionicPopup, $ionicHistory, $ionicLoading, AppService, MapService){
     
-    $rootScope.imgUri = "";
+    $scope.imgUri = "";
     var ud = localStorage.getItem('sam_user_data');
     //console.log(ud);
 
@@ -1818,16 +1825,19 @@ angular.module('SeeAroundMe.controllers', [])
     };
     
     $scope.openMedia = function(type){
-        AppService.getImage(type);
+        AppService.getImage(type).then(function(imgUri){
+                //console.log('image uri: '+ imgUri);
+                $scope.imgUri = imgUri;
+                if($scope.addLocation !== "        Add location")
+                    $scope.textColor = 'blue';
+        });
+        
         $scope.toggleCamBar();
-        if($scope.addLocation !== "        Add location")
-            $scope.textColor = 'blue'
     };
     
     $scope.clearImage = function(){
-        $rootScope.postMode = 'new';
-        $rootScope.imgUri = ""; 
-        AppService.clearImageUri();
+        $rootScope.imgUri = '';
+        $scope.imgUri = ""; 
         $scope.showCamBar = false;
         
           if (!$scope.formData.postText){
@@ -1836,53 +1846,42 @@ angular.module('SeeAroundMe.controllers', [])
           }        
     };
     
+    $scope.selectLocation = function(){
+        //Save image uri and text before leaving
+        AppService.setImgUri($scope.imgUri);
+        $rootScope.postText = $scope.formData.postText;
+        $rootScope.postMode = 'new';
+        $state.go('chooselocation');
+    };
+    
     $scope.$on('$ionicView.enter', function(e) {
-        //Fix for a weird bug: -- For some reason, $rootScope.imgUri becomes empty after returning from set location view, so we are resetting it here
-        $rootScope.imgUri = AppService.getImageUri();
         
-        if($stateParams.address){
-            $scope.addLocation = $stateParams.address;
-            if($rootScope.postText || $rootScope.imgUri != ""){
+        if($stateParams.from == "selectlocation"){
+         
+            if($stateParams.address){//Address was selected 
+                $scope.addLocation = $stateParams.address;
+            }
+            else{//cancel on selectlocation
+                $scope.addLocation = "        Add location";
+            }        
+            
+            var imageUri = AppService.getImgUri();
+            if($rootScope.postText || imageUri != ""){
+                $scope.imgUri = imageUri; //Reset saved uri
+                AppService.setImgUri("");
                 $scope.formData.postText = $rootScope.postText;
                 $scope.textColor = 'blue';
-            }
-        }
-        else{
-            $scope.addLocation = "        Add location";
-            if($stateParams.from == "selectlocation"){
-                $scope.formData.postText = $rootScope.postText;
-            }
-            else{//Edit post case
-                if($rootScope.postMode == 'edit'){
-                    $rootScope.postText = $stateParams.news;
-                    $scope.formData.postText = $stateParams.news;
-                    //To check if image has been changed
-                    $rootScope.oldImage = $stateParams.images;
-                    $rootScope.imgUri = $stateParams.images;
-                    $rootScope.postId = $stateParams.id;
-                    $scope.addLocation = $stateParams.Address;
-                    
-                    if($stateParams.from == 'map'){
-                        $scope.isFromMapView = true;
-                        //Fire event to hide map modal
-                        $rootScope.$broadcast('hidemapmodal');
-                    }
-                    else{
-                        $scope.isFromMapView = false;
-                    }
-                }                
-            }
+            }            
         }        
     });
-
     
     // set post button to blue when typing
     $scope.checkInput = function(){
-      $rootScope.postText =  $scope.formData.postText;
+      //$rootScope.postText =  $scope.formData.postText;
       $scope.textColor = '';
       if ($scope.addLocation != "        Add location"){
         //console.log($scope.formData.postText);         
-        if($scope.formData.postText || $rootScope.imgUri){
+        if($scope.formData.postText || $scope.imgUri){
             $scope.textColor = 'blue';
         } 
         else{  
@@ -1913,7 +1912,7 @@ angular.module('SeeAroundMe.controllers', [])
                 "zip" : $stateParams.zip
             };
 
-            AppService.addNewPost(data).then(
+            AppService.addNewPost(data, $scope.imgUri).then(
                     function(res){
                         //console.log('Post Success ...');
                         //console.log(JSON.stringify(res));
@@ -1965,6 +1964,176 @@ angular.module('SeeAroundMe.controllers', [])
         });        
     }; 
     
+    $scope.refreshPosts = function(){
+        
+        if($scope.isFromMapView || $rootScope.page == 'map'){            
+            $state.go('app.postmapview');            
+        }
+        else{
+            
+            var params = {
+                "latitude" : $rootScope.currentCenter.lat(),// 37.8088139,
+                "longitude" : $rootScope.currentCenter.lng(),//-122.2635002,
+                "radious" : $rootScope.inputRadius,
+                "token" : authToken,
+                "start" : 0
+            };
+
+            //console.log(JSON.stringify(params));
+            AppService.getNearbyPosts(params)
+            .success(function (response) {
+
+                //console.log(JSON.stringify(response));
+                if(response.status == 'SUCCESS'){
+                    //console.log('Got nearby posts ..............................');
+                    if(response.result){
+                      // the regex that matches urls in text
+                      var urlRegEx = new RegExp(
+                              "((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
+                           );
+
+                        response.result.forEach(function (post) {
+
+                            post.news = post.news.replace(urlRegEx, "");
+
+                        });
+
+                        //To use on list view
+                        $rootScope.currentPosts = response.result;
+                        $state.go('app.postlistview');
+                     }
+
+                }
+                 else{
+                     //console.log('Failed to get nearby posts ...');
+                     $rootScope.currentPosts = [];
+                 }                
+            })
+            .error(function (err) {
+                //console.warn(JSON.stringify(err));
+            });
+        }
+    };
+    
+    $scope.goBack = function(){
+        $scope.clearImage();
+        
+        if($stateParams.from == "selectlocation"){//$ionicHistory.goBack() will go to select location screen
+            $state.go('app.postlistview');
+        }
+        else
+            $ionicHistory.goBack();
+    };    
+})
+
+.controller('EditPostCtrl', function($scope, $rootScope, $stateParams, $state, $ionicPopup, $ionicHistory, $ionicLoading, AppService, MapService){
+    
+    $scope.isFromMapView = false;
+    var ud = localStorage.getItem('sam_user_data');
+    //console.log(ud);
+
+    var userData = JSON.parse(ud) || '{}';
+
+    var userId = userData.id || 0;
+    var authToken = userData.token || '';
+    
+    AppService.setUserId(userId);
+
+    $scope.addLocation = "        Add location";
+    $scope.formData = {};
+    $scope.showCamBar = false;
+    
+    $scope.toggleCamBar = function(){
+        $scope.showCamBar = !$scope.showCamBar;    
+    };
+    
+    $scope.hideCamBar = function(){
+        $scope.showCamBar = false;
+    };
+    
+    $scope.openMedia = function(type){
+        AppService.getImage(type).then(function(imgUri){
+                //console.log('image uri: '+ imgUri);
+                $scope.imgUri = imgUri;
+                if($scope.addLocation !== "        Add location")
+                    $scope.textColor = 'blue';
+        });
+        
+        $scope.toggleCamBar();
+    };
+    
+    $scope.clearImage = function(){
+        $scope.imgUri = ""; 
+        $scope.showCamBar = false;
+        
+          if (!$scope.formData.postText){
+
+                $scope.textColor = 'gray';
+          }        
+    };
+    
+    $scope.selectLocation = function(){
+        //Save image uri and text before leaving
+        AppService.setImgUri($scope.imgUri);
+        $rootScope.postText = $scope.formData.postText;
+        $rootScope.address = $scope.addLocation;
+        $rootScope.postMode = 'edit';
+        $state.go('chooselocation');
+    };
+    
+    $scope.$on('$ionicView.enter', function(e) {
+        
+        if($stateParams.from == "selectlocation"){
+         
+            if($stateParams.address){//Address was selected 
+                $scope.addLocation = $stateParams.address;
+            }
+            else{//cancel on selectlocation
+                $scope.addLocation = $rootScope.address;
+            }        
+            
+            var imageUri = AppService.getImgUri();
+            if($rootScope.postText || imageUri != ""){
+                $scope.imgUri = imageUri; //Reset saved uri
+                AppService.setImgUri("");
+                $scope.formData.postText = $rootScope.postText;
+                $scope.textColor = 'blue';
+            }            
+        }
+        else{ //From a post edit
+            $scope.formData.postText = $stateParams.news;
+            //To check if image has been changed
+            $rootScope.oldImage = $stateParams.image;
+            $scope.imgUri = $stateParams.image;
+            $scope.postId = $stateParams.id;
+            $scope.addLocation = $stateParams.Address;
+
+            if($stateParams.from == 'map'){
+                $scope.isFromMapView = true;
+                //Fire event to hide map modal
+                $rootScope.$broadcast('hidemapmodal');
+            }
+        }
+    });
+    
+    // set post button to blue when typing
+    $scope.checkInput = function(){
+      //$rootScope.postText =  $scope.formData.postText;
+      $scope.textColor = '';
+      if ($scope.addLocation != "        Add location"){
+        //console.log($scope.formData.postText);         
+        if($scope.formData.postText || $scope.imgUri){
+            $scope.textColor = 'blue';
+        } 
+        else{  
+            $scope.textColor = 'gray';
+        }
+      }
+      else{
+        $scope.textColor = 'gray';    
+      }
+    };
+    
     $scope.savePost = function () {
         
         if($scope.textColor == 'gray' || $scope.addLocation == "        Add location")
@@ -1973,7 +2142,7 @@ angular.module('SeeAroundMe.controllers', [])
         function savePost(){
             var data = {            
                 "token" : authToken,
-                "post_id" : $rootScope.postId,
+                "post_id" : $scope.postId,
                 "body" : $scope.formData.postText,
                 "latitude" : $stateParams.latitude,
                 "longitude" : $stateParams.longitude,
@@ -1985,17 +2154,16 @@ angular.module('SeeAroundMe.controllers', [])
                 "zip" : $stateParams.zip
             };
 
-            if($rootScope.imgUri.length == 0){
+            if($scope.imgUri.length == 0){
                 data.delete_image = 1;
             }
 
-            AppService.savePost(data).then(
+            AppService.savePost(data, $scope.imgUri).then(
                     function(res){
                         //console.log('Post Success ...');
                         //console.log(JSON.stringify(res));
                         $ionicLoading.hide();
                         $rootScope.postText = '';
-                        $rootScope.postMode = 'new';
                         $scope.formData.postText = '';
                         //$scope.goBack();
                         $scope.refreshPosts();
@@ -2016,34 +2184,7 @@ angular.module('SeeAroundMe.controllers', [])
                template: '<ion-spinner class="spinner-calm"></ion-spinner><br/>Saving ...',
                duration: 20000 //Dismiss after 20 seconds
         });
-        
-        /*
-        AppService.checkPost({ 
-            "user_id" : userId,
-            "body" : $scope.formData.postText
-        }).then(function(res){
-            if(res.data.link_post_id){//Link is already shared
-                $ionicLoading.hide();
-                $ionicPopup.confirm({
-                    title: 'See Around Me Alert',
-                    template: 'The link you are going to post has already been shared. Do you want to post it anyway?',
-                    cancelText: 'No',
-                    okText: 'Yes'                
-               }).then(function(res) {
-                 if(res) {
-                     savePost();
-                 } 
-                else{
-                    $rootScope.postText = '';
-                    $scope.formData.postText = '';
-                }                    
-               });                
-            }
-            else{//Link not shared, proceed
-                savePost();
-            }
-        }); */ 
-        
+                
         //Comment this out in case you need to open above code
         savePost();
     };
@@ -2101,11 +2242,17 @@ angular.module('SeeAroundMe.controllers', [])
     
     $scope.goBack = function(){
         $scope.clearImage();
-        $ionicHistory.goBack();
-        //if($scope.isFromMapView){
+        
+        if($scope.isFromMapView){
+            $state.go('app.postmapview');
             //Fire event to show map modal
-            //$rootScope.$broadcast('showmapmodal');
-        //}
+            $rootScope.$broadcast('showmapmodal');
+        }
+        else if($stateParams.from == "selectlocation"){//$ionicHistory.goBack() will go to select location screen
+            $state.go('app.postlistview');
+        }
+        else
+            $ionicHistory.goBack();
     };    
 })
 
@@ -2207,7 +2354,7 @@ angular.module('SeeAroundMe.controllers', [])
             from: "selectlocation"
         };
 
-        $state.go('newpostview', p);
+        $state.go('editpostview', p);
     };
     
     $scope.$on('$ionicView.enter', function(e) {

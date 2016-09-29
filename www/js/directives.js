@@ -62,27 +62,29 @@ angular.module('SeeAroundMe.directives', [])
                     // and v=> '-1' for downvote
                     if($scope.nearbyPosts && $scope.nearbyPosts.map){//List view case
                             $scope.nearbyPosts.map(function(post){
-                              if (post.id === newsId){
+                              if (post.canVote == 1 && post.id === newsId){
                                   $scope.updateUpVote(post, v);
                               }
                             });                              
                       }
-                      else{//Map modal view case
+                      else if(post.canVote == 1){//Map modal view case
                           $scope.updateUpVote($scope.post, v);
                       }
 
-                    AppService.vote(newsId, v)
-                    .then(function(response){
-                          
-                      if (response.data.reasonfailed){
-                          //console.log(JSON.stringify(response.data.message));
-                      }else if (response.data.success){
-                          //console.log(JSON.stringify(response));
-                      }
+                      if(post.canVote == 1){
+                            AppService.vote(newsId, v)
+                            .then(function(response){
 
-                    }, function(err){
-                      //console.log('error upvoting', JSON.stringify(err));
-                    });
+                              if (response.data.reasonfailed){
+                                  //console.log(JSON.stringify(response.data.message));
+                              }else if (response.data.success){
+                                  //console.log(JSON.stringify(response));
+                              }
+
+                            }, function(err){
+                              //console.log('error upvoting', JSON.stringify(err));
+                            });
+                      }
               };
             
               $scope.downVote = function(newsId , v){
@@ -91,27 +93,29 @@ angular.module('SeeAroundMe.directives', [])
                     // and v=> '-1' for downvote
                       if($scope.nearbyPosts && $scope.nearbyPosts.map){//List view case
                             $scope.nearbyPosts.map(function(post){
-                              if (post.id === newsId){
+                              if (post.canVote == 1 && post.id === newsId){
                                   $scope.updateDownVote(post, v);
                               }
                             });                              
                       }
-                      else{//Map modal view case
+                      else if(post.canVote == 1){//Map modal view case
                           $scope.updateDownVote($scope.post, v);
                       }                          
                   
-                    AppService.vote(newsId, v)
-                    .then(function(response){
-                          
-                      if (response.data.reasonfailed){
-                          //console.log(JSON.stringify(response.data.message));
-                      }else if (response.data.success){
-                          //console.log(JSON.stringify(response));
-                      }
+                      if(post.canVote == 1){
+                            AppService.vote(newsId, v)
+                            .then(function(response){
 
-                    }, function(err){
-                      //console.log('error upvoting', JSON.stringify(err));
-                    });
+                              if (response.data.reasonfailed){
+                                  //console.log(JSON.stringify(response.data.message));
+                              }else if (response.data.success){
+                                  //console.log(JSON.stringify(response));
+                              }
+
+                            }, function(err){
+                              //console.log('error upvoting', JSON.stringify(err));
+                            });
+                      }
               }            
         }
     }
@@ -176,8 +180,6 @@ angular.module('SeeAroundMe.directives', [])
                 //console.log('editPost called ...');
                 //console.log(JSON.stringify(post));
                 $scope.hideMenuModal();
-                //Set post mode to edit
-                $rootScope.postMode = 'edit';
                 
                 if($scope.from == 'map'){
                     post.from = 'map';

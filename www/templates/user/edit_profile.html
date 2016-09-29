@@ -33,7 +33,7 @@
         <input class="col" type="text" value="{{User.karma}}" ng-model="newData.karma" readonly/>
       </ion-item>
 
-      <ion-item class="row">
+      <ion-item class="row" ng-if="User.Email_id && newData.public_profile">
         <span class="col col-33">Email</span>
         <input class="col" type="email" 
         value="{{User.Email_id}}"
@@ -66,6 +66,7 @@
         <span class="col"> Make Email Visible to Public </span>
         <label class="toggle toggle-positive">
           <input type="checkbox"
+          ng-checked="newData.public_profile"
           ng-model="newData.public_profile"
           >
           <div class="track">

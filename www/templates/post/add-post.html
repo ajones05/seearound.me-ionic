@@ -1,7 +1,7 @@
 <ion-view cache-view="false" class="addpost">
   <ion-header-bar>
     <div class="buttons">
-      <button class="button button-clear" ng-click="clearImage()" ui-sref="app.postmapview">          
+      <button class="button button-clear" ng-click="goBack()">          
         <!-- i class="icon ion-ios-arrow-left"></i -->
           Cancel
       </button>
@@ -20,7 +20,7 @@
             <img ng-show="!imgUri" ng-src="img/cam_icon.png"/>
         </div>
         <div class="col col-70">
-            <div ui-sref="chooselocation" style="border:1px solid #222" class="button button-large button-block button-light btn-location">
+            <div ng-click="selectLocation()" style="border:1px solid #222" class="button button-large button-block button-light btn-location">
                 <p class="address">
                     {{addLocation}}
                     <i class="icon icon-right ion-chevron-right"></i>

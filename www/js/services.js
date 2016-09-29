@@ -13,12 +13,10 @@ angular.module('SeeAroundMe.services', [])
     var conversationUserId = null;
     var conversation = null;
     var otherUser = null;
-    
     //var isCurrentUser = false; --- set it on root scope instead
     var profileUserId = null;
     var currentPostComments = {};
     var pageNum = 0, commentsPageNum = 0;
-    var imageUri = null;
     var service = {
         
         getAuthToken: function(){
@@ -29,12 +27,14 @@ angular.module('SeeAroundMe.services', [])
             authToken = token;
         },
         
-        getImageUri: function(){
-            return imageUri;
+        imgUri: "",
+        
+        getImgUri: function(){
+            return this.imgUri;
         },
         
-        clearImageUri: function(){
-            imageUri = null;    
+        setImgUri: function(imgUri){
+            this.imgUri = imgUri;
         },
         
         getImage: function(mediaType){
@@ -57,12 +57,7 @@ angular.module('SeeAroundMe.services', [])
                 cameraOptions.sourceType = Camera.PictureSourceType.CAMERA;
              }
             //console.info(cameraOptions);
-            $cordovaCamera.getPicture(cameraOptions)
-            .then(function(imgUri){
-                //console.log('image uri: '+ imgUri);
-                $rootScope.imgUri = imgUri;
-                imageUri = imgUri;
-            });
+            return $cordovaCamera.getPicture(cameraOptions);            
         },
         
         vote: function(newsId, v){        
@@ -121,10 +116,10 @@ angular.module('SeeAroundMe.services', [])
             });
         },
         
-        signUp: function (data) {
+        signUp: function (data, imgUri) {
             var url = API_URL + '/registration';
             //console.log($rootScope.imgUri);
-            if($rootScope.imgUri && $rootScope.imgUri != " "){
+            if(imgUri && imgUri != " "){
                 //console.log('Signup with image ...');
                 var options = {
                     fileKey: "image",
@@ -135,7 +130,7 @@ angular.module('SeeAroundMe.services', [])
                     params: data
                 };
                 
-                return $cordovaFileTransfer.upload(url, $rootScope.imgUri, options, true);
+                return $cordovaFileTransfer.upload(url, imgUri, options, true);
             }
             else{
                 //console.log('Signup without image ...');
@@ -225,11 +220,11 @@ angular.module('SeeAroundMe.services', [])
             return $http.post(url, data);                        
         },
         
-        addNewPost: function (data) {   
+        addNewPost: function (data, imgUri) {   
             
             var url = API_URL + '/addimobinews';
                         
-            if($rootScope.imgUri && $rootScope.imgUri != " "){
+            if(imgUri && imgUri != ""){
                 
                 var options = {
                     fileKey: "image",
@@ -240,7 +235,7 @@ angular.module('SeeAroundMe.services', [])
                     params: data
                 };
                 
-                return $cordovaFileTransfer.upload(url, $rootScope.imgUri, options, true);
+                return $cordovaFileTransfer.upload(url, imgUri, options, true);
             }
             else{
                 return $http.post(url, data);
@@ -254,10 +249,10 @@ angular.module('SeeAroundMe.services', [])
             return $http.post(url, data);           
         },
         
-        savePost: function(data){
+        savePost: function(data, imgUri){
               var url = API_URL + '/save-post';
                         
-            if($rootScope.imgUri.length > 0 && $rootScope.imgUri != $rootScope.oldImage){//Image has been changed
+            if(imgUri.length > 0 && imgUri != $rootScope.oldImage){//Image has been changed
                 
                 var options = {
                     fileKey: "image",
@@ -268,7 +263,7 @@ angular.module('SeeAroundMe.services', [])
                     params: data
                 };
                 
-                return $cordovaFileTransfer.upload(url, $rootScope.imgUri, options, true);
+                return $cordovaFileTransfer.upload(url, imgUri, options, true);
             }
             else{
                 data.image = $rootScope.oldImage;
@@ -479,11 +474,18 @@ angular.module('SeeAroundMe.services', [])
                   $state.go('app.userfollowing');
                   break;
                 case 'message':
-                  AppService.setOtherUserId(alert.user_id);
-                  AppService.getUserById(alert.user_id).then(function(res){
-                      AppService.setOtherUser(res.data.result);
-                      $state.go('app.userchat');
-                  });                  
+                  AppService.getUnreadConvs().then(function(res){
+                      //console.log(JSON.stringify(res));
+                      var convs = res.data.result;
+                      for(var i=0; i < convs.length; i++ ){
+                          if(convs[i].sender_id == alert.user_id){
+                              AppService.setConv(convs[i]);
+                              $state.go('app.userchat', {from: 'messages'});
+                              break;
+                          }
+                      }
+                  });
+                    
                   break;
                 default: //vote or comment 
                     var post = null;
@@ -557,12 +559,12 @@ angular.module('SeeAroundMe.services', [])
             return $http.post(url, params);
         },
 
-        editProfile: function(data){
+        editProfile: function(data, imgUri){
           var url = API_URL + '/edit-profile';
            data.token = authToken;
             
           //console.log($rootScope.imgUri);
-            if($rootScope.imgUri && $rootScope.imgUri != 'http://www.seearound.me/uploads/default.jpg' && $rootScope.imgUri != " "){
+            if(imgUri && !imgUri.startsWith('http') && imgUri != " "){
                 //console.log('Edit with image ...');
                 var options = {
                     fileKey: "image",
@@ -573,7 +575,7 @@ angular.module('SeeAroundMe.services', [])
                     params: data
                 };
                 
-                return $cordovaFileTransfer.upload(url, $rootScope.imgUri, options, true);
+                return $cordovaFileTransfer.upload(url, imgUri, options, true);
             }
             else{
                 //console.log('Edit without image ...');
@@ -612,6 +614,16 @@ angular.module('SeeAroundMe.services', [])
         
         getOtherUser: function(){
             return otherUser;
+        },
+        //Get conversations with unread messages in them
+        getUnreadConvs: function(){
+              var url = API_URL + '/unreadmessages';
+              var params = {
+                token: authToken,
+                start: 0
+              };
+
+              return $http.post(url, params);            
         },
 
         getConversation: function(id){
@@ -1015,12 +1027,21 @@ angular.module('SeeAroundMe.services', [])
             
             var me = this;
 
+            /*
             google.maps.event.addListener((map), 'dragend', 
                 function(event) { 
-                //console.log('map dragged'); 
+                console.log('map dragend event fired ...');
                 var c = this.getCenter();
                 $rootScope.currentCenter = c;
                 me.centerMap(c);
+            });*/
+         
+            google.maps.event.addListener((map), 'idle',
+            function(event) {
+               //console.log('map idle event fired ....');
+               var c = this.getCenter();
+               $rootScope.currentCenter = c;
+               me.centerMap(c);
             });
 
             $rootScope.map = map;
