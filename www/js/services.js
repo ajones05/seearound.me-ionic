@@ -1,6 +1,6 @@
 angular.module('SeeAroundMe.services', [])
 
-.factory('AppService', function($http, $q, $rootScope, $state, $cordovaNetwork, $cordovaCamera, $cordovaFileTransfer, $ionicPopup, API_URL) {
+.factory('AppService', function($http, $q, $rootScope, $state, $cordovaNetwork, $cordovaCamera, $cordovaFileTransfer, $ionicPopup, $ionicLoading, API_URL) {
     
     var data = localStorage.getItem('sam_user_data');
     if(data && data !== 'undefined')
@@ -207,11 +207,11 @@ angular.module('SeeAroundMe.services', [])
             
             pageNum = pageNum + 15;
             
-            var data = {
+            var data = {                
                 "latitude" : $rootScope.currentCenter.lat(),
                 "longitude" : $rootScope.currentCenter.lng(),
                 "radious" : $rootScope.inputRadius,
-                "userId" : userId,
+                "token": authToken,
                 "start" : pageNum
             };
             
@@ -463,9 +463,7 @@ angular.module('SeeAroundMe.services', [])
           });
         }, 
         
-        alertActions: function (alert, scope){ 
-            
-            scope.alertsPopover.hide();
+        alertActions: function (alert){ 
             
             var AppService = this;
             
@@ -476,7 +474,7 @@ angular.module('SeeAroundMe.services', [])
                 case 'message':
                   AppService.getUnreadConvs().then(function(res){
                       //console.log(JSON.stringify(res));
-                      var convs = res.data.result;
+                      var convs = res.data.result || [];
                       for(var i=0; i < convs.length; i++ ){
                           if(convs[i].sender_id == alert.user_id){
                               AppService.setConv(convs[i]);
@@ -504,14 +502,23 @@ angular.module('SeeAroundMe.services', [])
                         });                              
                     }
                     else{//Post was not found
+                        $ionicLoading.show({ template: 'Loading post ...'});
                         var data = {
+                            token: authToken,
                             user_id: alert.user_id,
                             post_id: alert.post_id
                         };
 
                         AppService.getPost(data)
                         .then(function(result){
+                            $ionicLoading.hide();
                             if(result.data.post){
+                                var urlRegEx = new RegExp(
+                                  "((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
+                                );                                
+                                if(result.data.post.link_url){
+                                    result.data.post.news = result.data.post.news.replace(urlRegEx, "");
+                                }
                                 result.data.post.isOwnPost = true;
                                 AppService.setCurrentComments(result.data.post)
                                 .then(function(){
@@ -526,7 +533,6 @@ angular.module('SeeAroundMe.services', [])
               AppService.markAlertRead(alert);
         },
         
-
         setUserForProfilePage: function(id){
           /*
            * sets the id for the profile that needs to be fetched in the profile page
@@ -1026,24 +1032,7 @@ angular.module('SeeAroundMe.services', [])
             });
             
             var me = this;
-
-            /*
-            google.maps.event.addListener((map), 'dragend', 
-                function(event) { 
-                console.log('map dragend event fired ...');
-                var c = this.getCenter();
-                $rootScope.currentCenter = c;
-                me.centerMap(c);
-            });*/
          
-            google.maps.event.addListener((map), 'idle',
-            function(event) {
-               //console.log('map idle event fired ....');
-               var c = this.getCenter();
-               $rootScope.currentCenter = c;
-               me.centerMap(c);
-            });
-
             $rootScope.map = map;
 
             //Now add circle and post locations on the map

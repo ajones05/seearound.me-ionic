@@ -13,7 +13,7 @@ angular.module('SeeAroundMe.directives', [])
               +'<img src="img/downvote_off.png" ng-if="post.isLikedByUser == 0" ng-click="downVote(post.id, -1)" alt=""></span>',
         controller: function ($scope, AppService) {
             
-              $scope.updateUpVote = function(post, myVote){
+              $scope.updateUpVote = function(post, myVote, newsId){
                     
                     if(post.isLikedByUser == 1 && myVote == -1){//Cancel vote case
                             post.isLikedByUser = 0;
@@ -26,16 +26,25 @@ angular.module('SeeAroundMe.directives', [])
                     else if(post.isLikedByUser == -1 && myVote == 1){
                         post.isLikedByUser = 1;
                         post.vote = parseInt(post.vote) + 2;
-                        
-                        //Vote twice: one to cancel negative vote and the other to vote plus
-                        //AppService.vote(post.id, myVote)
-                        //.then(function(response){
-                          //console.log(JSON.stringify(response));
-                        //});
-                    };                  
+                    };  
+                  
+                      if(post.canVote == 1){
+                            AppService.vote(newsId, myVote)
+                            .then(function(response){
+
+                              if (response.data.reasonfailed){
+                                  //console.log(JSON.stringify(response.data.message));
+                              }else if (response.data.success){
+                                  //console.log(JSON.stringify(response));
+                              }
+
+                            }, function(err){
+                              //console.log('error upvoting', JSON.stringify(err));
+                            });
+                      }                  
               };
             
-              $scope.updateDownVote = function(post, myVote, totalVote){
+              $scope.updateDownVote = function(post, myVote, newsId){
                     
                     if(post.isLikedByUser == 0 && myVote == -1){
                             post.isLikedByUser = -1;
@@ -54,25 +63,9 @@ angular.module('SeeAroundMe.directives', [])
                               //console.log(JSON.stringify(response));
                             //});
                     }
-              };            
-            
-              $scope.upVote = function(newsId , v){
-                    //console.log('V: ' + v);
-                    // pass v => '1' for upvote
-                    // and v=> '-1' for downvote
-                    if($scope.nearbyPosts && $scope.nearbyPosts.map){//List view case
-                            $scope.nearbyPosts.map(function(post){
-                              if (post.canVote == 1 && post.id === newsId){
-                                  $scope.updateUpVote(post, v);
-                              }
-                            });                              
-                      }
-                      else if(post.canVote == 1){//Map modal view case
-                          $scope.updateUpVote($scope.post, v);
-                      }
-
+                  
                       if(post.canVote == 1){
-                            AppService.vote(newsId, v)
+                            AppService.vote(newsId, myVote)
                             .then(function(response){
 
                               if (response.data.reasonfailed){
@@ -84,6 +77,22 @@ angular.module('SeeAroundMe.directives', [])
                             }, function(err){
                               //console.log('error upvoting', JSON.stringify(err));
                             });
+                      }                  
+              };            
+            
+              $scope.upVote = function(newsId , v){
+                    //console.log('V: ' + v);
+                    // pass v => '1' for upvote
+                    // and v=> '-1' for downvote
+                    if($scope.nearbyPosts && $scope.nearbyPosts.map){//List view case
+                            $scope.nearbyPosts.map(function(post){
+                              if (post.canVote == 1 && post.id === newsId){
+                                  $scope.updateUpVote(post, v, newsId);
+                              }
+                            });                              
+                      }
+                      else if($scope.post && $scope.post.canVote == 1){//Map modal view case
+                          $scope.updateUpVote($scope.post, v, newsId);
                       }
               };
             
@@ -94,28 +103,13 @@ angular.module('SeeAroundMe.directives', [])
                       if($scope.nearbyPosts && $scope.nearbyPosts.map){//List view case
                             $scope.nearbyPosts.map(function(post){
                               if (post.canVote == 1 && post.id === newsId){
-                                  $scope.updateDownVote(post, v);
+                                  $scope.updateDownVote(post, v, newsId);
                               }
                             });                              
                       }
-                      else if(post.canVote == 1){//Map modal view case
-                          $scope.updateDownVote($scope.post, v);
-                      }                          
-                  
-                      if(post.canVote == 1){
-                            AppService.vote(newsId, v)
-                            .then(function(response){
-
-                              if (response.data.reasonfailed){
-                                  //console.log(JSON.stringify(response.data.message));
-                              }else if (response.data.success){
-                                  //console.log(JSON.stringify(response));
-                              }
-
-                            }, function(err){
-                              //console.log('error upvoting', JSON.stringify(err));
-                            });
-                      }
+                      else if($scope.post && $scope.post.canVote == 1){//Map modal view case
+                          $scope.updateDownVote($scope.post, v, newsId);
+                      }                                            
               }            
         }
     }

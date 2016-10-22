@@ -63,7 +63,7 @@
             <p class="desc" ng-if="post.link_url">{{post.news}}</p>
         </div>
         <div 
-          ng-click="showMapForPost(post.latitude, post.longitude)"
+          ng-click="showMapForPost(post)"
           style="width:20px;padding-top:1%">
           <a class="icon ion-ios-location-outline" style="font-size:1.3em;"></a>
         </div>
@@ -87,9 +87,8 @@
           <post-edit ng-if="post.canEdit" post="post" from="list"></post-edit>
         <span class="col" ng-click='openShare(post.id)'> Share</span>
       </div>
-    </div>
-        <div class="item" ng-if="hasMore" ng-click="loadMore()">
-            <p>See more posts</p>
-        </div>          
+    </div>      
+      <ion-infinite-scroll ng-if="hasMore" distance="1%" on-infinite="loadMore()">
+    </ion-infinite-scroll>
   </ion-content>
 </ion-view>

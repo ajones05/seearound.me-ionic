@@ -7832,6 +7832,30 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   left: 0;
   right: 0;
   margin: auto; }
+.addpost .location {
+  position: absolute;
+  top: 20px;
+  left: calc((100vw - 300px)/2);
+  width: 300px;
+  height: 60px;
+  background-color: #fff;
+  z-index: 14000;
+  border-radius: 10px;
+  overflow: hidden !important; }
+  .addpost .location h2 {
+    color: #006AA5;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: "Lato-Bold", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    margin-bottom: 0;
+    padding-bottom: 0; }
+  .addpost .location p {
+    color: #000;
+    font-size: .9em;
+    font-weight: 400;
+    font-family: "Lato-Light", "Helvetica Neue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    padding-top: 0;
+    margin-top: 0; }
 .addpost .btn-location {
   min-width: 100% !important;
   height: 90px !important;

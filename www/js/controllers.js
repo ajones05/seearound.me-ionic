@@ -803,17 +803,28 @@ angular.module('SeeAroundMe.controllers', [])
            //console.log($scope.User.Birth_date);
         }
         
-        if (!$scope.User.public_profile)
-            $scope.User.public_profile = false;
+        if ($scope.User.public_profile == 1)
+                $scope.User.public_profile = true;
+        else
+                $scope.User.public_profile = false;
 
         $scope.newData = angular.copy($scope.User);
         
         $scope.imgUri = $scope.User.Profile_image;        
     });
+    
+  $scope.makePublic = function(){
+      console.log('$scope.newData.public_profile: ' + $scope.newData.public_profile);
+  };
 
   $scope.doEdit = function(){
       
     var dob = moment($scope.newData.Birth_date).format('DD-MM-YYYY');
+      
+      if($scope.newData.public_profile)
+          $scope.newData.public_profile = 1;
+      else
+          $scope.newData.public_profile = 0;      
     
       var data = {
         name: $scope.newData.Name,
@@ -827,9 +838,6 @@ angular.module('SeeAroundMe.controllers', [])
       if($scope.imgUri && $scope.imgUri != 'http://www.seearound.me/uploads/default.jpg' && $scope.imgUri != " "){
           data.image = $scope.imgUri;
       }
-
-    // change true|false value to 0|1
-    ($scope.newData.public_profile)? ($scope.newData.public_profile = 1) : ($scope.newData.public_profile = 0);
 
     $ionicLoading.show({ template: 'Saving changes..'});
     AppService.editProfile(data, $scope.imgUri)
@@ -1045,13 +1053,17 @@ angular.module('SeeAroundMe.controllers', [])
         $scope.imgModal.remove();
     };
 
-  $scope.showMapForPost = function(latitude, longitude){
-
+  $scope.showMapForPost = function(post){
+      if(post.Address && post.Address.length > 0)
+            $scope.address = post.Address;
+      else
+            $scope.address = 'Not available';
+      
       ModalService.init('templates/post/mapforpost.html', $scope).then(function(modal){
         modal.show();
         $scope.mapModal = modal;
       }).then(function(){
-        MapService.showPostMap(latitude, longitude);
+        MapService.showPostMap(post.latitude, post.longitude);
       });
   };
     
@@ -1463,6 +1475,7 @@ angular.module('SeeAroundMe.controllers', [])
     }, element);
     
   $scope.$on('$ionicView.enter', function(e) {
+        $scope.hasMore = true;
         getPosts ();
         $scope.isSwiping = false;
         if($scope.isShowMorePostsTapped){
@@ -1518,24 +1531,30 @@ angular.module('SeeAroundMe.controllers', [])
   $scope.loadMore = function(){
       
         AppService.getMorePosts()
-        .then(function(response){
+            .success(function (response) {
             
-            if(response.data.result && response.data.result.length > 0){
-              response.data.result.map(function(post){
-                  
-                  post.news = post.news.replace(urlRegEx, "");
-                  
-                  $scope.nearbyPosts.push(post);
-              });
-            }
-            else{
-                $scope.hasMore = false;
-            }
-            
-            $scope.$broadcast('scroll.infiniteScrollComplete');                        
+                    if(response.result && response.result.length > 0){
+                          response.result.map(function(post){
+
+                                if(post.link_url){
+                                    post.news = post.news.replace(urlRegEx, "");
+                                }                  
+
+                              $scope.nearbyPosts.push(post);
+                          });
+                    }
+                    else{
+                        $scope.hasMore = false;
+                    }
+
+                    $scope.$broadcast('scroll.infiniteScrollComplete');                        
+
+            })
+            .error(function (err) {
+                console.warn(JSON.stringify(err));
         }); 
       
-        $scope.isShowMorePostsTapped = true;
+        //$scope.isShowMorePostsTapped = true;
   };
     
   $scope.goToNewPost = function(){
@@ -1607,13 +1626,17 @@ angular.module('SeeAroundMe.controllers', [])
         $scope.imgModal.remove();
     };
 
-    $scope.showMapForPost = function(latitude, longitude){
-
+    $scope.showMapForPost = function(post){
+      if(post.Address && post.Address.length > 0)
+            $scope.address = post.Address;
+      else
+            $scope.address = 'Not available';
+        
       ModalService.init('templates/post/mapforpost.html', $scope).then(function(modal){
         modal.show();
         $scope.mapModal = modal;
       }).then(function(){
-        MapService.showPostMap(latitude, longitude);
+        MapService.showPostMap(post.latitude, post.longitude);
       });
 
     };
@@ -1655,8 +1678,8 @@ angular.module('SeeAroundMe.controllers', [])
     };
     
     $scope.alertActions = function(alert){
-        
-        AppService.alertActions(alert, $scope);
+        $scope.alertsPopover.hide();
+        AppService.alertActions(alert);
     };
     
     //Below is the select popover code
@@ -2778,8 +2801,10 @@ angular.module('SeeAroundMe.controllers', [])
     $scope.$on('$destroy', function() {
       //console.log('Destroying modals...');
       //$scope.modal1.remove();
-      $scope.popover.remove();
-      $scope.selectPopover.remove();  
+        if($scope.popover)
+            $scope.popover.remove();
+        if($scope.selectPopover)
+            $scope.selectPopover.remove();  
     });
         
     //Below is the popover code
@@ -2790,8 +2815,8 @@ angular.module('SeeAroundMe.controllers', [])
     });
     
     $scope.alertActions = function(alert){
-        
-        AppService.alertActions(alert, $scope);
+        $scope.alertsPopover.hide();
+        AppService.alertActions(alert);
     };
     
     $scope.showAlerts = function ($event) {
@@ -2886,12 +2911,25 @@ angular.module('SeeAroundMe.controllers', [])
         //Causes the map to redraw
         if($rootScope.map){
             MapService.refreshMap();
+            //Add idel event listener
+            google.maps.event.addListener(($rootScope.map), 'idle',
+            function(event) {
+               //console.log('map idle event fired ....');
+               var c = this.getCenter();
+               if(c){
+                    $rootScope.currentCenter = c;
+                    MapService.centerMap(c);
+               }
+            });
+            
             google.maps.event.trigger($rootScope.map, 'resize');
         }        
     });
 
     $scope.$on('$ionicView.leave', function(e) {
         $rootScope.isFromProfileView = false;
+        //Must remove idle listener as it can cause trouble when fired on other views
+        google.maps.event.clearListeners($rootScope.map, 'idle');
         //Show all markers when user has seen filtered ones
         $rootScope.markers.forEach(function(marker){
               marker.setMap($rootScope.map);
@@ -2935,12 +2973,17 @@ angular.module('SeeAroundMe.controllers', [])
       })
     };
     
-  $scope.showMapForPost = function(latitude, longitude){
+  $scope.showMapForPost = function(post){
+      if(post.Address && post.Address.length > 0)
+            $scope.address = post.Address;
+      else
+            $scope.address = 'Not available';
+      
       ModalService.init('templates/post/mapforpost.html', $scope).then(function(modal){
         modal.show();
         $scope.mapModal = modal;
       }).then(function(){
-        MapService.showPostMap(latitude, longitude);
+        MapService.showPostMap(post.latitude, post.longitude);
       });
   };
     

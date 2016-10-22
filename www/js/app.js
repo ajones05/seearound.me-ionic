@@ -180,7 +180,7 @@ angular.module('SeeAroundMe', [
     })
     
     .state('editpostview', {
-           url: "/post/newpost/:latitude/:longitude/:address/:from/:street_number/:street_name/:city/:state/:country/:zip/:news/:image/:Address/:id",
+           url: "/post/newpost/:latitude/:longitude/:address/:from/:street_number/:street_name/:city/:state/:country/:zip/:Address/:image/:id/:news",
            templateUrl: "templates/post/edit-post.html",
            controller: 'EditPostCtrl'
     })    
