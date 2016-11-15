@@ -34,19 +34,18 @@
     "cordova-plugin-device",
     "cordova-plugin-console",
     "cordova-plugin-whitelist",
-    "com.ionic.keyboard",
+    "ionic-plugin-keyboard",
     "cordova-plugin-geolocation",
     "cordova-plugin-file-transfer",
     "cordova-plugin-file",
     "cordova-plugin-network-information",
-    "cordova-plugin-camera",
     "cordova-plugin-inappbrowser",
     "cordova-plugin-splashscreen",
     "cordova-plugin-statusbar",
-    "cordova-plugin-crosswalk-webview"
+    "cordova-plugin-crosswalk-webview",
+    "cordova-plugin-camera"
   ],
   "cordovaPlatforms": [
-    "ios",
-    "android"
+    "ios"
   ]
 }

@@ -136,6 +136,8 @@
       font-size: .9rem !important;
       padding-top: 0.6vh;
       line-height: 1rem;
+      white-space:pre-wrap;
+      max-width: calc(100vw - 100px);
     }      
   }
 

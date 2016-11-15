@@ -440,6 +440,7 @@ angular.module('SeeAroundMe.services', [])
           $http.post(url, {token: authToken, id: alert.id, type: alert.type}).then(function(res){
               //console.log('Alert marked read ...');
               //console.log(JSON.stringify(res));
+              
                 me.getAlerts().then(function(res){
                       if(res.data.result){
                           var alerts = res.data.result;
@@ -459,13 +460,15 @@ angular.module('SeeAroundMe.services', [])
                       else{
                           $rootScope.alerts = [{message: 'No alerts'}];
                      }
-                });              
+                });             
           });
         }, 
         
         alertActions: function (alert){ 
             
             var AppService = this;
+            //Mark the alert as read
+            AppService.markAlertRead(alert);
             
             switch(alert.type.toLowerCase()){
                 case 'friend':                  
@@ -528,9 +531,6 @@ angular.module('SeeAroundMe.services', [])
                         });
                     }
               };
-
-              //Mark the alert as read
-              AppService.markAlertRead(alert);
         },
         
         setUserForProfilePage: function(id){

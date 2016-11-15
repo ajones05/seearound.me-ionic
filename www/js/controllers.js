@@ -2907,8 +2907,10 @@ angular.module('SeeAroundMe.controllers', [])
 
     // for 'following' page and also refresh map
     $scope.$on('$ionicView.enter', function(e) {
-        getFollowers();
+                
         //Causes the map to redraw
+        google.maps.event.trigger($rootScope.map, 'resize');
+        
         if($rootScope.map){
             MapService.refreshMap();
             //Add idel event listener
@@ -2920,10 +2922,10 @@ angular.module('SeeAroundMe.controllers', [])
                     $rootScope.currentCenter = c;
                     MapService.centerMap(c);
                }
-            });
-            
-            google.maps.event.trigger($rootScope.map, 'resize');
-        }        
+            });            
+        }
+        
+        getFollowers();
     });
 
     $scope.$on('$ionicView.leave', function(e) {

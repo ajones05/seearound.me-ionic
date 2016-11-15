@@ -8429,7 +8429,9 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     font-family: 'Lato';
     font-size: .9rem !important;
     padding-top: 0.6vh;
-    line-height: 1rem; }
+    line-height: 1rem;
+    white-space: pre-wrap;
+    max-width: calc(100vw - 100px); }
   .postlistview .share {
     display: flex;
     display: -webkit-flex;
@@ -8891,7 +8893,9 @@ div.custom_btn {
     font-family: 'Lato';
     font-size: .9rem !important;
     padding-top: 0.6vh;
-    line-height: 1rem; }
+    line-height: 1rem;
+    white-space: pre-wrap;
+    max-width: calc(100vw - 100px); }
   .mapmodal .share {
     display: flex;
     display: -webkit-flex;
