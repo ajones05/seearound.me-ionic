@@ -465,14 +465,18 @@ angular.module('SeeAroundMe.services', [])
         }, 
         
         alertActions: function (alert){ 
-            
+            //console.log(JSON.stringify(alert));
             var AppService = this;
             //Mark the alert as read
             AppService.markAlertRead(alert);
             
             switch(alert.type.toLowerCase()){
                 case 'friend':                  
-                  $state.go('app.userfollowing');
+                  AppService.setIsCurrentUserFlag(false);
+                  AppService.setUserForProfilePage(alert.user_id)
+                  .then(function(){
+                    $state.go('app.userprofile');
+                  });
                   break;
                 case 'message':
                   AppService.getUnreadConvs().then(function(res){

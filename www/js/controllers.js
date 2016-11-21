@@ -1119,7 +1119,17 @@ angular.module('SeeAroundMe.controllers', [])
   };    
 })
 
-.controller('FollowingCtrl', function($scope, AppService, ModalService, $state, $ionicHistory, $ionicLoading){
+.controller('FollowingCtrl', function($scope, $rootScope, AppService, ModalService, $state, $ionicHistory, $ionicLoading){
+    
+    $scope.$on('$ionicView.enter', function(e) {
+          //Fetch list of followings
+          $ionicLoading.show();
+          AppService.getFollowing().success(function(data){
+
+                $rootScope.followers = data.result;
+                $ionicLoading.hide();
+          });        
+    });
     
   $scope.showNewMessageModal = function(user){      
     $scope.newMessage = {};
@@ -2429,7 +2439,7 @@ angular.module('SeeAroundMe.controllers', [])
     };
 })
 
-.controller('MapCtrl', function($scope, $rootScope, $state, $stateParams, $timeout, $ionicLoading, $ionicPopup, $ionicPopover, $cordovaGeolocation, $ionicScrollDelegate, $compile, AppService, MapService, ModalService) {
+.controller('MapCtrl', function($scope, $rootScope, $state, $stateParams, $timeout, $ionicLoading, $ionicPopup, $ionicPopover, $cordovaGeolocation, $ionicScrollDelegate, $compile, $ionicPlatform, AppService, MapService, ModalService) {
     
     $rootScope.postMode = 'new';//Other mode is edit
     $rootScope.inputRadius = 1.6;
@@ -2697,7 +2707,7 @@ angular.module('SeeAroundMe.controllers', [])
         
         $ionicScrollDelegate.scrollTop(true);
     };
-    
+        
     $scope.hideModal = function(){
         
         $scope.viewStyle = {
@@ -2747,7 +2757,13 @@ angular.module('SeeAroundMe.controllers', [])
             }
         }
     };
-            
+    
+    //This is for android back button
+    $ionicPlatform.on('backbutton', function() {
+        //console.log('Android back button was hit ...');
+        $scope.hideModal();
+    });
+     
     $rootScope.$on("refreshdone", function(event, data){     
             $scope.currentPosts = $rootScope.currentPosts;
         
@@ -2843,11 +2859,36 @@ angular.module('SeeAroundMe.controllers', [])
         
         MapService.refreshMap();
         $scope.toggleSearch();
+        
+        //Wait for a second before re-adding the idle event listener so that idle event on keyboard down goes waste
+          setTimeout(function(){
+              google.maps.event.addListener(($rootScope.map), 'idle',
+                function(event) {
+                   //console.log('map idle event fired ....');
+                   var c = this.getCenter();
+                   if(c){
+                        $rootScope.currentCenter = c;
+                        MapService.centerMap(c);
+                   }
+                });          
+          }, 1000);        
     };    
     
     $scope.searchPosts = function(){                
         MapService.refreshMap({searchTerm: $scope.searchTerm, filter: $scope.selected.value});
         $scope.toggleSearch();
+        //Wait for a second before re-adding the idle event listener so that idle event on keyboard down goes waste
+          setTimeout(function(){
+              google.maps.event.addListener(($rootScope.map), 'idle',
+                function(event) {
+                   //console.log('map idle event fired ....');
+                   var c = this.getCenter();
+                   if(c){
+                        $rootScope.currentCenter = c;
+                        MapService.centerMap(c);
+                   }
+                });          
+          }, 1000);
     };
     
     $scope.options = [{
@@ -2876,6 +2917,18 @@ angular.module('SeeAroundMe.controllers', [])
         $scope.selected = option;
         $scope.selectPopover.hide();
         $scope.searchPosts();
+        //Wait for half a second before re-adding the idle event listener so that idle event on keyboard down goes waste
+          setTimeout(function(){
+              google.maps.event.addListener(($rootScope.map), 'idle',
+                function(event) {
+                   //console.log('map idle event fired ....');
+                   var c = this.getCenter();
+                   if(c){
+                        $rootScope.currentCenter = c;
+                        MapService.centerMap(c);
+                   }
+                });          
+          }, 500);        
     };
     
     $scope.toggleSearch = function(){
@@ -2905,7 +2958,7 @@ angular.module('SeeAroundMe.controllers', [])
         }    
     }, false);    
 
-    // for 'following' page and also refresh map
+    // for refresh map
     $scope.$on('$ionicView.enter', function(e) {
                 
         //Causes the map to redraw
@@ -2916,7 +2969,7 @@ angular.module('SeeAroundMe.controllers', [])
             //Add idel event listener
             google.maps.event.addListener(($rootScope.map), 'idle',
             function(event) {
-               //console.log('map idle event fired ....');
+               console.log('map idle event fired ....');
                var c = this.getCenter();
                if(c){
                     $rootScope.currentCenter = c;
@@ -2924,8 +2977,6 @@ angular.module('SeeAroundMe.controllers', [])
                }
             });            
         }
-        
-        getFollowers();
     });
 
     $scope.$on('$ionicView.leave', function(e) {
@@ -2964,17 +3015,6 @@ angular.module('SeeAroundMe.controllers', [])
       });
     };
 
-    var getFollowers = function (){
-        
-      AppService.getFollowing()
-      .success(function(data){
-        // this should be following and not followers
-        // but let's keep it this way for now. :)
-        $rootScope.followers = data.result;
-        //console.log('following', data);
-      })
-    };
-    
   $scope.showMapForPost = function(post){
       if(post.Address && post.Address.length > 0)
             $scope.address = post.Address;
@@ -3014,7 +3054,13 @@ angular.module('SeeAroundMe.controllers', [])
     
   $scope.focusInput = function(){    
       $ionicScrollDelegate.scrollBottom(true);
-  };  
+  };
+    
+  $scope.onSearchFocus = function(){
+      console.log('Search field focussed ...');
+      //Must remove idle listener as it can cause trouble
+        google.maps.event.clearListeners($rootScope.map, 'idle');
+  };
     
   //Initialize map
     if(AppService.isConnected()){

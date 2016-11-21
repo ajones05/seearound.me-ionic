@@ -39,7 +39,7 @@ angular.module('SeeAroundMe', [
       AppService.setUserForProfilePage(id)
       .then(function(){
         $state.go('app.userprofile');
-      })
+      });
     };
 
     $rootScope.goHome = function(){

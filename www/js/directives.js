@@ -143,8 +143,8 @@ angular.module('SeeAroundMe.directives', [])
             };
             
             $scope.deletePost = function(post){
-                //console.log('deletePost called ...');
-                //console.log(JSON.stringify(post));
+                console.log('deletePost called ...');
+                console.log(JSON.stringify(post));
                 $scope.hideMenuModal();
                 
                 $ionicPopup.confirm({
@@ -156,7 +156,7 @@ angular.module('SeeAroundMe.directives', [])
                  if(res) {
                         $rootScope.currentPosts.splice($rootScope.currentPosts.indexOf(post), 1);
                         AppService.deletePost(post).then(function(){
-                            //console.log('Post deleted successfully');
+                            console.log('Post deleted successfully');
                             if($scope.from == 'map'){
                                 $rootScope.$broadcast('hidemapmodal'); 
                                 MapService.refreshMap();
