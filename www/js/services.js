@@ -479,17 +479,13 @@ angular.module('SeeAroundMe.services', [])
                   });
                   break;
                 case 'message':
-                  AppService.getUnreadConvs().then(function(res){
-                      //console.log(JSON.stringify(res));
-                      var convs = res.data.result || [];
-                      for(var i=0; i < convs.length; i++ ){
-                          if(convs[i].sender_id == alert.user_id){
-                              AppService.setConv(convs[i]);
-                              $state.go('app.userchat', {from: 'messages'});
-                              break;
-                          }
-                      }
-                  });
+                    
+                    AppService.getConvById(alert.conversation_id).then(function(res){
+                        
+                        AppService.setConv(res.data.conversation);
+                        $state.go('app.userchat', {from: 'messages'});
+                        
+                    });
                     
                   break;
                 default: //vote or comment 
@@ -635,7 +631,8 @@ angular.module('SeeAroundMe.services', [])
 
               return $http.post(url, params);            
         },
-
+        
+        //This method returns list of conversation messages
         getConversation: function(id){
           var url = API_URL + '/conversation-message';
           var params = {
@@ -645,6 +642,17 @@ angular.module('SeeAroundMe.services', [])
           };
           
           return $http.post(url, params);
+        },
+        
+        //This method return a single conversation 
+        getConvById: function(id){
+          var url = API_URL + '/conversation';
+          var params = {
+            token: authToken,
+            id: id
+          };
+          
+          return $http.post(url, params);            
         },
         
         setConv: function(c){
