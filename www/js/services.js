@@ -832,7 +832,7 @@ angular.module('SeeAroundMe.services', [])
                 
                 //console.log(JSON.stringify(response));
                 if(response.status == 'SUCCESS'){
-                    //console.log('Got nearby posts ..............................');
+                    //console.log('Got nearby posts ..............................');                    
                     if(response.result){
                       // the regex that matches urls in text
                       var urlRegEx = new RegExp(
@@ -872,7 +872,13 @@ angular.module('SeeAroundMe.services', [])
                      }
                     else{
                         $rootScope.currentPosts = [];
-                        AppService.showErrorAlert('No Posts!', 'There are no posts in this area, but you can be the first to post!');
+                        if(!$rootScope.block){
+                            $rootScope.block = true;// To show the alert only once
+                            AppService.showErrorAlert('No Posts!', 'There are no posts in this area, but you can be the first to post!');
+                            setTimeout(function(){
+                                $rootScope.block = false;//Let it be shown after 10 seconds
+                            }, 10000);
+                        }
 
                     }
                      

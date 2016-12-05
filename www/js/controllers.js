@@ -642,7 +642,7 @@ angular.module('SeeAroundMe.controllers', [])
   // isCurrentUser var is set to differentiate the loggedIn user
   // from other users.
   $scope.User = null;
-  $scope.$on('$ionicView.enter', function(e) {
+  $scope.$on('$ionicView.beforeEnter', function(e) {
     //console.log('is the logged in user => ', $rootScope.isCurrentUser);
     $scope.User = null;
     if ($rootScope.isCurrentUser){
@@ -654,6 +654,7 @@ angular.module('SeeAroundMe.controllers', [])
                       var today = new Date();
                       var dob = $scope.User.Birth_date.replace(/-/g,'/');
                       var birthday = new Date(dob);
+                      $scope.User.Birth_date = birthday;
                       $scope.User.Age = today.getFullYear() - birthday.getFullYear();
                       var diffMonths = today.getMonth() - birthday.getMonth();
                       if (diffMonths < 0 || ( diffMonths === 0 && today.getDate() < birthday.getDate())) {
@@ -684,8 +685,9 @@ angular.module('SeeAroundMe.controllers', [])
         if($scope.User.Birth_date){
              $timeout(function(){
                       var today = new Date();
-                      var dob = $scope.User.Birth_date.replace(/-/g,'/');
+                      var dob = $scope.User.Birth_date.replace(/-/g,'/');                      
                       var birthday = new Date(dob);
+                      $scope.User.Birth_date = birthday;
                       $scope.User.Age = today.getFullYear() - birthday.getFullYear();
                       var diffMonths = today.getMonth() - birthday.getMonth();
                       if (diffMonths < 0 || ( diffMonths === 0 && today.getDate() < birthday.getDate())) {
@@ -725,14 +727,18 @@ angular.module('SeeAroundMe.controllers', [])
   };
     
   $scope.showUserPosts = function(){
-      $rootScope.markers.forEach(function(marker){
-          if(marker.post && marker.post.user_id != $scope.User.id)
-              marker.setMap(null);
-      });
       
       $rootScope.isFromProfileView = true;
       
       $state.go('app.postmapview');
+      
+      setTimeout(function(){
+            $rootScope.markers.forEach(function(marker){
+                  if(marker.post && marker.post.user_id != $scope.User.id){
+                      marker.setMap(null);
+                  }
+            });
+      }, 2000);
   };
 
   $scope.showNewMessageModal = function(user){
@@ -797,10 +803,8 @@ angular.module('SeeAroundMe.controllers', [])
           $scope.User = JSON.parse(localStorage.getItem('sam_user_data'));
         
         if($scope.User.Birth_date){
-           var dob = $scope.User.Birth_date.replace(/-/g,'/');
-           //console.log('DOB: ' + dob);
-           $scope.User.Birth_date = new Date(dob);
-           //console.log($scope.User.Birth_date);
+            var dob = moment(new Date($scope.User.Birth_date.replace(/-/g,"/"))).format('DD-MM-YYYY');
+            $scope.User.Birth_date = new Date(dob);
         }
         
         if ($scope.User.public_profile == 1)
@@ -843,7 +847,7 @@ angular.module('SeeAroundMe.controllers', [])
     AppService.editProfile(data, $scope.imgUri)
     .then(function(res){
       //console.log(JSON.stringify(res));
-        
+        var dataToSave = angular.copy($scope.newData);
       $ionicLoading.hide();
         
         if($scope.imgUri && !$scope.imgUri.startsWith('http') && $scope.imgUri != " "){//Case when image is uploaded
@@ -851,9 +855,9 @@ angular.module('SeeAroundMe.controllers', [])
                   console.log(resObj);
                     //console.log('DOB: ' + dob);
           try{
-                $scope.newData.Profile_image = resObj.result.Profile_image;
-                $scope.newData.Birth_date = resObj.result.Birth_date;
-                localStorage.setItem('sam_user_data', JSON.stringify($scope.newData));
+                dataToSave.Profile_image = resObj.result.Profile_image;
+                dataToSave.Birth_date = resObj.result.Birth_date;
+                localStorage.setItem('sam_user_data', JSON.stringify(dataToSave));
                 $state.go('app.userprofile');
           }
           catch(err){
@@ -861,8 +865,8 @@ angular.module('SeeAroundMe.controllers', [])
           }
         }
         else if(res.data.result){//Case without image
-              $scope.newData.Birth_date = res.data.result.Birth_date;
-              localStorage.setItem('sam_user_data', JSON.stringify($scope.newData));
+              dataToSave.Birth_date = res.data.result.Birth_date;
+              localStorage.setItem('sam_user_data', JSON.stringify(dataToSave));
               $state.go('app.userprofile');
         }
           
@@ -1430,6 +1434,7 @@ angular.module('SeeAroundMe.controllers', [])
                 //console.log(JSON.stringify(data));
                 AppService.getNearbyPosts(data)
                 .success(function (response) {
+                    if(response.result){
                         response.result.forEach(function (post) {
 
                             post.news = post.news.replace(urlRegEx, "");
@@ -1449,6 +1454,7 @@ angular.module('SeeAroundMe.controllers', [])
                                 post.isOwnPost = true;
                             }
                         });
+                    }
                 })
                 .error(function (err) {
                     //console.warn(JSON.stringify(err));

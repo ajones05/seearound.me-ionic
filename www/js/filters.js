@@ -7,4 +7,11 @@ angular.module('SeeAroundMe.filters', [])
 
         return $sce.trustAsHtml(newString);
     }
+})
+
+.filter('samDate', function ($filter){
+  return function(d){
+    
+    return $filter('date')(d, "dd-MM-yyyy");
+  }
 });
