@@ -16,7 +16,8 @@
               <div> {{post.created_date}} </div>
             </div>
           </div>
-            <p class="desc">{{post.news}}</p>       
+            <!-- p class="desc">{{post.news}}</p -->
+            <p class="desc" ng-bind-html="post.news | linky | hrefToJS"></p>
         </div>
       </div>
       <img ng-src="{{post.thumb}}" class="post-iamge" ng-if="post.thumb" alt=""/>

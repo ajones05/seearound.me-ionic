@@ -29,8 +29,8 @@
               {{post.created_date}}
             </div>
           </div>
-            <p class="desc" ng-if="!post.link_url" ng-bind-html="post.news | linky | hrefToJS"></p>
-            <p class="desc" ng-if="post.link_url">{{post.news}}</p>
+            <p class="desc" ng-bind-html="post.news | linky | hrefToJS"></p>
+            <!-- p class="desc" ng-if="post.link_url">{{post.news}}</p -->
         </div>
         <div
           ng-click="showMapForPost(post)"

@@ -498,7 +498,7 @@ angular.module('SeeAroundMe.services', [])
                     }
 
                     if(post){//Post was found in current posts
-                        post.isOwnPost = true;
+                        
                         AppService.setCurrentComments(post)
                         .then(function(){
                           $state.go('app.postcomments');
@@ -516,13 +516,14 @@ angular.module('SeeAroundMe.services', [])
                         .then(function(result){
                             $ionicLoading.hide();
                             if(result.data.post){
+                                /*
                                 var urlRegEx = new RegExp(
                                   "((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
                                 );                                
                                 if(result.data.post.link_url){
                                     result.data.post.news = result.data.post.news.replace(urlRegEx, "");
-                                }
-                                result.data.post.isOwnPost = true;
+                                }*/
+                                
                                 AppService.setCurrentComments(result.data.post)
                                 .then(function(){
                                   $state.go('app.postcomments');
@@ -834,10 +835,11 @@ angular.module('SeeAroundMe.services', [])
                 if(response.status == 'SUCCESS'){
                     //console.log('Got nearby posts ..............................');                    
                     if(response.result){
+                        /*
                       // the regex that matches urls in text
                       var urlRegEx = new RegExp(
                               "((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
-                           );
+                           );*/
 
                         response.result.forEach(function (post) {
                             var marker = new google.maps.Marker({
@@ -850,7 +852,7 @@ angular.module('SeeAroundMe.services', [])
                                 }
                             });
                             
-                            post.news = post.news.replace(urlRegEx, "");
+                            //post.news = post.news.replace(urlRegEx, "");
                             marker.post = post;
                             
                             $rootScope.markers.push(marker);

@@ -801,10 +801,12 @@ angular.module('SeeAroundMe.controllers', [])
     
     $scope.$on('$ionicView.enter', function(e) {        
           $scope.User = JSON.parse(localStorage.getItem('sam_user_data'));
-        
+        //console.log('$scope.User.Birth_date: ' + $scope.User.Birth_date);
         if($scope.User.Birth_date){
-            var dob = moment(new Date($scope.User.Birth_date.replace(/-/g,"/"))).format('DD-MM-YYYY');
+            var dob = moment(new Date($scope.User.Birth_date.replace(/-/g,"/"))).format('MM/DD/YYYY');
+            //console.log('dob after format: ' + dob);
             $scope.User.Birth_date = new Date(dob);
+            //console.log('$scope.User.Birth_date -- after: ' + $scope.User.Birth_date);
         }
         
         if ($scope.User.public_profile == 1)
@@ -824,7 +826,7 @@ angular.module('SeeAroundMe.controllers', [])
   $scope.doEdit = function(){
       
     var dob = moment($scope.newData.Birth_date).format('DD-MM-YYYY');
-      
+      console.log('dob : ' + dob);
       if($scope.newData.public_profile)
           $scope.newData.public_profile = 1;
       else
@@ -1406,11 +1408,11 @@ angular.module('SeeAroundMe.controllers', [])
   var userId = userData.id || 0;
   var authToken = userData.token || '';
   AppService.setUserId(userId);
-
+/*
   // the regex that matches urls in text
   var urlRegEx = new RegExp(
       "((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
-   );
+   );*/
     
      var posOptions = {timeout: 30000, maximumAge:0, enableHighAccuracy: false};
     $cordovaGeolocation.getCurrentPosition(posOptions)
@@ -1435,15 +1437,11 @@ angular.module('SeeAroundMe.controllers', [])
                 AppService.getNearbyPosts(data)
                 .success(function (response) {
                     if(response.result){
-                        response.result.forEach(function (post) {
-
-                            post.news = post.news.replace(urlRegEx, "");
-                        });
                         //To use on list view
                         $rootScope.currentPosts = response.result;
                     
                         $scope.nearbyPosts = response.result;
-                    
+                        /*
                         $scope.nearbyPosts.map(function(post){
 
                             if(post.link_url){
@@ -1453,7 +1451,7 @@ angular.module('SeeAroundMe.controllers', [])
                             if(post.user_id == userId){
                                 post.isOwnPost = true;
                             }
-                        });
+                        });*/
                     }
                 })
                 .error(function (err) {
@@ -1523,23 +1521,7 @@ angular.module('SeeAroundMe.controllers', [])
   });
 
   var getPosts  = function (){
-    $scope.nearbyPosts = $rootScope.currentPosts;
-
-    if($scope.nearbyPosts){
-      $scope.nearbyPosts.map(function(post){
-          
-      if(post.link_url){
-          post.news = post.news.replace(urlRegEx, "");
-      }
-                  
-        if(post.user_id == userId){
-            post.isOwnPost = true;
-        }
-      });
-    }
-    else{
-       $scope.nearbyPosts = []; 
-    }
+    $scope.nearbyPosts = $rootScope.currentPosts || [];
   };
         
   $scope.hasMore = true;    
@@ -1552,9 +1534,9 @@ angular.module('SeeAroundMe.controllers', [])
                     if(response.result && response.result.length > 0){
                           response.result.map(function(post){
 
-                                if(post.link_url){
-                                    post.news = post.news.replace(urlRegEx, "");
-                                }                  
+                                //if(post.link_url){
+                                    //post.news = post.news.replace(urlRegEx, "");
+                                //}                  
 
                               $scope.nearbyPosts.push(post);
                           });
@@ -1727,15 +1709,10 @@ angular.module('SeeAroundMe.controllers', [])
               //console.log(data.result);
               $scope.toggleSearch();
               var links = [];
-
+            /*
             $scope.nearbyPosts.map(function(post){
-                // get the first url from text
-                //post.first_link = post.news.match(urlRegEx);
-                //try{
-                  //post.first_link = post.news.match(urlRegEx)[0];
-                //}catch(ex){}
                 post.news = post.news.replace(urlRegEx, "");
-            });
+            });*/
         })
         .error(function (err) {
             //console.warn(JSON.stringify(err));
@@ -1763,20 +1740,14 @@ angular.module('SeeAroundMe.controllers', [])
               //console.log(data.result);
               $scope.toggleSearch();
               var links = [];
-
+            /*
             $scope.nearbyPosts.map(function(post){
-                // get the first url from text
-                //post.first_link = post.news.match(urlRegEx);
-                //try{
-                  //post.first_link = post.news.match(urlRegEx)[0];
-                //}catch(ex){}
-
                 // transform news text to behave nicely with html
                 // removes links and " characters from post.news
                 //post.sanitizedText = post.news.replace(urlRegEx, '').replace(/\"/g, '')
                 
                 post.news = post.news.replace(urlRegEx, "");
-            });
+            });*/
         });        
     };
     
@@ -2026,6 +1997,7 @@ angular.module('SeeAroundMe.controllers', [])
                 if(response.status == 'SUCCESS'){
                     //console.log('Got nearby posts ..............................');
                     if(response.result){
+                        /*
                       // the regex that matches urls in text
                       var urlRegEx = new RegExp(
                               "((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
@@ -2035,7 +2007,7 @@ angular.module('SeeAroundMe.controllers', [])
 
                             post.news = post.news.replace(urlRegEx, "");
 
-                        });
+                        });*/
 
                         //To use on list view
                         $rootScope.currentPosts = response.result;
@@ -2251,6 +2223,7 @@ angular.module('SeeAroundMe.controllers', [])
                 if(response.status == 'SUCCESS'){
                     //console.log('Got nearby posts ..............................');
                     if(response.result){
+                        /*
                       // the regex that matches urls in text
                       var urlRegEx = new RegExp(
                               "((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
@@ -2260,7 +2233,7 @@ angular.module('SeeAroundMe.controllers', [])
 
                             post.news = post.news.replace(urlRegEx, "");
 
-                        });
+                        });*/
 
                         //To use on list view
                         $rootScope.currentPosts = response.result;
@@ -2791,8 +2764,6 @@ angular.module('SeeAroundMe.controllers', [])
                         });
                         
                         $scope.selectedMarker = this;
-                        if(this.post.user_id == userId)
-                            this.post.isOwnPost = true;
                         $scope.post = this.post; 
                         
                         $scope.showModal(3);
