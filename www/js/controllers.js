@@ -803,7 +803,13 @@ angular.module('SeeAroundMe.controllers', [])
           $scope.User = JSON.parse(localStorage.getItem('sam_user_data'));
         //console.log('$scope.User.Birth_date: ' + $scope.User.Birth_date);
         if($scope.User.Birth_date){
-            var dob = moment(new Date($scope.User.Birth_date.replace(/-/g,"/"))).format('MM/DD/YYYY');
+                var isIOS = ionic.Platform.isIOS();
+               if(isIOS){
+                    var dob = moment(new Date($scope.User.Birth_date.replace(/-/g,"/")));
+               }
+               else{
+                    var dob = moment(new Date($scope.User.Birth_date.replace(/-/g,"/"))).format('MM/DD/YYYY');
+               }
             //console.log('dob after format: ' + dob);
             $scope.User.Birth_date = new Date(dob);
             //console.log('$scope.User.Birth_date -- after: ' + $scope.User.Birth_date);
@@ -826,7 +832,7 @@ angular.module('SeeAroundMe.controllers', [])
   $scope.doEdit = function(){
       
     var dob = moment($scope.newData.Birth_date).format('DD-MM-YYYY');
-      console.log('dob : ' + dob);
+      //console.log('dob : ' + dob);
       if($scope.newData.public_profile)
           $scope.newData.public_profile = 1;
       else
