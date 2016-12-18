@@ -830,8 +830,12 @@ angular.module('SeeAroundMe.controllers', [])
   };
 
   $scope.doEdit = function(){
+      //console.log('$scope.newData.Birth_date: ' + $scope.newData.Birth_date);
+      if($scope.newData.Birth_date)
+        var dob = moment($scope.newData.Birth_date).format('DD-MM-YYYY');
+      else
+        var dob = null;
       
-    var dob = moment($scope.newData.Birth_date).format('DD-MM-YYYY');
       //console.log('dob : ' + dob);
       if($scope.newData.public_profile)
           $scope.newData.public_profile = 1;
@@ -841,11 +845,14 @@ angular.module('SeeAroundMe.controllers', [])
       var data = {
         name: $scope.newData.Name,
         email: $scope.newData.Email_id,
-        birth_date: dob,
+        //birth_date: dob,
         public_profile: $scope.newData.public_profile,
         gender: $scope.newData.Gender,
         interest: $scope.newData.Activities
       };
+      
+      if(dob)
+          data.birth_date = dob;
       
       if($scope.imgUri && $scope.imgUri != 'http://www.seearound.me/uploads/default.jpg' && $scope.imgUri != " "){
           data.image = $scope.imgUri;
@@ -860,7 +867,7 @@ angular.module('SeeAroundMe.controllers', [])
         
         if($scope.imgUri && !$scope.imgUri.startsWith('http') && $scope.imgUri != " "){//Case when image is uploaded
                   var resObj = JSON.parse(res.response);
-                  console.log(resObj);
+                  //console.log(resObj);
                     //console.log('DOB: ' + dob);
           try{
                 dataToSave.Profile_image = resObj.result.Profile_image;
@@ -2372,7 +2379,10 @@ angular.module('SeeAroundMe.controllers', [])
             from: "selectlocation"
         };
 
-        $state.go('editpostview', p);
+        if($rootScope.postMode == 'edit')
+            $state.go('editpostview', p);
+        else
+           $state.go('newpostview', p);
     };
     
     $scope.$on('$ionicView.enter', function(e) {
@@ -2952,7 +2962,7 @@ angular.module('SeeAroundMe.controllers', [])
             //Add idel event listener
             google.maps.event.addListener(($rootScope.map), 'idle',
             function(event) {
-               console.log('map idle event fired ....');
+               //console.log('map idle event fired ....');
                var c = this.getCenter();
                if(c){
                     $rootScope.currentCenter = c;
@@ -3040,7 +3050,7 @@ angular.module('SeeAroundMe.controllers', [])
   };
     
   $scope.onSearchFocus = function(){
-      console.log('Search field focussed ...');
+      //console.log('Search field focussed ...');
       //Must remove idle listener as it can cause trouble
         google.maps.event.clearListeners($rootScope.map, 'idle');
   };
