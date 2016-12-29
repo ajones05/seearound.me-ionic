@@ -4,18 +4,39 @@
    <div class="row row-center" style="height:20%;width:100%;">
        <div class="list card" style="width:100%;">
            
-           <a ng-click="editPost(post)" class="item item-icon-left">
-               <i class="icon ion-edit"></i>
-               Edit
+           <a ng-click="editPost(post)" ng-if="post.canEdit" class="item text-center">
+               Edit Post
            </a>
            
-           <a ng-click="deletePost(post)" class="item item-icon-left">
-               <i class="icon ion-trash-a"></i>
-               Delete
+           <a ng-click="deletePost(post)" ng-if="post.canEdit" class="item text-center">
+               Delete Post
            </a>
 
-           <a ng-click="hideMenuModal()" class="item item-icon-left">
-               <i class="icon ion-close"></i>
+           <a ng-click="sharePost(post)" class="item text-center">
+               Share ...
+           </a>
+           
+           <a ng-click="followUser(post)" ng-if="!post.isFriend" class="item text-center">
+               Follow {{post.Name}}
+           </a>           
+           
+           <a ng-click="unfollowUser(post)" ng-if="post.isFriend" class="item text-center">
+               Unfollow {{post.Name}}
+           </a>                      
+           
+           <a ng-click="viewProfile(post)" class="item text-center">
+               View {{post.Name}}'s Profile
+           </a>  
+           
+           <a ng-click="blockUser(post)" class="item text-center">
+               Block {{post.Name}}
+           </a>                      
+           
+           <a ng-click="flagPost(post)" class="item text-center">
+               Flag as Inappropriate
+           </a>                                 
+           
+           <a ng-click="hideMenuModal()" class="item text-center">
                Cancel
            </a>
        </div>

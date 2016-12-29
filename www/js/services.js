@@ -280,6 +280,24 @@ angular.module('SeeAroundMe.services', [])
               return $http.post(url, params);            
         },
         
+        flagPost: function(post){
+              var url = API_URL + '/flag-post';
+              var params = {
+                token: authToken,
+                id: post.id
+              };
+              return $http.post(url, params);            
+        },        
+        
+        blockUser: function(post){
+              var url = API_URL + '/block-user';
+              var params = {
+                token: authToken,
+                block_user_id: post.user_id
+              };
+              return $http.post(url, params);            
+        },                
+        
         setCurrentComments: function(post){
           var d = $q.defer();
           currentPostComments.post = post;
@@ -792,7 +810,7 @@ angular.module('SeeAroundMe.services', [])
             $rootScope.markers = [];
         },
         
-        showPosts: function(center, searchData) {
+        showPosts: function(center) {
             //Update current center
             $rootScope.currentCenter = center;
             
@@ -891,14 +909,14 @@ angular.module('SeeAroundMe.services', [])
                  }                
             };
             
-            if(searchData){                
+            if($rootScope.searchData){                
                 var data = {
                     "latitude" : center.lat(),// 37.8088139,
                     "longitude" : center.lng(),//-122.2635002,
                     "radious" : $rootScope.inputRadius,
                     "token" : authToken,
-                    "searchText": searchData.searchTerm,
-                    "filter": searchData.filter,
+                    "searchText": $rootScope.searchData.searchTerm,
+                    "filter": $rootScope.searchData.filter,
                     "start" : 0
                 };
                 
@@ -933,7 +951,7 @@ angular.module('SeeAroundMe.services', [])
             }
         },        
         
-        refreshMap: function(searchData){            
+        refreshMap: function(){            
             //Remove markers if any
             if($rootScope.markers && $rootScope.markers.length > 0){
                 this.removeMarkers();
@@ -958,7 +976,7 @@ angular.module('SeeAroundMe.services', [])
 
             $rootScope.markers.push(myLocation);
 
-            this.showPosts($rootScope.currentCenter, searchData);
+            this.showPosts($rootScope.currentCenter);
         },
         
         resetMap: function(){            
@@ -1022,7 +1040,8 @@ angular.module('SeeAroundMe.services', [])
                 zoom: 13,//Sits well with radius of 1.6
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
                 disableDefaultUI: true,
-                zoomControl: false//,
+                zoomControl: false,
+                gestureHandling: 'greedy',//default is auto
                 //zoomControlOptions: {
                   //style: google.maps.ZoomControlStyle.SMALL
                 //}

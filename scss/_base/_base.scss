@@ -13,6 +13,9 @@ body, html {
 	clear: both;
 }
 
+a.hashtag {
+    color: #07c;
+}
 
 // need to move to seperate file sometime
 .share-page {
@@ -23,6 +26,10 @@ body, html {
 			margin-top: 2rem;
 		}
 	}
+}
+
+.post-actions {
+    font-size: 2em !important;
 }
 
 .spacer10 {

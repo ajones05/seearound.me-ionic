@@ -59,7 +59,7 @@
               {{post.created_date}}
             </div>
           </div>
-            <p class="desc" ng-bind-html="post.news | linky | hrefToJS"></p>
+            <p class="desc" hashtagify term-click="tagTermClick($event)" ng-bind-html="post.news | linky | hrefToJS"></p>
             <!--p class="desc" ng-if="post.link_url">{{post.news}}</p -->
         </div>
         <div 
@@ -84,8 +84,8 @@
           <img src="img/chat.png" alt="">
         </span>
         <post-like-box></post-like-box>
-          <post-edit ng-if="post.canEdit" post="post" from="list"></post-edit>
-        <span class="col" ng-click='openShare(post.id)'> Share</span>
+        <div class="col"></div>
+        <post-actions class="col col-20" post="post" from="list"></post-actions>
       </div>
     </div>      
       <ion-infinite-scroll ng-if="hasMore" distance="1%" on-infinite="loadMore()">

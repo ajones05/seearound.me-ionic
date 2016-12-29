@@ -1090,12 +1090,6 @@ angular.module('SeeAroundMe.controllers', [])
       $scope.mapModal.remove();      
   };
 
-    $scope.openShare = function(postId){
-        //var sanitizedText = $sanitize(text);
-        var link = 'http://www.seearound.me/post/' + postId;
-        window.plugins.socialsharing.share( null, null, null,link);
-    };
-    
     $scope.openLink = function(link){
         
         window.open(link, '_blank', 'location=no');
@@ -1454,15 +1448,12 @@ angular.module('SeeAroundMe.controllers', [])
                         $rootScope.currentPosts = response.result;
                     
                         $scope.nearbyPosts = response.result;
+                        
                         /*
                         $scope.nearbyPosts.map(function(post){
 
                             if(post.link_url){
                                 post.news = post.news.replace(urlRegEx, "");
-                            }
-
-                            if(post.user_id == userId){
-                                post.isOwnPost = true;
                             }
                         });*/
                     }
@@ -1479,7 +1470,16 @@ angular.module('SeeAroundMe.controllers', [])
                  subTitle: 'Current Location',
                  template: 'Failed to get your location. Make sure you are connected to the internet and allowed gelocation on your devivce.'
            });                
-    });            
+    }); 
+    
+    //Function handling hashtags
+    $scope.tagTermClick = function(e) {
+        var tagText = e.target.innerText;
+        //console.log('tagText: ' + tagText);
+        $scope.searchTerm = tagText.substr(1);
+        //console.log('searchTerm: ' + $scope.searchTerm);
+        $scope.searchPosts();
+    };
         
   $scope.isSwiping = false; 
   $scope.isShowMorePostsTapped = false;
@@ -1611,12 +1611,6 @@ angular.module('SeeAroundMe.controllers', [])
     });
   };
 
-    $scope.openShare = function(postId){
-        //var sanitizedText = $sanitize(text);
-        var link = 'http://www.seearound.me/post/' + postId;
-        window.plugins.socialsharing.share( null, null, null,link);
-    };
-
   $scope.goToComments = function(post){
     AppService.setCurrentComments(post)
     .then(function(){
@@ -1703,7 +1697,7 @@ angular.module('SeeAroundMe.controllers', [])
     $scope.clearSearch = function(){ 
         $scope.searchTerm = "";    
         $scope.selected = {label: 'Filter', value:''};    
-
+        $rootScope.searchData = null;
         var data = {
             "latitude" :  $rootScope.currentCenter.lat(),//37.8088139,
             "longitude" : $rootScope.currentCenter.lng(), //-122.2635002,
@@ -1722,10 +1716,6 @@ angular.module('SeeAroundMe.controllers', [])
               //console.log(data.result);
               $scope.toggleSearch();
               var links = [];
-            /*
-            $scope.nearbyPosts.map(function(post){
-                post.news = post.news.replace(urlRegEx, "");
-            });*/
         })
         .error(function (err) {
             //console.warn(JSON.stringify(err));
@@ -1733,7 +1723,10 @@ angular.module('SeeAroundMe.controllers', [])
     };    
     
     $scope.searchPosts = function(){   
-        
+        $ionicLoading.show({
+               template: '<ion-spinner class="spinner-calm"></ion-spinner><br/>Searching ...',
+               duration: 20000 //Dismiss after 20 seconds
+        });
         var searchData = {
             "latitude" :  $rootScope.currentCenter.lat(),//37.8088139,
             "longitude" : $rootScope.currentCenter.lng(), //-122.2635002,
@@ -1746,6 +1739,7 @@ angular.module('SeeAroundMe.controllers', [])
         
         AppService.getMyPosts(searchData)
             .success(function(data){  
+                $ionicLoading.hide();
               $rootScope.isFiltered = true;
               $scope.nearbyPosts = data.result;
               //Save for map view as well
@@ -1753,14 +1747,6 @@ angular.module('SeeAroundMe.controllers', [])
               //console.log(data.result);
               $scope.toggleSearch();
               var links = [];
-            /*
-            $scope.nearbyPosts.map(function(post){
-                // transform news text to behave nicely with html
-                // removes links and " characters from post.news
-                //post.sanitizedText = post.news.replace(urlRegEx, '').replace(/\"/g, '')
-                
-                post.news = post.news.replace(urlRegEx, "");
-            });*/
         });        
     };
     
@@ -2382,7 +2368,7 @@ angular.module('SeeAroundMe.controllers', [])
         if($rootScope.postMode == 'edit')
             $state.go('editpostview', p);
         else
-           $state.go('newpostview', p);
+            $state.go('newpostview', p);
     };
     
     $scope.$on('$ionicView.enter', function(e) {
@@ -2673,12 +2659,6 @@ angular.module('SeeAroundMe.controllers', [])
         window.open(link, '_blank', 'location=no');
     };    
 
-    $scope.openShare = function(postId){
-        //var sanitizedText = $sanitize(text);
-        var link = 'http://www.seearound.me/post/' + postId;
-        window.plugins.socialsharing.share( null, null, null,link);
-    };
-
     $scope.move = function(direction, thisPost){
         var index = $scope.currentPosts.indexOf(thisPost);
 
@@ -2849,6 +2829,7 @@ angular.module('SeeAroundMe.controllers', [])
     $scope.clearSearch = function(){    
         $scope.searchTerm = "";    
         $scope.selected = {label: 'Filter', value:''};     
+        $rootScope.searchData = null;
         
         MapService.refreshMap();
         $scope.toggleSearch();
@@ -2867,8 +2848,9 @@ angular.module('SeeAroundMe.controllers', [])
           }, 1000);        
     };    
     
-    $scope.searchPosts = function(){                
-        MapService.refreshMap({searchTerm: $scope.searchTerm, filter: $scope.selected.value});
+    $scope.searchPosts = function(){  
+        $rootScope.searchData = {searchTerm: $scope.searchTerm, filter: $scope.selected.value};
+        MapService.refreshMap();
         $scope.toggleSearch();
         //Wait for a second before re-adding the idle event listener so that idle event on keyboard down goes waste
           setTimeout(function(){

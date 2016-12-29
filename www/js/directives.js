@@ -115,10 +115,10 @@ angular.module('SeeAroundMe.directives', [])
     }
 })
 
-.directive('postEdit', function () {
+.directive('postActions', function () {
     return {
         restrict: 'E',
-        template: '<span class="col" style="padding-left:60px;" ng-click="openMenu(post)"> Edit</span>',
+        template: '<span class="post-actions" ng-click="openMenu(post)"><i class="icon ion-more"></i></span>',
         scope:{
             post:'=',
             from:'@'
@@ -130,7 +130,6 @@ angular.module('SeeAroundMe.directives', [])
                 //console.log('openMenu called ...');
                 $scope.menuModal = null;
                                 
-
                 // Create the edit modal 
                 $ionicModal.fromTemplateUrl('templates/post/edit-post-options.html',{
                     scope: $scope,
@@ -143,8 +142,8 @@ angular.module('SeeAroundMe.directives', [])
             };
             
             $scope.deletePost = function(post){
-                console.log('deletePost called ...');
-                console.log(JSON.stringify(post));
+                //console.log('deletePost called ...');
+                //console.log(JSON.stringify(post));
                 $scope.hideMenuModal();
                 
                 $ionicPopup.confirm({
@@ -179,12 +178,76 @@ angular.module('SeeAroundMe.directives', [])
                     post.from = 'map';
                 }
                 
-                if(post.link_url){
-                    post.news = post.news + '\n' + post.link_url;
-                }
+                //if(post.link_url){
+                    //post.news = post.news + '\n' + post.link_url;
+                //}
                 
                 $state.go('editpostview', post);
             };
+            
+            $scope.sharePost = function(post){
+                $scope.hideMenuModal();
+                //var sanitizedText = $sanitize(text);
+                var link = 'http://www.seearound.me/post/' + post.id;
+                window.plugins.socialsharing.share( null, null, null,link);                
+            };
+            
+            $scope.followUser = function(post){
+                $scope.hideMenuModal();
+                AppService.followUser(post.user_id).then(function(result){
+                      if(result.data.status == 'SUCCESS')
+                        post.isFriend = 1;
+                      //console.log(JSON.stringify(result));
+                });                
+            };            
+            
+            $scope.unfollowUser = function(post){
+                $scope.hideMenuModal();
+                AppService.unfollowUser(post.user_id).then(function(result){
+                      if(result.data.status == 'SUCCESS')
+                        post.isFriend = 0;
+                      //console.log(JSON.stringify(result));
+                });                
+            };                        
+            
+            $scope.viewProfile = function(post){
+                $scope.hideMenuModal();
+                //console.log('goto profile called with id= ', post.user_id);
+                var userData = JSON.parse(localStorage.getItem('sam_user_data')) || {};
+                var userId = userData.id || 0;
+                if(userId == post.user_id){
+                    AppService.setIsCurrentUserFlag(true);
+                }
+                else{
+                    AppService.setIsCurrentUserFlag(false);
+                }
+
+                AppService.setUserForProfilePage(post.user_id)
+                .then(function(){
+                  $state.go('app.userprofile');
+                });                
+            };
+            
+            $scope.blockUser = function(post){
+                $scope.hideMenuModal();
+                AppService.blockUser(post).then(function(result){
+                    //console.log(result);
+                    if(result.data.status == 'SUCCESS'){
+                        AppService.showErrorAlert('User Blocked', post.Name + ' has been blocked. You will no longer see their posts.');
+                    }
+                });                 
+            };  
+            
+            $scope.flagPost = function(post){
+                
+                $scope.hideMenuModal();
+                AppService.flagPost(post).then(function(result){
+                    //console.log(result);
+                    if(result.data.status == 'SUCCESS'){
+                        AppService.showErrorAlert('Post Flagged', 'This post has been flagged for review.');
+                    }
+                });                
+            };            
 
             $scope.hideMenuModal = function(){
                $scope.menuModal.hide();
@@ -207,4 +270,37 @@ angular.module('SeeAroundMe.directives', [])
       });
     }
   };
-});
+})
+
+.directive('hashtagify', ['$timeout', '$compile',
+    function($timeout, $compile) {
+        return {
+            restrict: 'A',
+            scope: {
+                uClick: '&userClick',
+                tClick: '&termClick'
+            },
+            link: function(scope, element, attrs) {
+                $timeout(function() {
+                    var html = element.html();
+
+                    if (html === '') {
+                        return false;
+                    }
+
+                    if (attrs.userClick) {
+                        html = html.replace(/(|\s)*@(\w+)/g, '$1<a ng-click="uClick({$event: $event})" class="hashtag">@$2</a>'); 
+                    }
+                    
+                    if (attrs.termClick) {
+                        html = html.replace(/(^|\s)*#(\w+)/g, '$1<a ng-click="tClick({$event: $event})" class="hashtag">#$2</a>');
+                    }
+
+                    element.html(html);
+                    
+                    $compile(element.contents())(scope);
+                }, 0);
+            }
+        };
+    }
+]);

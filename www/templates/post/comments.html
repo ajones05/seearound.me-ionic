@@ -54,8 +54,8 @@
           <img src="img/chat.png" alt="">
         </span>
           <post-like-box></post-like-box>
-          <post-edit ng-if="post.canEdit" post="post" from="comments"></post-edit>
-        <span class="col" ng-click='openShare(post.id)'> Share</span>
+        <div class="col"></div>
+        <post-actions class="col col-20" post="post" from="comments"></post-actions>
       </div>
     </div>
 
@@ -88,7 +88,7 @@
       <input type="text" class="col" ng-model="newComment.text" placeholder="Write a comment..">
       <div ng-click="postComment()" class="button button-small button-positive col col-20">
         Post
-        </div>
+      </div>
     </div>
   </ion-content>    
 </ion-view>

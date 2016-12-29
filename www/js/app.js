@@ -6,7 +6,8 @@ angular.module('SeeAroundMe', [
     'SeeAroundMe.filters', 
     'ngCordova',
     'google.places', 
-    'ngSanitize'])
+    'ngSanitize'
+])
 
 .run(function($ionicPlatform, $timeout, $state, $rootScope, AppService, $ionicPopup, $ionicHistory, $cordovaStatusbar) {
   $ionicPlatform.ready(function() {

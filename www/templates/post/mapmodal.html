@@ -36,7 +36,8 @@
           <img src="img/chat.png" alt="">
         </span>
           <post-like-box></post-like-box>
-        <span class="col" ng-click='openShare(post.id)'> Share</span>
+        <div class="col"></div>
+        <post-actions class="col col-20" post="post" from="map"></post-actions>
       </div>
 
       <div class="comments" ng-if="postComments" style="background:white">
@@ -115,8 +116,8 @@
             <img src="img/chat.png" alt="">
           </span>
             <post-like-box></post-like-box>
-            <post-edit ng-if="post.canEdit" post="post" from="map"></post-edit>
-          <span class="col" ng-click='openShare(post.id)'> Share</span>
+            <div class="col"></div>
+            <post-actions class="col col-20" post="post" from="map"></post-actions>
         </div>        
    </div>
     <ion-list class="comments" ng-if="postComments">
