@@ -1,10 +1,11 @@
 //menu.html
 .menu{
   .scroll{
-    background: #e8e8e8;
+    background: #fff;
   }
   .bar.bar-stable{
     background: white;
+    border: 1px solid $positive;
     img{
       width: 50%;
       margin: auto;
@@ -13,35 +14,29 @@
   .list{
 
     .item{
-      padding-left: 15%;
-      background: #e8e8e8;
-      font-family: 'Lato-Bold';
-      color: $gray;
-      border-bottom: 2px solid rgba(144, 144, 144, 0.9);
-      font-size: 0.8rem;
-      i{
-        float: right;
-        padding-right: 10%;
-        color: black;
-        opacity: 0.4;
-      }
-
-      .sub-item{
-        font-family: "Lato";
-        font-weight: bold;
-        padding: 5% 0 0 20%;
-      }
+      height: 40px !important;
+      background: #fff;
+      font-family: 'Lato';
+      color: #000;
+      border: 0;
+      font-size: 1rem;
+        i {
+            color: $positive;
+            font-size: 1.2em;
+        }
     }
 
     .item-complex .item-content{
-      background: inherit;
+        padding-left: 40px !important;
+        background: inherit;
     }
 
     ion-item:first-child{
-      padding-left: 16px;
-      text-align: center;
-      width: 100%;
-      color: $positive;
+        height: 140px !important;
+        padding-left: 16px;
+        text-align: center;
+        width: 100%;
+        color: $positive;
 
       img{
         border: 4px solid $positive;
@@ -51,15 +46,6 @@
         height: 90px;
         margin: auto;
       }
-    }
-
-    .col{
-      padding-left: 0;
-      text-align: left;
-    }
-    .col+.col{
-      padding-right: 15%;
-      text-align: right;
     }
   }
 }

@@ -57,6 +57,19 @@ angular.module('SeeAroundMe.controllers', [])
                  $ionicLoading.hide();
         }, 2000);
   };
+    
+  $scope.rateApp = function(){
+        if(ionic.Platform.isIOS()){
+            var appId = '1186414014';
+        }
+        else if(ionic.Platform.isAndroid()){
+            var appId = 'com.seearoundme.mobileapp';
+        }
+
+        LaunchReview.launch(appId, function(){
+            console.log("Successfully launched store app");
+        });                                                          
+  };
 })
 
 .controller('IntroCtrl', function($scope, $rootScope, $state, $ionicSlideBoxDelegate, MapService, AppService) {
@@ -76,9 +89,9 @@ angular.module('SeeAroundMe.controllers', [])
             $rootScope.loc = lat + ',' + long;
 
             //User's location
-            //var location = new google.maps.LatLng(lat, long);
+            var location = new google.maps.LatLng(lat, long);
         
-        /*
+        
             //The specified area represented by bounds rectangle
             var bounds = new google.maps.LatLngBounds(
                 new google.maps.LatLng(37.7169, -122.5004),
@@ -87,15 +100,29 @@ angular.module('SeeAroundMe.controllers', [])
 
             //Returns true if the location is within the area
             var isLocInArea = bounds.contains(location);
-        */
-            //if(isLocInArea){//Location is within specified area
+        
+            if(isLocInArea){//Location is within specified area
                 //Fine, lets go to the app
+                $rootScope.isLocationOutside = false;
                 $state.go('home');
-            //}
-            //else{//Location is outside the specified area
+            }
+            else{//Location is outside the specified area
                 //Can't allow this user to go inside ... show form
+                $ionicPopup.alert({
+                     title: 'See Around Me Alert',
+                     subTitle: 'Current Location',
+                     template: 'SeeAroundMe is not currently available in your area. For now, your location has been set to Oakland, CA.'
+                }).then(function(){
+                    $rootScope.isLocationOutside = true;
+                    var location = {latitude: 37.8088139, longitude: -122.2660002};
+                    var mylocation = JSON.stringify(location);
+
+                    localStorage.setItem('sam_user_location', mylocation);
+                    
+                    $state.go('home');
+                });
                 //$state.go('outareaform');
-            //}
+            }
         },function(err) {
             // error
             //console.error('Failed to get current position. Error: ' + JSON.stringify(err));
@@ -188,6 +215,22 @@ angular.module('SeeAroundMe.controllers', [])
                         AppService.setAuthToken(response.result.token);
                         localStorage.setItem('sam_user_data', JSON.stringify(response.result));
                         $rootScope.isBeforeSignUp = false;
+                         if($rootScope.isLocationOutside == true){
+                             //Send user's email to google doc to save
+                            var data = {
+                                "entry.1" : new Date().getTime(), 
+                                "entry.364269482" : response.result.email, 
+                                "entry.1803428188": $rootScope.loc
+                            };
+
+                            AppService.submitEmail(data).then(function(res){
+                                console.log('Status: ' + res.status);
+                                //if(res.status == 200){
+                                    //AppService.showErrorAlert('Email Submitted', 'The email has been submitted successfully. Thanks!');
+                                //}
+                            });
+                         }
+                         
                         $state.go('app.postlistview');
                      }
                      else{
@@ -231,6 +274,23 @@ angular.module('SeeAroundMe.controllers', [])
                                     AppService.setAuthToken(response.result.token);
                                     localStorage.setItem('sam_user_data', JSON.stringify(response.result));
                                     $rootScope.isBeforeSignUp = false;
+                                     
+                                     if($rootScope.isLocationOutside == true){
+                                         //Send user's email to google doc to save
+                                        var data = {
+                                            "entry.1" : new Date().getTime(), 
+                                            "entry.364269482" : response.result.email, 
+                                            "entry.1803428188": $rootScope.loc
+                                        };
+
+                                        AppService.submitEmail(data).then(function(res){
+                                            console.log('Status: ' + res.status);
+                                            //if(res.status == 200){
+                                                //AppService.showErrorAlert('Email Submitted', 'The email has been submitted successfully. Thanks!');
+                                            //}
+                                        });
+                                     }
+                                     
                                     $state.go('app.postlistview');
                                  }
                                  else{
@@ -328,6 +388,23 @@ angular.module('SeeAroundMe.controllers', [])
                                     response.result.Profile_image = resObj.data.thumb;
                                   localStorage.setItem('sam_user_data', JSON.stringify(response.result));
                                   $rootScope.isBeforeSignUp = false;
+                                    
+                                 if($rootScope.isLocationOutside == true){
+                                     //Send user's email to google doc to save
+                                    var data = {
+                                        "entry.1" : new Date().getTime(), 
+                                        "entry.364269482" : response.result.email, 
+                                        "entry.1803428188": $rootScope.loc
+                                    };
+
+                                    AppService.submitEmail(data).then(function(res){
+                                        console.log('Status: ' + res.status);
+                                        //if(res.status == 200){
+                                            //AppService.showErrorAlert('Email Submitted', 'The email has been submitted successfully. Thanks!');
+                                        //}
+                                    });
+                                 }
+                                    
                                   $state.go('app.postlistview');
                                     //$timeout(function(){
                                           //$rootScope.$broadcast('login',{});
@@ -481,6 +558,23 @@ angular.module('SeeAroundMe.controllers', [])
             AppService.setAuthToken(response.result.token);
             localStorage.setItem('sam_user_data', JSON.stringify(response.result));
             $rootScope.isBeforeSignUp = false;
+            
+             if($rootScope.isLocationOutside == true){
+                 //Send user's email to google doc to save
+                var data = {
+                    "entry.1" : new Date().getTime(), 
+                    "entry.364269482" : response.result.email, 
+                    "entry.1803428188": $rootScope.loc
+                };
+
+                AppService.submitEmail(data).then(function(res){
+                    console.log('Status: ' + res.status);
+                    //if(res.status == 200){
+                        //AppService.showErrorAlert('Email Submitted', 'The email has been submitted successfully. Thanks!');
+                    //}
+                });
+             }
+            
             $state.go('app.postlistview');
             //Fire login event to cause the map to refresh
             //$timeout(function(){
@@ -526,6 +620,23 @@ angular.module('SeeAroundMe.controllers', [])
                         AppService.setAuthToken(response.result.token);
                         localStorage.setItem('sam_user_data', JSON.stringify(response.result));
                         $rootScope.isBeforeSignUp = false;
+                         
+                         if($rootScope.isLocationOutside == true){
+                             //Send user's email to google doc to save
+                            var data = {
+                                "entry.1" : new Date().getTime(), 
+                                "entry.364269482" : response.result.email, 
+                                "entry.1803428188": $rootScope.loc
+                            };
+
+                            AppService.submitEmail(data).then(function(res){
+                                console.log('Status: ' + res.status);
+                                //if(res.status == 200){
+                                    //AppService.showErrorAlert('Email Submitted', 'The email has been submitted successfully. Thanks!');
+                                //}
+                            });
+                         }
+                         
                         $state.go('app.postlistview');
                      }
                      else{
@@ -566,6 +677,23 @@ angular.module('SeeAroundMe.controllers', [])
                                     AppService.setAuthToken(response.result.token);
                                     localStorage.setItem('sam_user_data', JSON.stringify(response.result));
                                     $rootScope.isBeforeSignUp = false;
+                                     
+                                 if($rootScope.isLocationOutside == true){
+                                     //Send user's email to google doc to save
+                                    var data = {
+                                        "entry.1" : new Date().getTime(), 
+                                        "entry.364269482" : response.result.email, 
+                                        "entry.1803428188": $rootScope.loc
+                                    };
+
+                                    AppService.submitEmail(data).then(function(res){
+                                        console.log('Status: ' + res.status);
+                                        //if(res.status == 200){
+                                            //AppService.showErrorAlert('Email Submitted', 'The email has been submitted successfully. Thanks!');
+                                        //}
+                                    });
+                                 }
+                                     
                                     $state.go('app.postlistview');
                                  }
                                  else{
@@ -1129,7 +1257,11 @@ angular.module('SeeAroundMe.controllers', [])
                             
             $scope.$broadcast('scroll.infiniteScrollComplete');            
         });      
-  };    
+  }; 
+    
+  $scope.tagTermClick = function(e) {
+      
+  };
 })
 
 .controller('FollowingCtrl', function($scope, $rootScope, AppService, ModalService, $state, $ionicHistory, $ionicLoading){
@@ -1401,7 +1533,7 @@ angular.module('SeeAroundMe.controllers', [])
 
 })
 
-.controller('PostListCtrl', function($scope, $rootScope, $state, $ionicGesture, $ionicPopup, $ionicPopover, $compile, $timeout,  $ionicLoading, $cordovaGeolocation, $ionicScrollDelegate, $sanitize, AppService, MapService, ModalService){
+.controller('PostListCtrl', function($scope, $rootScope, $state, $ionicGesture, $ionicPopup, $ionicPopover, $compile, $timeout,  $ionicLoading, $cordovaGeolocation, $ionicScrollDelegate, $sanitize, $sce, AppService, MapService, ModalService){
     
     $rootScope.postMode = 'new';//Other mode is edit
     $rootScope.inputRadius = 1.6;
@@ -1415,11 +1547,11 @@ angular.module('SeeAroundMe.controllers', [])
   var userId = userData.id || 0;
   var authToken = userData.token || '';
   AppService.setUserId(userId);
-/*
+
   // the regex that matches urls in text
   var urlRegEx = new RegExp(
       "((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
-   );*/
+   );
     
      var posOptions = {timeout: 30000, maximumAge:0, enableHighAccuracy: false};
     $cordovaGeolocation.getCurrentPosition(posOptions)
@@ -1449,13 +1581,13 @@ angular.module('SeeAroundMe.controllers', [])
                     
                         $scope.nearbyPosts = response.result;
                         
-                        /*
+                        
                         $scope.nearbyPosts.map(function(post){
 
                             if(post.link_url){
                                 post.news = post.news.replace(urlRegEx, "");
                             }
-                        });*/
+                        });
                     }
                 })
                 .error(function (err) {
@@ -1479,6 +1611,10 @@ angular.module('SeeAroundMe.controllers', [])
         $scope.searchTerm = tagText.substr(1);
         //console.log('searchTerm: ' + $scope.searchTerm);
         $scope.searchPosts();
+    };
+    
+    $scope.trustHtml = function(html) {
+        return $sce.trustAsHtml(html);
     };
         
   $scope.isSwiping = false; 
@@ -1547,9 +1683,9 @@ angular.module('SeeAroundMe.controllers', [])
                     if(response.result && response.result.length > 0){
                           response.result.map(function(post){
 
-                                //if(post.link_url){
-                                    //post.news = post.news.replace(urlRegEx, "");
-                                //}                  
+                                if(post.link_url){
+                                    post.news = post.news.replace(urlRegEx, "");
+                                }                  
 
                               $scope.nearbyPosts.push(post);
                           });
@@ -1594,6 +1730,7 @@ angular.module('SeeAroundMe.controllers', [])
   };
 
   $rootScope.goToProfile = function(id){
+      
     //console.log('goto profile called with id= ', id);
     var userData = JSON.parse(localStorage.getItem('sam_user_data')) || {};
     var userId = userData.id || 0;
@@ -1710,6 +1847,15 @@ angular.module('SeeAroundMe.controllers', [])
         AppService.getNearbyPosts(data)
         .success(function (response) {
               $rootScope.isFiltered = false;
+            
+                response.result.map(function(post){
+
+                    if(post.link_url){
+                        post.news = post.news.replace(urlRegEx, "");
+                    }
+                    
+                });
+            
               $scope.nearbyPosts = response.result;
               //Save for map view as well
               $rootScope.currentPosts = response.result;
@@ -1741,6 +1887,15 @@ angular.module('SeeAroundMe.controllers', [])
             .success(function(data){  
                 $ionicLoading.hide();
               $rootScope.isFiltered = true;
+            
+                data.result.map(function(post){
+
+                    if(post.link_url){
+                        post.news = post.news.replace(urlRegEx, "");
+                    }
+                    
+                });
+
               $scope.nearbyPosts = data.result;
               //Save for map view as well
               $rootScope.currentPosts = data.result;
@@ -1787,13 +1942,14 @@ angular.module('SeeAroundMe.controllers', [])
         else
             $scope.showSearch = true;
     };
-    
+    //Default
+    $scope.textColor = 'gray';
     // set post button to blue when typing
     $scope.checkInput = function(){
       $scope.textColor = '';
       if ($scope.formData.postText){
         //console.log($scope.formData.postText);
-        ($scope.formData.postText.length > 0) ? $scope.textColor = 'blue' : $scope.textColor = 'gray';
+        ($scope.formData.postText.length > 0) ? $scope.textColor = 'gray' : $scope.textColor = 'white';
       }
     } 
     
@@ -1838,7 +1994,7 @@ angular.module('SeeAroundMe.controllers', [])
                 //console.log('image uri: '+ imgUri);
                 $scope.imgUri = imgUri;
                 if($scope.addLocation !== "        Add location")
-                    $scope.textColor = 'blue';
+                    $scope.textColor = 'white';
         });
         
         $scope.toggleCamBar();
@@ -1879,10 +2035,13 @@ angular.module('SeeAroundMe.controllers', [])
                 $scope.imgUri = imageUri; //Reset saved uri
                 AppService.setImgUri("");
                 $scope.formData.postText = $rootScope.postText;
-                $scope.textColor = 'blue';
+                $scope.textColor = 'white';
             }            
         }        
     });
+    
+    //Default
+    $scope.textColor = 'gray';    
     
     // set post button to blue when typing
     $scope.checkInput = function(){
@@ -1891,7 +2050,7 @@ angular.module('SeeAroundMe.controllers', [])
       if ($scope.addLocation != "        Add location"){
         //console.log($scope.formData.postText);         
         if($scope.formData.postText || $scope.imgUri){
-            $scope.textColor = 'blue';
+            $scope.textColor = 'white';
         } 
         else{  
             $scope.textColor = 'gray';
@@ -1996,18 +2155,20 @@ angular.module('SeeAroundMe.controllers', [])
                 if(response.status == 'SUCCESS'){
                     //console.log('Got nearby posts ..............................');
                     if(response.result){
-                        /*
+                        
                       // the regex that matches urls in text
                       var urlRegEx = new RegExp(
                               "((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
                            );
 
-                        response.result.forEach(function (post) {
+                        response.result.map(function(post){
 
-                            post.news = post.news.replace(urlRegEx, "");
+                            if(post.link_url){
+                                post.news = post.news.replace(urlRegEx, "");
+                            }
 
-                        });*/
-
+                        });
+                        
                         //To use on list view
                         $rootScope.currentPosts = response.result;
                         $state.go('app.postlistview');
@@ -2066,7 +2227,7 @@ angular.module('SeeAroundMe.controllers', [])
                 //console.log('image uri: '+ imgUri);
                 $scope.imgUri = imgUri;
                 if($scope.addLocation !== "        Add location")
-                    $scope.textColor = 'blue';
+                    $scope.textColor = 'white';
         });
         
         $scope.toggleCamBar();
@@ -2107,7 +2268,7 @@ angular.module('SeeAroundMe.controllers', [])
                 $scope.imgUri = imageUri; //Reset saved uri
                 AppService.setImgUri("");
                 $scope.formData.postText = $rootScope.postText;
-                $scope.textColor = 'blue';
+                $scope.textColor = 'white';
             }            
         }
         else{ //From a post edit
@@ -2126,6 +2287,9 @@ angular.module('SeeAroundMe.controllers', [])
         }
     });
     
+    //Default
+    $scope.textColor = 'gray';    
+    
     // set post button to blue when typing
     $scope.checkInput = function(){
       //$rootScope.postText =  $scope.formData.postText;
@@ -2133,7 +2297,7 @@ angular.module('SeeAroundMe.controllers', [])
       if ($scope.addLocation != "        Add location"){
         //console.log($scope.formData.postText);         
         if($scope.formData.postText || $scope.imgUri){
-            $scope.textColor = 'blue';
+            $scope.textColor = 'white';
         } 
         else{  
             $scope.textColor = 'gray';
@@ -2222,23 +2386,22 @@ angular.module('SeeAroundMe.controllers', [])
                 if(response.status == 'SUCCESS'){
                     //console.log('Got nearby posts ..............................');
                     if(response.result){
-                        /*
                       // the regex that matches urls in text
                       var urlRegEx = new RegExp(
                               "((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
                            );
 
-                        response.result.forEach(function (post) {
+                        response.result.map(function(post){
 
-                            post.news = post.news.replace(urlRegEx, "");
-
-                        });*/
+                            if(post.link_url){
+                                post.news = post.news.replace(urlRegEx, "");
+                            }
+                        });
 
                         //To use on list view
                         $rootScope.currentPosts = response.result;
                         $state.go('app.postlistview');
                      }
-
                 }
                  else{
                      //console.log('Failed to get nearby posts ...');
@@ -2701,7 +2864,7 @@ angular.module('SeeAroundMe.controllers', [])
              //When modal goes down, change icon back to gray
              if($scope.selectedMarker){
                  $scope.selectedMarker.setIcon({
-                       url:'img/pin-gray.png',
+                       url:'img/pin-red.png',
                        scaledSize: new google.maps.Size(18, 25)
                 });
              }
@@ -2747,7 +2910,7 @@ angular.module('SeeAroundMe.controllers', [])
                     //If a marker is already selected, deselect it
                     if($scope.selectedMarker){
                         $scope.selectedMarker.setIcon({
-                            url:'img/pin-gray.png',
+                            url:'img/pin-red.png',
                             scaledSize: new google.maps.Size(18, 25)
                         });
                     }
@@ -2755,7 +2918,7 @@ angular.module('SeeAroundMe.controllers', [])
                     if(this.post){//It is a post location
                         //Change icon to blue
                         this.setIcon({
-                            url:'img/pin-blue.png',
+                            url:'img/pin-purple.png',
                             scaledSize: new google.maps.Size(22, 30)
                         });
                         
@@ -2914,6 +3077,15 @@ angular.module('SeeAroundMe.controllers', [])
             $scope.showSearch = true;
     };
     
+    //Function handling hashtags
+    $scope.tagTermClick = function(e) {
+        $scope.hideModal();
+        var tagText = e.target.innerText;
+        //console.log('tagText: ' + tagText);
+        $scope.searchTerm = tagText.substr(1);
+        //console.log('searchTerm: ' + $scope.searchTerm);
+        $scope.searchPosts();
+    };    
 
       $scope.goToComments = function(post){
         $scope.hideModal();
@@ -2935,22 +3107,52 @@ angular.module('SeeAroundMe.controllers', [])
 
     // for refresh map
     $scope.$on('$ionicView.enter', function(e) {
-                
-        //Causes the map to redraw
-        google.maps.event.trigger($rootScope.map, 'resize');
-        
+                        
         if($rootScope.map){
+            var markersAdded = true;
             MapService.refreshMap();
+            
             //Add idel event listener
             google.maps.event.addListener(($rootScope.map), 'idle',
             function(event) {
                //console.log('map idle event fired ....');
                var c = this.getCenter();
-               if(c){
+               if(c && !markersAdded){
                     $rootScope.currentCenter = c;
                     MapService.centerMap(c);
                }
-            });            
+                
+               markersAdded = false;
+            });  
+            
+            //Causes the map to redraw
+            google.maps.event.trigger($rootScope.map, 'resize');
+            
+        }
+        else{
+          //Initialize map
+            if(AppService.isConnected()){
+                var markersAdded = true;
+                //Make map at the start
+                MapService.initMap();
+                
+                //Add idel event listener
+                google.maps.event.addListener(($rootScope.map), 'idle',
+                function(event) {
+                   //console.log('map idle event fired ....');
+                   var c = this.getCenter();
+                   if(c && !markersAdded){
+                        $rootScope.currentCenter = c;
+                        MapService.centerMap(c);
+                   }
+
+                   markersAdded = false;
+                });  
+                
+            }
+            else{
+                AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');        
+            }                
         }
     });
 
@@ -3036,13 +3238,4 @@ angular.module('SeeAroundMe.controllers', [])
       //Must remove idle listener as it can cause trouble
         google.maps.event.clearListeners($rootScope.map, 'idle');
   };
-    
-  //Initialize map
-    if(AppService.isConnected()){
-        //Make map at the start
-        MapService.initMap();
-    }
-    else{
-        AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');        
-    }    
 });

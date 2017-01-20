@@ -1,6 +1,6 @@
 <ion-view hide-nav-bar cache-view="false" class="mapmodal">
     
-  <ion-nav-bar >
+  <ion-nav-bar class="bar-positive">
     <ion-nav-back-button class="button-clear">
       <i class="icon ion-ios-arrow-left"></i>
     </ion-nav-back-button>
@@ -17,24 +17,11 @@
   <ion-content>
     <div class="post_item">
       <div class="row user">
-        <div class="col col-20 avatar"
-          ng-click="goToProfile(post.user_id)"
-          >
-          <img ng-src="{{post.Profile_image}}">
-        </div>
-        <div class="col"> 
-          <div class="name">
-            <span>{{post.Name}}</span>
-            <div class="date">
-              {{post.created_date}}
-            </div>
-          </div>
-            <p class="desc" ng-bind-html="post.news | linky | hrefToJS"></p>
+        <div class="col col-90"> 
+            <p class="desc" ng-bind-html="post.news | linky | hrefToJS | hashtag"></p>
             <!-- p class="desc" ng-if="post.link_url">{{post.news}}</p -->
         </div>
-        <div
-          ng-click="showMapForPost(post)"
-          style="width:20px;">
+        <div ng-click="showMapForPost(post)" class="col col-10" style="width:20px;">
           <a class="icon ion-ios-location-outline" style="font-size:1.3em;"></a>
         </div>                        
       </div>
@@ -49,13 +36,22 @@
             </div>
         </div>        
       <div class="share row">
-        <span class="col col-20 chat-bubble">
-          {{post.comment_count}}
-          <img src="img/chat.png" alt="">
+        <post-like-box></post-like-box>
+        <span class="text-comm" ng-if="post.comment_count > 0" ng-click="goToComments(post)">
+            {{post.comment_count}} Comments
         </span>
-          <post-like-box></post-like-box>
-        <div class="col"></div>
-        <post-actions class="col col-20" post="post" from="comments"></post-actions>
+        <span class="text-comm" ng-if="post.comment_count == 0" ng-click="goToComments(post)">
+            Comment
+        </span>
+        <div class="post-by">
+            <div class="row text-gray">
+                <div class="date">
+                  {{post.created_date}} by 
+                </div>
+                <div ng-click="goToProfile(post.user_id)" class="user-name">{{post.Name}}</div>
+            </div>
+        </div>
+        <post-actions post="post" from="comments"></post-actions>
       </div>
     </div>
 
@@ -73,7 +69,7 @@
               <div>{{comment.commTimeAgo}}</div>
             </div>
           </div>
-        <p class="desc" ng-bind-html="comment.comment | linky | hrefToJS"></p>
+        <p class="comm-text" ng-bind-html="comment.comment | linky | hrefToJS"></p>
           <!--div class="desc">{{comment.comment}}</div-->
         
         <!-- <div style="width:20px;padding:5px"> -->
@@ -85,7 +81,7 @@
       </ion-item>
     </ion-list>
     <div class="write-comment row">
-      <input type="text" class="col" ng-model="newComment.text" placeholder="Write a comment..">
+       <textarea class="col" rows="1" ng-model="newComment.text" placeholder="Write a comment.."></textarea>
       <div ng-click="postComment()" class="button button-small button-positive col col-20">
         Post
       </div>

@@ -29,7 +29,11 @@ a.hashtag {
 }
 
 .post-actions {
-    font-size: 2em !important;
+  width: 30px;
+  height: 100%;
+  padding-right: 10px;
+  font-size: 2.1rem !important;
+  color: #5B8CCC !important;
 }
 
 .spacer10 {
@@ -77,6 +81,11 @@ a.hashtag {
 .button-positive{
     background: $base-color !important;
     background-color: $base-color !important;
+}
+
+.bar-positive {
+    background: $baseColor !important;
+    background-color: $baseColor !important;    
 }
 
 //Font overrides

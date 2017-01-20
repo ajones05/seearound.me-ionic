@@ -3,14 +3,11 @@ angular.module('SeeAroundMe.directives', [])
 .directive('postLikeBox', function () {
     return {
         restrict: 'E',
-        template: '<span class="col arrows">'
-              +'<img src="img/upvote_off.png" ng-if="post.isLikedByUser == 0" ng-click="upVote(post.id, 1)" alt="">'
+        template: '<span class="row arrows">'
+            +'<img src="img/upvote_off.png" ng-if="post.isLikedByUser == 0" ng-click="upVote(post.id, 1)" alt="">'
               +'<img src="img/upvote_off.png" ng-if="post.isLikedByUser == -1" ng-click="upVote(post.id, 1)" alt="">'
               +'<img src="img/upvote_on.png" ng-if="post.isLikedByUser == 1" ng-click="upVote(post.id, -1)" alt="">'
-              +'{{post.vote}}'
-              +'<img src="img/downvote_on.png" ng-if="post.isLikedByUser == -1" ng-click="downVote(post.id, 1)" alt="">'
-              +'<img src="img/downvote_off.png" ng-if="post.isLikedByUser == 1" ng-click="downVote(post.id, -1)" alt="">'
-              +'<img src="img/downvote_off.png" ng-if="post.isLikedByUser == 0" ng-click="downVote(post.id, -1)" alt=""></span>',
+              +'<p>{{post.vote}}</p></span>',
         controller: function ($scope, AppService) {
             
               $scope.updateUpVote = function(post, myVote, newsId){
@@ -281,6 +278,7 @@ angular.module('SeeAroundMe.directives', [])
                 tClick: '&termClick'
             },
             link: function(scope, element, attrs) {
+                //attrs.$observe('hashtagify', function() {
                 $timeout(function() {
                     var html = element.html();
 
@@ -291,13 +289,13 @@ angular.module('SeeAroundMe.directives', [])
                     if (attrs.userClick) {
                         html = html.replace(/(|\s)*@(\w+)/g, '$1<a ng-click="uClick({$event: $event})" class="hashtag">@$2</a>'); 
                     }
-                    
+
                     if (attrs.termClick) {
                         html = html.replace(/(^|\s)*#(\w+)/g, '$1<a ng-click="tClick({$event: $event})" class="hashtag">#$2</a>');
                     }
 
                     element.html(html);
-                    
+
                     $compile(element.contents())(scope);
                 }, 0);
             }

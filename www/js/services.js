@@ -205,7 +205,7 @@ angular.module('SeeAroundMe.services', [])
         
         getMorePosts: function(){
             
-            pageNum = pageNum + 15;
+            pageNum = pageNum + 12;
             
             var data = {                
                 "latitude" : $rootScope.currentCenter.lat(),
@@ -534,13 +534,14 @@ angular.module('SeeAroundMe.services', [])
                         .then(function(result){
                             $ionicLoading.hide();
                             if(result.data.post){
-                                /*
+                                
                                 var urlRegEx = new RegExp(
                                   "((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
-                                );                                
+                                );   
+                                
                                 if(result.data.post.link_url){
                                     result.data.post.news = result.data.post.news.replace(urlRegEx, "");
-                                }*/
+                                }
                                 
                                 AppService.setCurrentComments(result.data.post)
                                 .then(function(){
@@ -718,7 +719,7 @@ angular.module('SeeAroundMe.services', [])
                 position: latLng,
                 map: map,
                 icon: {
-                    url:'img/pin-blue.png',
+                    url:'img/pin-purple.png',
                     scaledSize: new google.maps.Size(22, 30)
                 },
                 // animation: google.maps.Animation.BOUNCE,
@@ -853,11 +854,11 @@ angular.module('SeeAroundMe.services', [])
                 if(response.status == 'SUCCESS'){
                     //console.log('Got nearby posts ..............................');                    
                     if(response.result){
-                        /*
+                        
                       // the regex that matches urls in text
                       var urlRegEx = new RegExp(
                               "((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
-                           );*/
+                           );
 
                         response.result.forEach(function (post) {
                             var marker = new google.maps.Marker({
@@ -865,12 +866,14 @@ angular.module('SeeAroundMe.services', [])
                                 map: $rootScope.map,
                                 // title: post.title,
                                 icon: {
-                                    url:'img/pin-gray.png',
+                                    url:'img/pin-red.png',
                                     scaledSize: new google.maps.Size(18, 25)
                                 }
                             });
                             
-                            //post.news = post.news.replace(urlRegEx, "");
+                            if(post.link_url)
+                                post.news = post.news.replace(urlRegEx, "");
+                            
                             marker.post = post;
                             
                             $rootScope.markers.push(marker);
@@ -949,7 +952,23 @@ angular.module('SeeAroundMe.services', [])
                     console.warn(JSON.stringify(err));
                 });
             }
-        },        
+        },
+        
+        showMyLocation: function(){
+            // Show current user position
+            var myLocation = new google.maps.Marker({
+                position: $rootScope.myCenter,
+                map: $rootScope.map,
+                icon: {
+                    url:'img/pin-purple.png',
+                    scaledSize: new google.maps.Size(22, 30)
+                },
+                // animation: google.maps.Animation.BOUNCE,
+                title: "My Location"
+            });
+
+            $rootScope.markers.push(myLocation);            
+        },
         
         refreshMap: function(){            
             //Remove markers if any
@@ -961,21 +980,9 @@ angular.module('SeeAroundMe.services', [])
 
             //We'll maintain an array of markers to manage them later in the app
             $rootScope.markers = [];
-
-            // Show current user position
-            var myLocation = new google.maps.Marker({
-                position: $rootScope.myCenter,
-                map: $rootScope.map,
-                icon: {
-                    url:'img/pin-blue.png',
-                    scaledSize: new google.maps.Size(22, 30)
-                },
-                // animation: google.maps.Animation.BOUNCE,
-                title: "My Location"
-            });
-
-            $rootScope.markers.push(myLocation);
-
+            
+            //this.showMyLocation();
+            
             this.showPosts($rootScope.currentCenter);
         },
         
@@ -989,21 +996,9 @@ angular.module('SeeAroundMe.services', [])
 
             //We'll maintain an array of markers to manage them later in the app
             $rootScope.markers = [];
-
-            // Show current user position
-            var myLocation = new google.maps.Marker({
-                position: $rootScope.myCenter,
-                map: $rootScope.map,
-                icon: {
-                    url:'img/pin-blue.png',
-                    scaledSize: new google.maps.Size(22, 30)
-                },
-                // animation: google.maps.Animation.BOUNCE,
-                title: "My Location"
-            });
-
-            $rootScope.markers.push(myLocation);
-
+            
+            //this.showMyLocation();
+            
             this.showPosts($rootScope.myCenter);
         },        
         
@@ -1018,19 +1013,8 @@ angular.module('SeeAroundMe.services', [])
             
             $rootScope.map.setCenter(center);
             
-            // Show current user position
-            var myLocation = new google.maps.Marker({
-                position: $rootScope.myCenter,
-                map: $rootScope.map,
-                icon: {
-                    url:'img/pin-blue.png',
-                    scaledSize: new google.maps.Size(22, 30)
-                },
-                // animation: google.maps.Animation.BOUNCE,
-                title: "My Location"
-            });
-
-            $rootScope.markers.push(myLocation);
+            //this.showMyLocation();
+            
             this.showPosts(center);            
         },        
         

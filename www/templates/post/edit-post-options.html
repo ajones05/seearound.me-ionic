@@ -16,23 +16,23 @@
                Share ...
            </a>
            
-           <a ng-click="followUser(post)" ng-if="!post.isFriend" class="item text-center">
+           <a ng-click="followUser(post)" ng-if="!post.isFriend && !post.canEdit" class="item text-center">
                Follow {{post.Name}}
            </a>           
            
-           <a ng-click="unfollowUser(post)" ng-if="post.isFriend" class="item text-center">
+           <a ng-click="unfollowUser(post)" ng-if="post.isFriend && !post.canEdit" class="item text-center">
                Unfollow {{post.Name}}
            </a>                      
            
-           <a ng-click="viewProfile(post)" class="item text-center">
+           <a ng-click="viewProfile(post)" ng-if="!post.canEdit" class="item text-center">
                View {{post.Name}}'s Profile
            </a>  
            
-           <a ng-click="blockUser(post)" class="item text-center">
+           <a ng-click="blockUser(post)" ng-if="!post.canEdit" class="item text-center">
                Block {{post.Name}}
            </a>                      
            
-           <a ng-click="flagPost(post)" class="item text-center">
+           <a ng-click="flagPost(post)" ng-if="!post.canEdit" class="item text-center">
                Flag as Inappropriate
            </a>                                 
            

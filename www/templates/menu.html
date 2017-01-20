@@ -19,49 +19,60 @@
           </div>
           <div ng-click="goToOwnProfile()" menu-toggle>{{User.Name}} </div>
         </ion-item>
-        <ion-item>
-          View Posts
-          <div class="sub-item" ui-sref="app.postmapview" menu-toggle> Map View <i class="ion-chevron-right"></i> </div>
-          <div class="sub-item" ui-sref="app.postlistview" menu-toggle> List View <i class="ion-chevron-right"></i></div>
+        <ion-item class="item item-icon-left" menu-toggle ui-sref="#" ng-click='goToOwnProfile()'>
+            <i class="icon">
+              <img src="img/gear.png" height="16"/>
+            </i>
+          My profile
+        </ion-item>   
+        <ion-item class="item item-icon-left" menu-toggle ui-sref="app.postmapview">
+            <i class="icon">
+              <img src="img/map.png" height="18"/>
+            </i>
+            Map view
+        </ion-item>   
+        <ion-item class="item item-icon-left" menu-toggle ui-sref="app.postlistview">
+            <i class="icon">
+              <img src="img/list.png" height="16"/>
+            </i>
+          List view
+        </ion-item>             
+        <ion-item class="item item-icon-left" menu-toggle ui-sref="app.usermessages">
+            <i class="icon">
+              <img src="img/messages.png" height="11"/>
+            </i>
+          My messages
+        </ion-item>     
+        <ion-item class="item item-icon-left" menu-toggle ui-sref="app.userfollowing">
+            <i class="icon">
+              <img src="img/eye.png" height="12"/>
+            </i>
+          People I follow
         </ion-item>
-        <ion-item  menu-toggle>
-          <div ui-sref="app.usermessages">
-            Messages
-            <i class="ion-chevron-right"></i>
-          </div>
-        </ion-item>
-        <ion-item menu-toggle>
-            <div ui-sref="app.userfollowing">
-              Following
-              <i class="ion-chevron-right"></i>                
-            </div>
-        </ion-item>
-        <ion-item menu-toggle>
-          <div ng-click='goToOwnProfile()'>    
-            Profile
-            <i class="ion-chevron-right"></i>
-          </div>
-        </ion-item>
-        <ion-item ng-click="signOut()" menu-toggle>
-          Signout
-          <i class="ion-chevron-right"></i>
-        </ion-item>
-        <ion-item
-          style="
-            display: -webkit-flex;
-            justify-content: space-between;
-            padding-left: 12%;
-            padding-right: 12%;
-          "
-          menu-toggle>
-          <button
-            ui-sref="app.terms"
-            style="color: #7d7d7d;font-size:0.8rem"
-            class="button-clear button-stable">Terms</button>
-          <button
-            ui-sref="app.about"
-            style="color: #7d7d7d;font-size:0.8rem"
-            class="button-clear button-stable">About</button>
+        <hr style="margin-left:30px;margin-right:30px;"/>
+        <ion-item class="item item-icon-left" menu-toggle ui-sref="#" ng-click="rateApp()">
+            <i class="icon">
+              <img src="img/love.png" height="14"/>
+            </i>
+          Love it? Rate the app!
+        </ion-item>       
+        <ion-item class="item item-icon-left" menu-toggle ui-sref="app.about">
+            <i class="icon">
+              <img src="img/about.png" height="16"/>
+            </i>
+          About
+        </ion-item>               
+        <ion-item class="item item-icon-left" menu-toggle ui-sref="app.terms">
+            <i class="icon">
+              <img src="img/terms.png" height="16"/>
+            </i>
+          Terms of use
+        </ion-item>                         
+        <ion-item class="item item-icon-left" menu-toggle ui-sref="#" ng-click="signOut()" >
+            <i class="icon">
+              <img src="img/logout.png" height="16"/>
+            </i>
+          Log out
         </ion-item>
       </ion-list>
     </ion-content>

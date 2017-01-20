@@ -5,19 +5,10 @@
     <!--div class="row" ng-click="hideModal()"></div -->
 
     <div class="post_item">
-      <div class="row user">
-        <div class="col col-20 avatar">
-          <img ng-src="{{post.Profile_image}}" alt="" ng-click="goToUser(post)">
-        </div>
+      <div class="row user" ng-click="showFullView(post)">
         <div class="col"> 
-          <div class="name">
-            <span>{{post.Name}}</span>
-            <div class="date right">
-              <div> {{post.created_date}} </div>
-            </div>
-          </div>
             <!-- p class="desc">{{post.news}}</p -->
-            <p class="desc" ng-bind-html="post.news | linky | hrefToJS"></p>
+            <p class="desc" ng-bind-html="post.news | linky | hrefToJS | hashtag"></p>
         </div>
       </div>
       <img ng-src="{{post.thumb}}" class="post-iamge" ng-if="post.thumb" alt=""/>
@@ -31,13 +22,22 @@
             </div>
         </div>        
       <div class="share row">
-        <span class="col col-20 chat-bubble" ng-click="goToComments(post)">
-          {{post.comment_count}}
-          <img src="img/chat.png" alt="">
+        <post-like-box></post-like-box>
+        <span class="text-comm" ng-if="post.comment_count > 0" ng-click="goToComments(post)">
+            {{post.comment_count}} Comments
         </span>
-          <post-like-box></post-like-box>
-        <div class="col"></div>
-        <post-actions class="col col-20" post="post" from="map"></post-actions>
+        <span class="text-comm" ng-if="post.comment_count == 0" ng-click="goToComments(post)">
+            Comment
+        </span>
+        <div class="post-by">
+            <div class="row text-gray">
+                <div class="date">
+                  {{post.created_date}} by 
+                </div>
+                <div ng-click="goToUser(post)" class="user-name">{{post.Name}}</div>
+            </div>
+        </div>
+        <post-actions post="post" from="map"></post-actions>
       </div>
 
       <div class="comments" ng-if="postComments" style="background:white">
@@ -67,7 +67,7 @@
     </div>
   </ion-pane>
   <ion-view ng-show="showMapModalBar" class="mapmodal">
-      <div class="bar bar-header modal_header row">
+      <div class="bar bar-header bar-positive modal_header row" style="opacity:1;">
           <div class="left col col-20" ng-click="hideModal()">
               <i class="icon ion-close"></i>
           </div>
@@ -83,19 +83,11 @@
 
       <div class="post_item" ng-class="viewMode">
         <div class="row user" on-swipe-down="hideModal()">
-          <div class="col col-20 avatar">
-            <img ng-src="{{post.Profile_image}}" alt="" ng-click="goToUser(post)">
+          <div class="col col-90"> 
+              <!-- hashtagify term-click="tagTermClick($event)" -->
+              <p class="desc"  ng-bind-html="post.news | linky | hrefToJS | hashtag"></p>
           </div>
-          <div class="col"> 
-            <div class="name">
-              <span>{{post.Name}}</span>
-              <div class="date right">
-                <div> {{post.created_date}} </div>
-              </div>
-            </div>
-              <p class="desc">{{post.news}}</p>
-          </div>
-          <div ng-click="showMapForPost(post)"
+          <div ng-click="showMapForPost(post)" class="col col-10"
             style="width:20px;margin-top:5px;">
             <a class="icon ion-ios-location-outline" style="font-size:1.3em;"></a>
           </div>
@@ -110,15 +102,24 @@
               </div>
             </div>
         </div>
-        <div class="share row" style="background:white">
-          <span class="col col-20 chat-bubble" ng-click="focusInput()">
-            {{post.comment_count}}
-            <img src="img/chat.png" alt="">
-          </span>
-            <post-like-box></post-like-box>
-            <div class="col"></div>
-            <post-actions class="col col-20" post="post" from="map"></post-actions>
-        </div>        
+      <div class="share row">
+        <post-like-box></post-like-box>
+        <span class="text-comm" ng-if="post.comment_count > 0" ng-click="goToComments(post)">
+            {{post.comment_count}} Comments
+        </span>
+        <span class="text-comm" ng-if="post.comment_count == 0" ng-click="goToComments(post)">
+            Comment
+        </span>
+        <div class="post-by">
+            <div class="row text-gray">
+                <div class="date">
+                  {{post.created_date}} by 
+                </div>
+                <div ng-click="goToUser(post)" class="user-name">{{post.Name}}</div>
+            </div>
+        </div>
+        <post-actions post="post" from="map"></post-actions>
+      </div>
    </div>
     <ion-list class="comments" ng-if="postComments">
         <div class="item" ng-if="hasMore" ng-click="loadMore()">
@@ -132,7 +133,7 @@
                         <div>{{comment.commTimeAgo}}</div>
                     </div>
                 </div>
-                <p class="desc" ng-bind-html="comment.comment | linky | hrefToJS"></p>
+                <p class="comm-text" ng-bind-html="comment.comment | linky | hrefToJS"></p>
                 <!--div class="desc">{{comment.comment}}</div-->
                 
                 <!-- <div style="width:20px;padding:5px"> -->
@@ -144,7 +145,7 @@
         </ion-item>
     </ion-list>
         <div class="write-comment row">
-          <input id="commInput" type="text" class="col" ng-model="newComment.text" placeholder="Write a comment..">
+            <textarea id="commInput" rows="1" class="col" ng-model="newComment.text" placeholder="Write a comment.."></textarea>
           <div ng-click="postComment()" class="button button-small button-positive col col-20">
             Post
             </div>
