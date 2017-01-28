@@ -10267,16 +10267,13 @@ div.custom_btn {
     color: #FFF;
     text-align: center;
     margin-top: -4px; }
-  .mapmodal .post_item {
-    border-top: 1px solid #999;
-    border-bottom: 1px solid #999; }
-    .mapmodal .post_item .item {
-      border: 0 !important;
-      padding-top: 0 !important;
-      padding-bottom: 0 !important; }
-    .mapmodal .post_item .item-body {
-      border: 1px solid lightgray;
-      padding: 0 !important; }
+  .mapmodal .post_item .item {
+    border: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important; }
+  .mapmodal .post_item .item-body {
+    border: 1px solid lightgray;
+    padding: 0 !important; }
   .mapmodal .post-iamge {
     max-width: 100%;
     min-height: 100px;
