@@ -72,7 +72,7 @@ angular.module('SeeAroundMe.controllers', [])
   };
 })
 
-.controller('IntroCtrl', function($scope, $rootScope, $state, $ionicSlideBoxDelegate, MapService, AppService) {
+.controller('IntroCtrl', function($scope, $rootScope, $state, $ionicPopup, $ionicSlideBoxDelegate, MapService, AppService) {
  
   $scope.location = '';
   // Called to navigate to the main app
@@ -129,7 +129,7 @@ angular.module('SeeAroundMe.controllers', [])
             $ionicPopup.alert({
                  title: 'See Around Me Alert',
                  subTitle: 'Current Location',
-                 template: 'Failed to get your location. Make sure you are connected to the internet and allowed gelocation on your devivce.'
+                 template: 'Failed to get your location. Make sure you are connected to the internet and allowed geolocation on your device.'
             });
         });      
   };
@@ -188,6 +188,7 @@ angular.module('SeeAroundMe.controllers', [])
     
     $scope.loginWithFB = function(){
             //console.log('loginWithFB called ...');
+        alert('loginWithFB called ...');
         if(!AppService.isConnected()){
             AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');
         
@@ -196,6 +197,7 @@ angular.module('SeeAroundMe.controllers', [])
         
         // This is the success callback from the login method
         var fbLoginSuccess = function(response) {
+            alert('fbLoginSuccess: ' + JSON.stringify(response));
             if (!response.authResponse){
               fbLoginError("Cannot find the authResponse");
               return;
@@ -209,7 +211,7 @@ angular.module('SeeAroundMe.controllers', [])
              AppService.fbLogin(data)
                 .success(function (response) {
                     $ionicLoading.hide();
-                     //console.log(JSON.stringify(response));
+                     alert('fbLogin : ' + JSON.stringify(response));
                      if(response.status == 'SUCCESS'){
                         AppService.setUserId(response.result.id);
                         AppService.setAuthToken(response.result.token);
@@ -246,13 +248,14 @@ angular.module('SeeAroundMe.controllers', [])
 
           // This is the fail callback from the login method
           var fbLoginError = function(error){
-                //console.log('fbLoginError', error);
+                alert('fbLoginError: ' + JSON.stringify(error));
                 $ionicLoading.hide();
           };
 
          //Now check login status and login if required
             //console.log('Going to call facebookConnectPlugin ...');
          facebookConnectPlugin.getLoginStatus(function(fbData){
+             //alert(JSON.stringify(fbData));
               if(fbData.status === 'connected'){
                     // The user is logged in and has authenticated your app, and response.authResponse supplies
                     // the user's ID, a valid access token, a signed request, and the time the access token
