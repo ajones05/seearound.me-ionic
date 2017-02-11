@@ -14,18 +14,24 @@
     </div>
   </ion-header-bar>
   <ion-header-bar class="bar bar-subheader" style="padding:0;">
-    <div class="row" style="background:#ddd;height:110px;">
-        <div class="image-round" ng-click="toggleCamBar()">
+    <div class="row" style="background:#e7f2fe;height:150px;padding:20px;">
+        <div class="image-square" ng-click="toggleCamBar()">
             <img ng-show="imgUri" ng-src="{{imgUri}}"/>
             <img ng-show="!imgUri" ng-src="img/cam_icon.png"/>
         </div>
-        <div class="col col-70">
-            <div ng-click="selectLocation()" style="border:1px solid #222" class="button button-large button-block button-light btn-location">
+        <div class="col col-60" style="padding:0;">
+            <div ng-click="selectLocation()" class="button button-light btn-location">
                 <p class="address">
                     {{addLocation}}
                     <i class="icon icon-right ion-chevron-right"></i>
                 </p>
             </div>
+            <div ng-click="selectCategory($event)" class="button button-light btn-location">
+                <p class="address">
+                    {{addCategory}}
+                    <i class="icon icon-right ion-chevron-right"></i>
+                </p>
+            </div>            
         </div>
     </div>
     <div class="button-bar" width="100%" style="background:#000;" ng-show="showCamBar">
@@ -34,7 +40,7 @@
         <button class="button button-clear button-light" ng-click="openMedia('gallery')">Gallery</button>
     </div>
  </ion-header-bar>
-  <ion-content has-header="true" style="margin-top:60px;">
+  <ion-content has-header="true" style="margin-top:100px;">
         <textarea ng-change="checkInput()" ng-focus="hideCamBar()" placeholder="Write something.." ng-model="formData.postText" class="commentbox"></textarea>
   </ion-content>
 </ion-view>

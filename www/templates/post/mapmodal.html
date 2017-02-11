@@ -1,6 +1,6 @@
 <ion-modal-view  ng-style="viewStyle" on-swipe-up="showFullView(post)">
     
-  <ion-pane ng-show="!showMapModalBar" class="mapmodal" style="width:100%;" on-swipe-down="hideModal()">
+  <ion-pane ng-show="!showMapModalBar" class="mapmodal" style="width:100%;border-top:1px solid #666;" on-swipe-down="hideModal()">
 
     <!--div class="row" ng-click="hideModal()"></div -->
 
@@ -87,10 +87,9 @@
               <!-- hashtagify term-click="tagTermClick($event)" -->
               <p class="desc"  ng-bind-html="post.news | linky | hrefToJS | hashtag"></p>
           </div>
-          <div ng-click="showMapForPost(post)" class="col col-10"
-            style="width:20px;margin-top:5px;">
-            <a class="icon ion-ios-location-outline" style="font-size:1.3em;"></a>
-          </div>
+        <div ng-click="showMapForPost(post)" class="col col-10" style="width:20px;margin-top:5px;">
+            <img width="20" ng-src="img/pin{{post.category_id}}.png" />
+        </div>
         </div>
         <img ng-src="{{post.thumb}}" class="post-iamge" on-swipe-down="hideModal()" ng-click="showImage(post.image)" ng-if="post.thumb" alt=""/>
         <div class="item" style="padding-top:0;" ng-if="post.link_url" on-swipe-down="hideModal()" ng-click="openLink(post.link_url)">

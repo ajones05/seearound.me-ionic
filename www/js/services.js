@@ -16,6 +16,7 @@ angular.module('SeeAroundMe.services', [])
     //var isCurrentUser = false; --- set it on root scope instead
     var profileUserId = null;
     var currentPostComments = {};
+    var currentCategory = 5;
     var pageNum = 0, commentsPageNum = 0;
     var service = {
         
@@ -25,6 +26,14 @@ angular.module('SeeAroundMe.services', [])
         
         setAuthToken: function(token){
             authToken = token;
+        },
+        
+        getCategory: function(){
+            return currentCategory;
+        },
+        
+        setCategory: function(cat){
+            currentCategory = cat;
         },
         
         imgUri: "",
@@ -689,16 +698,16 @@ angular.module('SeeAroundMe.services', [])
 
 .factory('MapService', function($http, $q, $rootScope, $ionicPopup, $cordovaGeolocation, AppService, ModalService) {
     var service = {
-        showPostMap: function(latitude, longitude){
+        showPostMap: function(post){
             //console.log(latitude, longitude);
             //var position = AppService.getCurrentPosition();
 
             //var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
-            if (!latitude) {
+            if (!post.latitude) {
                 var latLng = new google.maps.LatLng(37.8088139, -122.2660002);
             }else{
-              var latLng = new google.maps.LatLng(latitude, longitude);
+              var latLng = new google.maps.LatLng(post.latitude, post.longitude);
             }
         
 
@@ -719,7 +728,7 @@ angular.module('SeeAroundMe.services', [])
                 position: latLng,
                 map: map,
                 icon: {
-                    url:'img/pin-purple.png',
+                    url:'img/pin' + post.category_id + '.png',
                     scaledSize: new google.maps.Size(22, 30)
                 },
                 // animation: google.maps.Animation.BOUNCE,
@@ -861,12 +870,16 @@ angular.module('SeeAroundMe.services', [])
                            );
 
                         response.result.forEach(function (post) {
+                            
+                            if(!post.category_id)
+                                post.category_id = 5;
+                            
                             var marker = new google.maps.Marker({
                                 position: new google.maps.LatLng(post.latitude, post.longitude),
                                 map: $rootScope.map,
                                 // title: post.title,
                                 icon: {
-                                    url:'img/pin-red.png',
+                                    url:'img/pin' + post.category_id +'.png',
                                     scaledSize: new google.maps.Size(18, 25)
                                 }
                             });
@@ -992,14 +1005,33 @@ angular.module('SeeAroundMe.services', [])
                 this.removeMarkers();
             }
             
-            $rootScope.map.setCenter($rootScope.myCenter);
+            var me = this;
+            
+            this.getCurrentPosition().then(function (position) {
+                var lat  = position.coords.latitude;//37.8088139
+                var long = position.coords.longitude;//-122.2660002
 
-            //We'll maintain an array of markers to manage them later in the app
-            $rootScope.markers = [];
-            
-            //this.showMyLocation();
-            
-            this.showPosts($rootScope.myCenter);
+                var center = new google.maps.LatLng(lat, long);
+                
+                $rootScope.map.setCenter(center);
+
+                //We'll maintain an array of markers to manage them later in the app
+                $rootScope.markers = [];
+
+                //this.showMyLocation();
+                
+                $rootScope.myCenter = center;
+
+                me.showPosts($rootScope.myCenter);                
+            }, function(err) {
+                // error
+                //console.error('Failed to get current position. Error: ' + JSON.stringify(err));
+                $ionicPopup.alert({
+                     title: 'See Around Me Alert',
+                     subTitle: 'Current Location',
+                     template: 'Failed to get your location. Make sure you are connected to the internet and allowed gelocation on your devivce.'
+               });
+            });
         },        
         
         centerMap: function(center){            

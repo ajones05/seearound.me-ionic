@@ -175,9 +175,9 @@ angular.module('SeeAroundMe.directives', [])
                     post.from = 'map';
                 }
                 
-                //if(post.link_url){
-                    //post.news = post.news + '\n' + post.link_url;
-                //}
+                if(post.link_url){
+                    post.news = post.news + '\n' + post.link_url;
+                }
                 
                 $state.go('editpostview', post);
             };

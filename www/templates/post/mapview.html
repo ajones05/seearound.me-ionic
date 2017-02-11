@@ -1,7 +1,7 @@
 <ion-view hide-nav-bar="true" hide-back-button="true" class="mapview">
 <div ng-hide="isFromProfileView" class="bar bar-header bar-positive">
         <div class="row" style="padding-top:10px;width:100%;">
-            <button menu-toggle="left" class="button button-icon icon-left" style="padding-left:0;padding-bottom:0;padding-top:4px;width:40px;margin-right:10px;">
+            <button menu-toggle="left" ng-click="hideModal();" class="button button-icon icon-left" style="padding-left:0;padding-bottom:0;padding-top:4px;width:40px;margin-right:10px;">
               <img src="img/menu_off.png" height="20"/>
                 <p class="icon-label">Menu</p>
             </button>
@@ -60,13 +60,13 @@
     <div id="map" data-tap-disabled="true"></div>
 
   </ion-content>
-  <div class="bar bar-footer bar-light range">
-    <div class="title">
-      <div class="list">
-        <div class="item range range-positive">
-          <i ng-click="resetMap()" class="icon ion-navigate"></i>
-          <input type="range" name="volume" min="0.25" max="2.0" step="0.1" value="circleRadius" ng-model="circleRadius" on-release="onRadiusChange()">
-        </div>
+  <div class="bar bar-footer bar-light">
+    <div class="title">        
+      <div class="range">
+        <a ng-click="showFilter($event)" class="button button-clear" style="width:60px;margin-left:-10px;">Filter
+          </a>
+      <input type="range" name="volume" min="0.25" max="2.0" step="0.1" value="circleRadius" ng-model="circleRadius" on-release="onRadiusChange()">
+        <a ng-click="resetMap()" style="width:50px;font-size:.8em;" class="button button-clear button-icon icon ion-navigate"></a>
       </div>
     </div>
   </div>

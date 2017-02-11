@@ -9213,16 +9213,16 @@ h1, h2, h3, h4, h5, h6,
   margin: 1%;
   margin-top: 10px; }
 
-.addpost .image-round {
+.addpost .image-square {
   position: relative;
-  margin-top: 4px;
-  border-radius: 50%;
+  border: 1px solid #666;
+  border-radius: 10px;
   overflow: hidden;
-  width: 90px;
-  height: 90px;
+  width: 110px;
+  height: 110px;
   background: #fff; }
 
-.addpost .image-round img {
+.addpost .image-square img {
   max-height: 100%;
   max-width: 100%;
   width: auto;
@@ -9261,12 +9261,15 @@ h1, h2, h3, h4, h5, h6,
 
 .addpost .btn-location {
   min-width: 100% !important;
-  height: 90px !important;
-  margin-top: 0 !important; }
+  height: 50px !important;
+  border: 1px solid #666 !important;
+  border-radius: 10px !important;
+  margin-bottom: 10px;
+  margin-left: 10px; }
 
 .addpost .address {
   width: 200px !important;
-  height: 90px !important;
+  height: 50px !important;
   display: table-cell;
   vertical-align: middle;
   text-align: center;
@@ -9276,7 +9279,7 @@ h1, h2, h3, h4, h5, h6,
 .addpost .address i {
   position: absolute;
   right: 10px;
-  top: 28px; }
+  top: 8px; }
 
 .addpost .post {
   height: 10rem; }
@@ -9626,13 +9629,11 @@ h1, h2, h3, h4, h5, h6,
 
 .bar-footer.range {
   height: 7vh;
-  border: 0; }
+  border: 0 !important; }
   .bar-footer.range .title {
     margin: 0; }
     .bar-footer.range .title input {
-      margin: 0 0 30px 20px; }
-    .bar-footer.range .title i {
-      margin-bottom: 28px; }
+      margin: 0 10px 30px 10px; }
 
 .post-select {
   font-family: 'Lato';
@@ -9818,26 +9819,29 @@ h1, h2, h3, h4, h5, h6,
     .postlistview .modal_header .left i {
       padding: 5px;
       font-size: 20px; }
-  .postlistview .user img {
-    height: 50px !important;
-    width: 50px !important;
-    border-radius: 100%;
-    border: 2px solid #345EC2; }
-  .postlistview .user .avatar {
-    text-align: center; }
-  .postlistview .user .name {
-    /*margin-top: 1vh;*/
-    font-size: .8rem;
-    font-style: italic;
-    font-weight: bold; }
-  .postlistview .user .desc {
-    color: #000;
-    /*font-family: 'Lato-Light';*/
-    font-family: 'Lato';
-    font-size: .85rem !important;
-    padding-top: 0.6vh;
-    line-height: 1.1rem;
-    white-space: pre-wrap; }
+  .postlistview .user {
+    /*
+    img{
+      height: 50px !important;
+      width: 50px !important;
+      border-radius: 100%;
+      border: 2px solid $positive;
+    }*/ }
+    .postlistview .user .avatar {
+      text-align: center; }
+    .postlistview .user .name {
+      /*margin-top: 1vh;*/
+      font-size: .8rem;
+      font-style: italic;
+      font-weight: bold; }
+    .postlistview .user .desc {
+      color: #000;
+      /*font-family: 'Lato-Light';*/
+      font-family: 'Lato';
+      font-size: .85rem !important;
+      padding-top: 0.6vh;
+      line-height: 1.1rem;
+      white-space: pre-wrap; }
   .postlistview .share {
     display: flex;
     display: -webkit-flex;
@@ -10054,7 +10058,7 @@ div.custom_btn {
   .alerts .header-item {
     font-family: 'Lato-Bold'; }
   .alerts .gray {
-    background: lightgray; }
+    background: lightgray !important; }
   .alerts .alert:last-child {
     border-bottom: 1px solid #666; }
   .alerts .alert {
@@ -10314,31 +10318,34 @@ div.custom_btn {
     .mapmodal .modal_header .left i {
       padding: 5px;
       font-size: 20px; }
-  .mapmodal .user img {
-    height: 50px !important;
-    width: 50px !important;
-    border-radius: 100%;
-    border: 2px solid #345EC2; }
-  .mapmodal .user .avatar {
-    text-align: center; }
-  .mapmodal .user .name {
-    /*margin-top: 1vh;*/
-    font-size: .8rem;
-    font-style: italic;
-    font-weight: bold; }
-  .mapmodal .user .date {
-    font-size: .7rem;
-    font-weight: normal;
-    float: right;
-    margin-right: 10px; }
-  .mapmodal .user .desc {
-    color: #000;
-    /*font-family: 'Lato-Light';*/
-    font-family: 'Lato';
-    font-size: .85rem !important;
-    padding-top: 0.6vh;
-    line-height: 1.1rem;
-    white-space: pre-wrap; }
+  .mapmodal .user {
+    /*
+    img{
+      height: 50px !important;
+      width: 50px !important;
+      border-radius: 100%;
+      border: 2px solid $positive;
+    }*/ }
+    .mapmodal .user .avatar {
+      text-align: center; }
+    .mapmodal .user .name {
+      /*margin-top: 1vh;*/
+      font-size: .8rem;
+      font-style: italic;
+      font-weight: bold; }
+    .mapmodal .user .date {
+      font-size: .7rem;
+      font-weight: normal;
+      float: right;
+      margin-right: 10px; }
+    .mapmodal .user .desc {
+      color: #000;
+      /*font-family: 'Lato-Light';*/
+      font-family: 'Lato';
+      font-size: .85rem !important;
+      padding-top: 0.6vh;
+      line-height: 1.1rem;
+      white-space: pre-wrap; }
   .mapmodal .comments .comm-text {
     color: #000;
     /*font-family: 'Lato-Light';*/
@@ -10424,3 +10431,12 @@ div.custom_btn {
   justify-content: space-between; }
   .left-buttons img {
     padding-top: 4px; }
+
+.filters {
+  width: 160px !important;
+  height: 250px !important;
+  padding: 0 !important;
+  background: #666 !important;
+  position: absolute !important;
+  top: calc(100% - 325px) !important;
+  left: 0 !important; }

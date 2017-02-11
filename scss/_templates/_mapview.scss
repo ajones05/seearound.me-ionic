@@ -55,15 +55,14 @@
 
 .bar-footer.range{
   height: 7vh;
-  border: 0;
+  border: 0 !important;
 
   .title{
     margin: 0;
 
     input{
-      margin: 0 0 30px 20px;
+      margin: 0 10px 30px 10px;
     }
-    i{ margin-bottom: 28px; }
   }
 }
 

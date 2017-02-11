@@ -13,17 +13,17 @@
     margin-top: 10px;
   }
     
-    .image-round{
+    .image-square{
         position: relative;
-        margin-top:4px;
-        border-radius: 50%;
+        border: 1px solid #666;
+        border-radius: 10px;
         overflow: hidden;
-        width: 90px;
-        height: 90px; 
+        width: 110px;
+        height: 110px; 
         background: #fff;
     }
     
-    .image-round img {  
+    .image-square img {  
         max-height: 100%;  
         max-width: 100%; 
         width: auto;
@@ -66,13 +66,16 @@
     
     .btn-location {
         min-width: 100% !important;
-        height: 90px !important;
-        margin-top:0 !important;
+        height: 50px !important;
+        border: 1px solid #666 !important;
+        border-radius: 10px !important;
+        margin-bottom: 10px;
+        margin-left: 10px;
     }
     
     .address {        
         width: 200px !important;
-        height: 90px !important;
+        height: 50px !important;
         display: table-cell;
         vertical-align: middle;
         text-align: center; 
@@ -83,7 +86,7 @@
     .address i{
         position: absolute;
         right: 10px;
-        top: 28px;
+        top: 8px;
     }
 
 

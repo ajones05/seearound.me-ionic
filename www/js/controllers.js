@@ -188,7 +188,7 @@ angular.module('SeeAroundMe.controllers', [])
     
     $scope.loginWithFB = function(){
             //console.log('loginWithFB called ...');
-        alert('loginWithFB called ...');
+        //alert('loginWithFB called ...');
         if(!AppService.isConnected()){
             AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');
         
@@ -197,7 +197,7 @@ angular.module('SeeAroundMe.controllers', [])
         
         // This is the success callback from the login method
         var fbLoginSuccess = function(response) {
-            alert('fbLoginSuccess: ' + JSON.stringify(response));
+            //alert('fbLoginSuccess: ' + JSON.stringify(response));
             if (!response.authResponse){
               fbLoginError("Cannot find the authResponse");
               return;
@@ -211,7 +211,7 @@ angular.module('SeeAroundMe.controllers', [])
              AppService.fbLogin(data)
                 .success(function (response) {
                     $ionicLoading.hide();
-                     alert('fbLogin : ' + JSON.stringify(response));
+                     //alert('fbLogin : ' + JSON.stringify(response));
                      if(response.status == 'SUCCESS'){
                         AppService.setUserId(response.result.id);
                         AppService.setAuthToken(response.result.token);
@@ -248,7 +248,7 @@ angular.module('SeeAroundMe.controllers', [])
 
           // This is the fail callback from the login method
           var fbLoginError = function(error){
-                alert('fbLoginError: ' + JSON.stringify(error));
+                //alert('fbLoginError: ' + JSON.stringify(error));
                 $ionicLoading.hide();
           };
 
@@ -1213,7 +1213,7 @@ angular.module('SeeAroundMe.controllers', [])
         modal.show();
         $scope.mapModal = modal;
       }).then(function(){
-        MapService.showPostMap(post.latitude, post.longitude);
+        MapService.showPostMap(post);
       });
   };
     
@@ -1563,9 +1563,32 @@ angular.module('SeeAroundMe.controllers', [])
             var long = position.coords.longitude;//-122.2660002
 
             var center = new google.maps.LatLng(lat, long);
+        
+            //The specified area represented by bounds rectangle
+            var bounds = new google.maps.LatLngBounds(
+                new google.maps.LatLng(37.7169, -122.5004),
+                new google.maps.LatLng(37.8948, -122.1261)
+            );
+
+            //Returns true if the location is within the area
+            var isLocInArea = bounds.contains(center);
+        
+            if(isLocInArea){//Location is within specified area
+                
+                $rootScope.isLocationOutside = false;
+            }
+            else{//Location is outside the specified area
+                
+                $rootScope.isLocationOutside = true;
+                center = new google.maps.LatLng(37.8088139, -122.2660002);
+                var mylocation = JSON.stringify(center);
+
+                localStorage.setItem('sam_user_location', mylocation);
+            }
+        
             $rootScope.myCenter = center;
             $rootScope.currentCenter = center;
-        
+
               //Get posts initially
               var data = {
                     "latitude" : center.lat(),// 37.8088139,
@@ -1781,7 +1804,7 @@ angular.module('SeeAroundMe.controllers', [])
         modal.show();
         $scope.mapModal = modal;
       }).then(function(){
-        MapService.showPostMap(post.latitude, post.longitude);
+        MapService.showPostMap(post);
       });
 
     };
@@ -1967,7 +1990,7 @@ angular.module('SeeAroundMe.controllers', [])
       }    
 })
 
-.controller('NewPostCtrl', function($scope, $rootScope, $stateParams, $state, $ionicPopup, $ionicHistory, $ionicLoading, AppService, MapService){
+.controller('NewPostCtrl', function($scope, $rootScope, $stateParams, $state, $ionicPopup, $ionicPopover, $ionicHistory, $ionicLoading, AppService, MapService){
     
     $scope.imgUri = "";
     var ud = localStorage.getItem('sam_user_data');
@@ -1981,6 +2004,8 @@ angular.module('SeeAroundMe.controllers', [])
     AppService.setUserId(userId);
 
     $scope.addLocation = "        Add location";
+    $scope.addCategory = "        Add category";
+    $scope.catId = 5;// Default
     $scope.formData = {};
     $scope.showCamBar = false;
     
@@ -2014,6 +2039,54 @@ angular.module('SeeAroundMe.controllers', [])
           }        
     };
     
+    //Categories popover
+    $ionicPopover.fromTemplateUrl('templates/post/categories.html', {
+        scope: $scope
+      }).then(function(popover) {
+        $scope.catsPopover = popover;
+    });
+    
+    function setCatId(cat){
+        switch(cat){
+            case 1:
+                $scope.addCategory = 'Category: Food';
+                $scope.catId = 1;
+                break;
+            case 2:
+                $scope.addCategory = 'Category: Safety';
+                $scope.catId = 2;
+                break;
+            case 3:
+                $scope.addCategory = 'Category: Events';
+                $scope.catId = 3;
+                break;
+            case 4:
+                $scope.addCategory = 'Category: Development';
+                $scope.catId = 4;
+                break;
+            case 5:
+                $scope.addCategory = 'Category: Other'; 
+                $scope.catId = 5;
+                break;
+            default:
+                $scope.addCategory = '        Add category'; 
+                $scope.catId = 5;
+        }  
+        
+        AppService.setCategory($scope.catId);
+    };
+    
+    $scope.setCategory = function(cat){
+        $scope.catsPopover.hide();
+        //console.log('Category: ' + cat);
+        setCatId(cat);
+    };
+    
+    $scope.selectCategory = function($event){
+        //console.log($event);
+        $scope.catsPopover.show($event);
+    };
+    
     $scope.selectLocation = function(){
         //Save image uri and text before leaving
         AppService.setImgUri($scope.imgUri);
@@ -2031,7 +2104,13 @@ angular.module('SeeAroundMe.controllers', [])
             }
             else{//cancel on selectlocation
                 $scope.addLocation = "        Add location";
-            }        
+            }
+            
+            var cat = AppService.getCategory();
+            
+            if(cat != 5){//Category was selected
+                setCatId(cat);
+            }
             
             var imageUri = AppService.getImgUri();
             if($rootScope.postText || imageUri != ""){
@@ -2073,6 +2152,7 @@ angular.module('SeeAroundMe.controllers', [])
             var data = {
                 "body" : $scope.formData.postText,
                 "token" : authToken,
+                "category_id": $scope.catId,
                 "latitude" : $stateParams.latitude,
                 "longitude" : $stateParams.longitude,
                 "street_number" : $stateParams.street_number,
@@ -2200,7 +2280,7 @@ angular.module('SeeAroundMe.controllers', [])
     };    
 })
 
-.controller('EditPostCtrl', function($scope, $rootScope, $stateParams, $state, $ionicPopup, $ionicHistory, $ionicLoading, AppService, MapService){
+.controller('EditPostCtrl', function($scope, $rootScope, $stateParams, $state, $ionicPopup, $ionicPopover, $ionicHistory, $ionicLoading, AppService, MapService){
     
     $scope.isFromMapView = false;
     var ud = localStorage.getItem('sam_user_data');
@@ -2214,6 +2294,8 @@ angular.module('SeeAroundMe.controllers', [])
     AppService.setUserId(userId);
 
     $scope.addLocation = "        Add location";
+    $scope.addCategory = "        Add category";
+    $scope.catId = 5;// Default    
     $scope.formData = {};
     $scope.showCamBar = false;
     
@@ -2246,6 +2328,54 @@ angular.module('SeeAroundMe.controllers', [])
           }        
     };
     
+    //Categories popover
+    $ionicPopover.fromTemplateUrl('templates/post/categories.html', {
+        scope: $scope
+      }).then(function(popover) {
+        $scope.catsPopover = popover;
+    });
+    
+    function setCatId(cat){
+        switch(cat){
+            case 1:
+                $scope.addCategory = 'Category: Food';
+                $scope.catId = 1;
+                break;
+            case 2:
+                $scope.addCategory = 'Category: Safety';
+                $scope.catId = 2;
+                break;
+            case 3:
+                $scope.addCategory = 'Category: Events';
+                $scope.catId = 3;
+                break;
+            case 4:
+                $scope.addCategory = 'Category: Development';
+                $scope.catId = 4;
+                break;
+            case 5:
+                $scope.addCategory = 'Category: Other'; 
+                $scope.catId = 5;
+                break;
+            default:
+                $scope.addCategory = '        Add category'; 
+                $scope.catId = 5;
+        }  
+        
+        AppService.setCategory($scope.catId);
+    };
+    
+    $scope.setCategory = function(cat){
+        $scope.catsPopover.hide();
+        //console.log('Category: ' + cat);
+        setCatId(cat);
+    };
+    
+    $scope.selectCategory = function($event){
+        //console.log($event);
+        $scope.catsPopover.show($event);
+    };    
+    
     $scope.selectLocation = function(){
         //Save image uri and text before leaving
         AppService.setImgUri($scope.imgUri);
@@ -2264,7 +2394,13 @@ angular.module('SeeAroundMe.controllers', [])
             }
             else{//cancel on selectlocation
                 $scope.addLocation = $rootScope.address;
-            }        
+            }  
+            
+            var cat = AppService.getCategory();
+            
+            if(cat != 5){//Category was selected
+                setCatId(cat);
+            }
             
             var imageUri = AppService.getImgUri();
             if($rootScope.postText || imageUri != ""){
@@ -2281,7 +2417,8 @@ angular.module('SeeAroundMe.controllers', [])
             $scope.imgUri = $stateParams.image;
             $scope.postId = $stateParams.id;
             $scope.addLocation = $stateParams.Address;
-
+            setCatId($stateParams.category_id);
+            
             if($stateParams.from == 'map'){
                 $scope.isFromMapView = true;
                 //Fire event to hide map modal
@@ -2320,6 +2457,7 @@ angular.module('SeeAroundMe.controllers', [])
             var data = {            
                 "token" : authToken,
                 "post_id" : $scope.postId,
+                "category_id": $scope.catId,
                 "body" : $scope.formData.postText,
                 "latitude" : $stateParams.latitude,
                 "longitude" : $stateParams.longitude,
@@ -2864,10 +3002,10 @@ angular.module('SeeAroundMe.controllers', [])
                  
              $scope.postComments = null;
                  
-             //When modal goes down, change icon back to gray
+             //When modal goes down, change icon back to original
              if($scope.selectedMarker){
                  $scope.selectedMarker.setIcon({
-                       url:'img/pin-red.png',
+                       url: 'img/pin' + $scope.selectedMarker.post.category_id + '.png',
                        scaledSize: new google.maps.Size(18, 25)
                 });
              }
@@ -2910,18 +3048,21 @@ angular.module('SeeAroundMe.controllers', [])
         
           for (var i = 0; i < $rootScope.markers.length; i++) {
             google.maps.event.addListener($rootScope.markers[i], 'click', function() {
+
                     //If a marker is already selected, deselect it
                     if($scope.selectedMarker){
                         $scope.selectedMarker.setIcon({
-                            url:'img/pin-red.png',
+                            url: 'img/pin' + $scope.selectedMarker.post.category_id + '.png',
                             scaledSize: new google.maps.Size(18, 25)
                         });
                     }
-
+                        
+                
                     if(this.post){//It is a post location
+                        
                         //Change icon to blue
                         this.setIcon({
-                            url:'img/pin-purple.png',
+                            url:'img/pin' + this.post.category_id + '.png',
                             scaledSize: new google.maps.Size(22, 30)
                         });
                         
@@ -2929,13 +3070,6 @@ angular.module('SeeAroundMe.controllers', [])
                         $scope.post = this.post; 
                         
                         $scope.showModal(3);
-                    }
-                    else{//It is my location
-                        var infowindow = new google.maps.InfoWindow({
-                            content: 'My Location'
-                        });
-                        
-                        infowindow.open($rootScope.map, this);
                     }
             });
           }
@@ -2960,6 +3094,8 @@ angular.module('SeeAroundMe.controllers', [])
             $scope.popover.remove();
         if($scope.selectPopover)
             $scope.selectPopover.remove();  
+        if($scope.filtersPopover)
+            $scope.filtersPopover.remove();
     });
         
     //Below is the popover code
@@ -2983,6 +3119,22 @@ angular.module('SeeAroundMe.controllers', [])
          }
 
         //getAlerts($event);               
+    };
+    
+    //Filters popover
+    $ionicPopover.fromTemplateUrl('templates/post/filters.html', {
+        scope: $scope
+      }).then(function(popover) {
+        $scope.filtersPopover = popover;
+    });
+    
+    $scope.filterPosts = function(f){
+        $scope.filtersPopover.hide();
+        //console.log('Filter: ' + f);
+    };
+    
+    $scope.showFilter = function($event){
+        $scope.filtersPopover.show($event);
     };
     
     //Below is the select popover code
@@ -3205,7 +3357,7 @@ angular.module('SeeAroundMe.controllers', [])
         modal.show();
         $scope.mapModal = modal;
       }).then(function(){
-        MapService.showPostMap(post.latitude, post.longitude);
+        MapService.showPostMap(post);
       });
   };
     

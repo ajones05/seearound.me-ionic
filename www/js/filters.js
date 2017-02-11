@@ -22,7 +22,7 @@ angular.module('SeeAroundMe.filters', [])
     }
 })
 
-filter('trust', function($sce, $sanitize) {
+.filter('trust', function($sce, $sanitize) {
   return function(htmlCode){
     return $sce.trustAsHtml(htmlCode);
   };

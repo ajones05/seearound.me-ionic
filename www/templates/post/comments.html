@@ -22,8 +22,8 @@
             <!-- p class="desc" ng-if="post.link_url">{{post.news}}</p -->
         </div>
         <div ng-click="showMapForPost(post)" class="col col-10" style="width:20px;">
-          <a class="icon ion-ios-location-outline" style="font-size:1.3em;"></a>
-        </div>                        
+            <img width="20" ng-src="img/pin{{post.category_id}}.png" />
+        </div>
       </div>
       <img ng-if="post.thumb" class="post-iamge" ng-src="{{post.thumb}}" ng-click="showImage(post.image)" alt="">
         <div class="item" style="padding-top:0;" ng-if="post.link_url" ng-click="openLink(post.link_url)">
