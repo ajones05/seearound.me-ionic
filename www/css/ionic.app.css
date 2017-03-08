@@ -10434,9 +10434,67 @@ div.custom_btn {
 
 .filters {
   width: 160px !important;
-  height: 250px !important;
+  height: 246px !important;
   padding: 0 !important;
-  background: #666 !important;
+  z-index: 100001 !important;
+  border-radius: 0 !important;
+  background-color: #fff !important;
+  background: #fff !important;
+  overflow: hidden !important;
   position: absolute !important;
-  top: calc(100% - 325px) !important;
-  left: 0 !important; }
+  left: 0 !important;
+  bottom: 45px !important; }
+
+.search-filters {
+  position: absolute !important;
+  top: 120px !important;
+  border-radius: 0 !important;
+  width: 160px !important;
+  height: 246px !important;
+  padding: 0 !important;
+  background-color: #fff !important;
+  background: #fff !important;
+  overflow: hidden !important; }
+
+.filters .selected, .search-filters .selected {
+  background: #fff !important; }
+
+.filters .fbg1, .search-filters .fbg1 {
+  background: #ff7063 !important; }
+
+.filters .fbg2, .search-filters .fbg2 {
+  background: #909090 !important; }
+
+.filters .fbg3, .search-filters .fbg3 {
+  background: #b795ff !important; }
+
+.filters .fbg4, .search-filters .fbg4 {
+  background: #7bcebb !important; }
+
+.filters .fbg5, .search-filters .fbg5 {
+  background: #78b6f0 !important; }
+
+.filters .fbg1, .filters .fbg2, .filters .fbg3, .filters .fbg4, .filters .fbg5, .filters .selected, .search-filters .fbg1, .search-filters .fbg2, .search-filters .fbg3, .search-filters .fbg4, .search-filters .fbg5, .search-filters .selected {
+  height: 50px;
+  padding-left: 44px; }
+
+.cats {
+  margin-top: 0;
+  border-radius: 0 !important;
+  width: 200px !important;
+  height: 246px !important;
+  padding: 0 !important;
+  background-color: #fff !important;
+  background: #fff !important;
+  overflow: hidden !important; }
+
+.following img {
+  height: 50px !important;
+  width: 50px !important;
+  border-radius: 100%;
+  border: 2px solid #345EC2; }
+
+.following .name {
+  width: 100%;
+  margin-top: 10px;
+  color: #345EC2; }

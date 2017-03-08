@@ -1,4 +1,4 @@
-<ion-view view-title="Following" hide-nav-bar="true">
+<ion-view hide-nav-bar="true">
     <ion-header-bar class="bar bar-header bar-positive">
       <button class="button button-clear" ng-click="goBack()">
         <i class="icon ion-ios-arrow-left"></i>
@@ -6,10 +6,10 @@
         <!-- <button menu&#45;toggle="left" class="button button&#45;icon"> -->
         <!--     <img src="img/menu_off.png" height="18"/> -->
         <!-- </button> -->
-        <h1 class="title">Following</h1>        
+        <h1 class="title text-center">People I follow</h1>        
     </ion-header-bar>    
     
-    <ion-content class="postlistview" >
+    <ion-content class="following" >
       <div style="color: red;">
       </div>
       <div class="list list-inset" style="padding-top: 0; border: none,">
@@ -21,24 +21,19 @@
             margin-bottom: -10px;
           ">
           <i class="icon ion-search placeholder-icon"></i>
-          <input placeholder="Filter this list.." type="text" ng-model="filterText" />
+          <input placeholder="Find people.." type="text" ng-model="filterText" />
         </label>
       </div>
-      <hr style="height: 1px; background-color: lightgray; border: 0"/>
-      <div
-        class="row user"
-        ng-repeat="follower in followers | filter:filterText track by $index ">
+      <div class="list">
+          <div class="item item-avatar" ng-repeat="follower in followers | filter:filterText track by $index ">
 
-        <div
-          ng-click="goToProfile(follower.id)"
-          class="col col-20 avatar">
-          <img ng-src="{{follower.Profile_image}}"/>
-        </div>
+            <img ng-click="goToProfile(follower.id)" ng-src="{{follower.Profile_image}}"/>
 
-        <div class="col" style="display: -webkit-flex;align-items: center;" ng-click="showNewMessageModal(follower)">
-          <div class="name">{{follower.Name}}</div>
-          <!-- <div class="mutual">{{follower.mutual_count}} mutual friends.</div> -->
-        </div>
+            <div class="name" ng-click="showNewMessageModal(follower)">
+              {{follower.Name}}
+              <!-- <div class="mutual">{{follower.mutual_count}} mutual friends.</div> -->
+            </div>
+          </div>
       </div>
     </ion-content>
 </ion-view>

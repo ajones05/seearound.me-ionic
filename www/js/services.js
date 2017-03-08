@@ -18,6 +18,14 @@ angular.module('SeeAroundMe.services', [])
     var currentPostComments = {};
     var currentCategory = 5;
     var pageNum = 0, commentsPageNum = 0;
+    
+    //Default filter item classes
+    $rootScope.fClass1 = 'fbg1';
+    $rootScope.fClass2 = 'fbg2';
+    $rootScope.fClass3 = 'fbg3';
+    $rootScope.fClass4 = 'fbg4';
+    $rootScope.fClass5 = 'fbg5';
+    
     var service = {
         
         getAuthToken: function(){
@@ -212,9 +220,150 @@ angular.module('SeeAroundMe.services', [])
             return $http.post(url, data);
         },
         
+        contains: function(catId){
+        
+            var contains = false;
+
+            for(var i=0; i < 5; i++){
+                if($rootScope.categories[i] == catId){
+                    contains = true;
+                    break;
+                }
+            }
+
+            return contains;
+        },
+        
+        filterOut: function (f){
+            $rootScope.markers.forEach(function(marker){
+                if(marker.post && marker.post.category_id == f){
+                    marker.setMap(null);
+                    $rootScope.categories[f-1] = 0;
+                }
+            });
+        },
+    
+        filterIn: function (f){
+            $rootScope.markers.forEach(function(marker){
+                if(marker.post && marker.post.category_id == f){
+                    marker.setMap($rootScope.map);
+                    $rootScope.categories[f-1] = f;
+                }
+            });
+        }, 
+        
+        filterMapPosts: function(f){
+            var AppService = this;
+            switch(f){
+                case 1:
+                    if($rootScope.fClass1 == 'selected'){
+                        $rootScope.fClass1 = 'fbg1';
+                        AppService.filterIn(f);
+                    }
+                    else{
+                        $rootScope.fClass1 = 'selected';
+                        AppService.filterOut(f);
+                    }
+                    break;
+                case 2:
+                    if($rootScope.fClass2 == 'selected'){
+                        $rootScope.fClass2 = 'fbg2';
+                        AppService.filterIn(f);
+                    }
+                    else{
+                        $rootScope.fClass2 = 'selected';
+                        AppService.filterOut(f);
+                    }
+                    break;
+                case 3:
+                    if($rootScope.fClass3 == 'selected'){
+                        $rootScope.fClass3 = 'fbg3';
+                        AppService.filterIn(f);
+                    }
+                    else{
+                        $rootScope.fClass3 = 'selected';
+                        AppService.filterOut(f);
+                    }
+                    break;
+                case 4:
+                    if($rootScope.fClass4 == 'selected'){
+                        $rootScope.fClass4 = 'fbg4';
+                        AppService.filterIn(f);
+                    }
+                    else{
+                        $rootScope.fClass4 = 'selected';
+                        AppService.filterOut(f);
+                    }
+                    break;
+                case 5:
+                    if($rootScope.fClass5 == 'selected'){
+                        $rootScope.fClass5 = 'fbg5';
+                        AppService.filterIn(f);
+                    }
+                    else{
+                        $rootScope.fClass5 = 'selected';
+                        AppService.filterOut(f);
+                    }
+            }            
+        },
+        
+        filterListPosts: function(f){
+            switch(f){
+                case 1:
+                    if($rootScope.fClass1 == 'selected'){
+                        $rootScope.fClass1 = 'fbg1';
+                        $rootScope.categories[f-1] = f;
+                    }
+                    else{
+                        $rootScope.fClass1 = 'selected';
+                        $rootScope.categories[f-1] = 0;
+                    }
+                    break;
+                case 2:
+                    if($rootScope.fClass2 == 'selected'){
+                        $rootScope.fClass2 = 'fbg2';
+                        $rootScope.categories[f-1] = f;
+                    }
+                    else{
+                        $rootScope.fClass2 = 'selected';
+                        $rootScope.categories[f-1] = 0;
+                    }
+                    break;
+                case 3:
+                    if($rootScope.fClass3 == 'selected'){
+                        $rootScope.fClass3 = 'fbg3';
+                        $rootScope.categories[f-1] = f;
+                    }
+                    else{
+                        $rootScope.fClass3 = 'selected';
+                        $rootScope.categories[f-1] = 0;
+                    }
+                    break;
+                case 4:
+                    if($rootScope.fClass4 == 'selected'){
+                        $rootScope.fClass4 = 'fbg4';
+                        $rootScope.categories[f-1] = f;
+                    }
+                    else{
+                        $rootScope.fClass4 = 'selected';
+                        $rootScope.categories[f-1] = 0;
+                    }
+                    break;
+                case 5:
+                    if($rootScope.fClass5 == 'selected'){
+                        $rootScope.fClass5 = 'fbg5';
+                        $rootScope.categories[f-1] = f;
+                    }
+                    else{
+                        $rootScope.fClass5 = 'selected';
+                        $rootScope.categories[f-1] = 0;
+                    }
+            }            
+        },        
+        
         getMorePosts: function(){
             
-            pageNum = pageNum + 12;
+            pageNum = pageNum + 15;
             
             var data = {                
                 "latitude" : $rootScope.currentCenter.lat(),
@@ -224,7 +373,14 @@ angular.module('SeeAroundMe.services', [])
                 "start" : pageNum
             };
             
-            var url = API_URL + '/request-nearest';
+            if($rootScope.searchData){
+                data.searchText = $rootScope.searchData.searchTerm;
+                data.filter = $rootScope.searchData.filter;  
+                var url = API_URL + '/myposts';
+            }
+            else{            
+                var url = API_URL + '/request-nearest';
+            }
             
             return $http.post(url, data);                        
         },
@@ -729,7 +885,7 @@ angular.module('SeeAroundMe.services', [])
                 map: map,
                 icon: {
                     url:'img/pin' + post.category_id + '.png',
-                    scaledSize: new google.maps.Size(22, 30)
+                    scaledSize: new google.maps.Size(26, 36)
                 },
                 // animation: google.maps.Animation.BOUNCE,
                 title: "My Location"
@@ -878,9 +1034,10 @@ angular.module('SeeAroundMe.services', [])
                                 position: new google.maps.LatLng(post.latitude, post.longitude),
                                 map: $rootScope.map,
                                 // title: post.title,
+                                opacity: .85,
                                 icon: {
                                     url:'img/pin' + post.category_id +'.png',
-                                    scaledSize: new google.maps.Size(18, 25)
+                                    scaledSize: new google.maps.Size(22, 30)
                                 }
                             });
                             
@@ -890,6 +1047,13 @@ angular.module('SeeAroundMe.services', [])
                             marker.post = post;
                             
                             $rootScope.markers.push(marker);
+                            
+                            //Show only non filtered-out posts
+                            //If the global categories list does not contain this post's category_id,
+                            //it means the post was filtered out on map view
+                            if(!$rootScope.categories.includes(post.category_id))
+                                marker.setMap(null);//Hide the marker
+
                         });
                         //To use on list view
                         $rootScope.currentPosts = response.result;
@@ -974,8 +1138,9 @@ angular.module('SeeAroundMe.services', [])
                 map: $rootScope.map,
                 icon: {
                     url:'img/pin-purple.png',
-                    scaledSize: new google.maps.Size(22, 30)
+                    scaledSize: new google.maps.Size(26, 36)
                 },
+                opacity: 1,
                 // animation: google.maps.Animation.BOUNCE,
                 title: "My Location"
             });

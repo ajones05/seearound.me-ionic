@@ -1,4 +1,4 @@
-<ion-view hide-nav-bar="true" hide-back-button="true" class="postlistview">
+<ion-view hide-nav-bar="true" cache-view="false" hide-back-button="true" class="postlistview">
     <div class="bar bar-header bar-positive">
         <div class="row" style="padding-top:10px;width:100%;">
             <button menu-toggle="left" class="button button-icon" style="padding-bottom:0;padding-left:0;padding-top:4px;width:40px;margin-right:10px;">
@@ -33,7 +33,7 @@
             </div>
          </div>
         <div style="margin-right:5px;width:100px;">    
-            <div class="item item-icon-right" style="border:2px solid #ddd;" ng-click="showSelect($event)">
+            <div class="item item-icon-right" style="border:2px solid #ddd;" ng-click="toggleSelect($event)">
                 <label class="post-select">
                   Filter
                   <i style="margin-right:-10px;font-size:1.5em;" class="icon ion-ios-arrow-down"></i>
@@ -47,7 +47,7 @@
     </div>          
   <ion-content padding="false" class="has-header" id="eventPlaceholder">
       
-    <div class="post_item" ng-repeat='post in nearbyPosts track by $index'>
+    <div class="post_item" ng-hide="post.hideCat" ng-repeat='post in nearbyPosts track by $index'>
       <div class="row user">
         <div class="col col-90"> 
             <p class="desc" ng-bind-html="post.news | linky | hrefToJS | hashtag"></p>
@@ -68,9 +68,12 @@
         </div>
       <div class="share row">
         <post-like-box></post-like-box>
-        <span class="text-comm" ng-if="post.comment_count > 0" ng-click="goToComments(post)">
-            {{post.comment_count}} Comments
+        <span class="text-comm" ng-if="post.comment_count > 1" ng-click="goToComments(post)">
+            {{post.comment_count}} comments
         </span>
+        <span class="text-comm" ng-if="post.comment_count == 1" ng-click="goToComments(post)">
+            1 comment
+        </span>          
         <span class="text-comm" ng-if="post.comment_count == 0" ng-click="goToComments(post)">
             Comment
         </span>

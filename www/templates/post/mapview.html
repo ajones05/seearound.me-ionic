@@ -44,7 +44,7 @@
       </div>
     </div>
     <div style="margin-right:5px;width:100px;">    
-      <div class="item item-icon-right" style="border:2px solid #ddd;" ng-click="showSelect($event)">
+      <div class="item item-icon-right" style="border:2px solid #ddd;" ng-click="toggleSelect($event)">
         <label class="post-select">
           Filter
           <i style="margin-right:-10px;font-size:1.5em;" class="icon ion-ios-arrow-down"></i>
@@ -63,7 +63,7 @@
   <div class="bar bar-footer bar-light">
     <div class="title">        
       <div class="range">
-        <a ng-click="showFilter($event)" class="button button-clear" style="width:60px;margin-left:-10px;">Filter
+        <a ng-click="toggleFilter($event)" class="button button-clear" style="width:60px;margin-left:-10px;">Filter
           </a>
       <input type="range" name="volume" min="0.25" max="2.0" step="0.1" value="circleRadius" ng-model="circleRadius" on-release="onRadiusChange()">
         <a ng-click="resetMap()" style="width:50px;font-size:.8em;" class="button button-clear button-icon icon ion-navigate"></a>

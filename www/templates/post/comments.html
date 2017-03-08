@@ -37,9 +37,12 @@
         </div>        
       <div class="share row">
         <post-like-box></post-like-box>
-        <span class="text-comm" ng-if="post.comment_count > 0" ng-click="goToComments(post)">
-            {{post.comment_count}} Comments
+        <span class="text-comm" ng-if="post.comment_count > 1" ng-click="goToComments(post)">
+            {{post.comment_count}} comments
         </span>
+        <span class="text-comm" ng-if="post.comment_count == 1" ng-click="goToComments(post)">
+            1 comment
+        </span>          
         <span class="text-comm" ng-if="post.comment_count == 0" ng-click="goToComments(post)">
             Comment
         </span>
