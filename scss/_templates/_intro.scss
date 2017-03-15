@@ -61,19 +61,96 @@
         }        
     } 
     
-    .item-image {
+    .intro-desc, .intro-list, .intro-map {
         width: 100vw;
-        height: 100vh;
-        img {
-            width: 100vw;
-            height: 100vh;            
-        }
+        height: 100vh;        
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;  
     }
+    
+    .intro-list {
+        background-image: url(../img/intro_list.png);
+    }
+    
+    .intro-map {
+        background-image: url(../img/intro_map.png);
+    }
+    
+    .intro-desc {
+        background-image: url(../img/intro_desc.png);
+    }    
     
     .link{
         color: cornflowerblue;
         text-decoration: none;
-    }    
+    }
+    
+    .cats {
+        width: 100% !important;
+        height: 100% !important;
+        
+        span {
+            position: absolute;
+            right: 10px;
+            max-width: 35vw;
+            min-width: 35vw;
+            width: 35vw;
+            bottom: 10px;
+            text-align: left;
+        }
+        
+        p {
+            color: #000;
+            font-family: "Lato" !important;
+            font-size: 1em            
+        }
+        
+        label {
+            color: #000;
+            font-family: "Lato" !important;
+            font-size: 1.5em;
+        }
+        
+        .head {
+            color: #000;
+            font-family: "Lato" !important;
+            font-size: 1.3em;
+        }        
+        
+        .item {
+            height: 14vh !important;
+        }
+        
+        .selected {
+            background:#fff !important;
+        }
+
+        .fbg1 {
+            background:#ff7063 !important;
+        }
+
+        .fbg2 {
+            background:#909090 !important;
+        }
+
+        .fbg3 {
+            background:#b795ff !important;
+        }
+
+        .fbg4 {
+            background:#7bcebb !important;
+        }
+
+        .fbg5 {
+            background:#78b6f0 !important;
+        } 
+
+        .fbg1, .fbg2, .fbg3, .fbg4, .fbg5, .selected {
+            height: 14vh !important;
+            padding-left:44px;
+        }         
+    }
         
     .slider-pager {
         bottom: 26px !important;
@@ -86,5 +163,4 @@
     .slider-pager .slider-pager-page {
         color: #aaa !important;
     }
-
 }

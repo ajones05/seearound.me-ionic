@@ -1,11 +1,11 @@
-<ion-view hide-nav-bar cache-view="false" class="mapmodal">
+<ion-view hide-nav-bar="true" cache-view="false" class="mapmodal">
     
-  <ion-nav-bar class="bar-positive">
-    <ion-nav-back-button class="button-clear">
-      <i class="icon ion-ios-arrow-left"></i>
-    </ion-nav-back-button>
-    <ion-nav-title>Comments</ion-nav-title>
-  </ion-nav-bar>
+  <div class="bar bar-header bar-positive text-center">
+    <button class="button button-icon button-clear" ng-click="goBack()">
+      <i class="icon ion-ios-arrow-back"></i>
+    </button>
+    <div class="title">Comments</div>
+  </div>
 <!--
     <ion-header-bar class="bar bar-header">
       <button class="button button-clear" ui-sref="app.postlistview">

@@ -237,8 +237,7 @@ angular.module('SeeAroundMe.services', [])
         filterOut: function (f){
             $rootScope.markers.forEach(function(marker){
                 if(marker.post && marker.post.category_id == f){
-                    marker.setMap(null);
-                    $rootScope.categories[f-1] = 0;
+                    marker.setMap(null);                    
                 }
             });
         },
@@ -246,11 +245,34 @@ angular.module('SeeAroundMe.services', [])
         filterIn: function (f){
             $rootScope.markers.forEach(function(marker){
                 if(marker.post && marker.post.category_id == f){
-                    marker.setMap($rootScope.map);
-                    $rootScope.categories[f-1] = f;
+                    marker.setMap($rootScope.map);                    
                 }
             });
-        }, 
+        },
+        
+        clearListFilters: function(){
+            
+            $rootScope.fClass1 = 'fbg1';
+            $rootScope.fClass2 = 'fbg2';
+            $rootScope.fClass3 = 'fbg3';
+            $rootScope.fClass4 = 'fbg4';
+            $rootScope.fClass5 = 'fbg5';
+            
+            $rootScope.categories[0] = 1;
+            $rootScope.categories[1] = 2;
+            $rootScope.categories[2] = 3;
+            $rootScope.categories[3] = 4;
+            $rootScope.categories[4] = 5;  
+            
+        },
+        
+        clearMapFilters: function(){
+            
+            this.clearListFilters();
+            $rootScope.markers.forEach(function(marker){
+                marker.setMap($rootScope.map);
+            });                        
+        },
         
         filterMapPosts: function(f){
             var AppService = this;
@@ -258,50 +280,60 @@ angular.module('SeeAroundMe.services', [])
                 case 1:
                     if($rootScope.fClass1 == 'selected'){
                         $rootScope.fClass1 = 'fbg1';
+                        $rootScope.categories[f-1] = f;
                         AppService.filterIn(f);
                     }
                     else{
                         $rootScope.fClass1 = 'selected';
+                        $rootScope.categories[f-1] = 0;
                         AppService.filterOut(f);
                     }
                     break;
                 case 2:
                     if($rootScope.fClass2 == 'selected'){
                         $rootScope.fClass2 = 'fbg2';
+                        $rootScope.categories[f-1] = f;
                         AppService.filterIn(f);
                     }
                     else{
                         $rootScope.fClass2 = 'selected';
+                        $rootScope.categories[f-1] = 0;
                         AppService.filterOut(f);
                     }
                     break;
                 case 3:
                     if($rootScope.fClass3 == 'selected'){
                         $rootScope.fClass3 = 'fbg3';
+                        $rootScope.categories[f-1] = f;
                         AppService.filterIn(f);
                     }
                     else{
                         $rootScope.fClass3 = 'selected';
+                        $rootScope.categories[f-1] = 0;
                         AppService.filterOut(f);
                     }
                     break;
                 case 4:
                     if($rootScope.fClass4 == 'selected'){
                         $rootScope.fClass4 = 'fbg4';
+                        $rootScope.categories[f-1] = f;
                         AppService.filterIn(f);
                     }
                     else{
                         $rootScope.fClass4 = 'selected';
+                        $rootScope.categories[f-1] = 0;
                         AppService.filterOut(f);
                     }
                     break;
                 case 5:
                     if($rootScope.fClass5 == 'selected'){
                         $rootScope.fClass5 = 'fbg5';
+                        $rootScope.categories[f-1] = f;
                         AppService.filterIn(f);
                     }
                     else{
                         $rootScope.fClass5 = 'selected';
+                        $rootScope.categories[f-1] = 0;
                         AppService.filterOut(f);
                     }
             }            
@@ -373,9 +405,20 @@ angular.module('SeeAroundMe.services', [])
                 "start" : pageNum
             };
             
+            var cats = [];
+            for(var i=0; i < $rootScope.categories.length; i++){
+                if($rootScope.categories[i] != 0){
+                    cats.push($rootScope.categories[i]);
+                }
+            }
+            
             if($rootScope.searchData){
                 data.searchText = $rootScope.searchData.searchTerm;
                 data.filter = $rootScope.searchData.filter;  
+                var url = API_URL + '/myposts';
+            }
+            else if(cats.length > 0){
+                data.category_id = cats;
                 var url = API_URL + '/myposts';
             }
             else{            
@@ -853,7 +896,13 @@ angular.module('SeeAroundMe.services', [])
 })
 
 .factory('MapService', function($http, $q, $rootScope, $ionicPopup, $cordovaGeolocation, AppService, ModalService) {
+    var pageNum = 0;
+    
     var service = {
+        setPageNum: function(num){
+            pageNum = num;
+        },
+        
         showPostMap: function(post){
             //console.log(latitude, longitude);
             //var position = AppService.getCurrentPosition();
@@ -1089,6 +1138,13 @@ angular.module('SeeAroundMe.services', [])
                  }                
             };
             
+            var cats = [];
+            for(var i=0; i < $rootScope.categories.length; i++){
+                if($rootScope.categories[i] != 0){
+                    cats.push($rootScope.categories[i]);
+                }
+            }
+            
             if($rootScope.searchData){                
                 var data = {
                     "latitude" : center.lat(),// 37.8088139,
@@ -1110,7 +1166,31 @@ angular.module('SeeAroundMe.services', [])
                     //console.warn(JSON.stringify(err));
                 });
             }
-            else{            
+            else if(cats.length > 0){
+                
+                var data = {
+                    "latitude" : center.lat(),// 37.8088139,
+                    "longitude" : center.lng(),//-122.2635002,
+                    "radious" : $rootScope.inputRadius,
+                    "token" : authToken,
+                    "category_id" : cats,
+                    "start" : pageNum
+                };
+                console.log('========================== Params =========================');
+                console.log(JSON.stringify(data));
+                console.log('========================================================');
+                AppService.getMyPosts(data)
+                .success(function (response) {
+                    console.log('========================== Response =========================');
+                    console.log(JSON.stringify(response));
+                    console.log('=============================================================');
+                    onSuccess(response);
+                })
+                .error(function (err) {
+                    //console.warn(JSON.stringify(err));
+                });                
+            }
+            else {            
                 var data = {
                     "latitude" : center.lat(),// 37.8088139,
                     "longitude" : center.lng(),//-122.2635002,
@@ -1197,6 +1277,8 @@ angular.module('SeeAroundMe.services', [])
                      template: 'Failed to get your location. Make sure you are connected to the internet and allowed gelocation on your devivce.'
                });
             });
+            
+            this.setPageNum(0);
         },        
         
         centerMap: function(center){            

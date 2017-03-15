@@ -52,7 +52,7 @@
       </div>
     </div>
     <div class="col-20">            
-          <button class="button button-block button-positive" ng-show="!isFiltered" ng-click="searchPosts()">Go</button>
+          <button class="button button-block button-positive" ng-disabled="searchTerm.length == 0" ng-show="!isFiltered" ng-click="searchPosts()">Go</button>
           <button class="button button-block button-positive" ng-show="isFiltered" ng-click="clearSearch()">Cancel</button>
     </div>
   </div>          

@@ -1,23 +1,74 @@
 <ion-view view-title="Intro" class="intro">
     <ion-slide-box on-slide-changed="slideChanged(index)">
       <ion-slide>
-        <div class="item-image">
-          <img src="img/intro_desc.png">
+        <div class="intro-desc">
         </div>
       </ion-slide>
       <ion-slide>
-        <div class="item-image">
-          <img src="img/intro_cats.png">
-        </div>
+        <div class="cats">
+            <div class="list">
+              <div class="item row selected">
+                  <img height="80" width="80" ng-src="img/icon.png"/>
+                  <img style="margin-top:40px;" height="30" width="180" ng-src="img/seearoundme.png"/>
+              </div>                
+              <div class="item selected text-center" style="padding-left:0;">
+                  <label class="head">Pick the categories you care about:</label>
+                  <p>(You can change these later)</p>
+              </div>                                
+              <div class="item item-icon-left" ng-class="fClass1" ng-click="setCategory(1)">
+                  <i class="icon">
+                   <img width="40" ng-src="img/pin1.png"/>
+                  </i>
+                  <div class="row">
+                      <label style="padding-left:20px;" class="col col-60">Food</label>
+                      <span>New restaurants<br/>Food trucks<br/>Freebies</span>
+                  </div>
+              </div>
+              <div class="item item-icon-left" ng-class="fClass2" ng-click="setCategory(2)">
+                  <i class="icon">
+                   <img width="40" ng-src="img/pin2.png"/>
+                  </i>     
+                  <div class="row">
+                        <label style="padding-left:20px;" class="col col-60">Safety</label>
+                        <span>Crime<br/>Fire<br/>Biohazard</span>
+                  </div>
+              </div>
+              <div class="item item-icon-left" ng-class="fClass3" ng-click="setCategory(3)">
+                  <i class="icon">
+                   <img width="40" ng-src="img/pin3.png"/>
+                  </i> 
+                  <div class="row">
+                    <label style="padding-left:20px;" class="col col-60">Events</label>
+                      <span>Festivals<br/>Protests<br/>Yard sales</span>
+                  </div>
+              </div>
+              <div class="item item-icon-left" ng-class="fClass4" ng-click="setCategory(4)">
+                  <i class="icon">
+                   <img width="40" ng-src="img/pin4.png"/>
+                  </i>          
+                  <div class="row">
+                    <label style="padding-left:20px;" class="col col-60">Development</label>
+                      <span>New condos<br/>Demolition<br/>Permitting</span>
+                  </div>
+              </div>
+              <div class="item item-icon-left" ng-class="fClass5" ng-click="setCategory(5)">
+                  <i class="icon">
+                   <img width="40" ng-src="img/pin5.png"/>
+                  </i>     
+                  <div class="row">
+                    <label style="padding-left:20px;" class="col col-60">Other</label>
+                      <span>TV show fliming<br/>Street art<br/>etc.</span>
+                  </div>
+              </div>        
+            </div>
+        </div>          
       </ion-slide>
       <ion-slide>
-        <div class="item-image">
-          <img src="img/intro_map.png">
+        <div class="intro-map">
         </div>
       </ion-slide>                
       <ion-slide>
-        <div class="item-image">
-          <img src="img/intro_list.png">
+        <div class="intro-list">
         </div>
       </ion-slide>
       <ion-slide>

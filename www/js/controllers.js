@@ -47,6 +47,7 @@ angular.module('SeeAroundMe.controllers', [])
       }
       
       $rootScope.markers = [];
+      $rootScope.map = null;
       
             
         $state.go('home');
@@ -75,6 +76,15 @@ angular.module('SeeAroundMe.controllers', [])
 .controller('IntroCtrl', function($scope, $rootScope, $state, $ionicPopup, $ionicSlideBoxDelegate, MapService, AppService) {
  
   $scope.location = '';
+  //Global categories filters
+  $rootScope.categories = [ 0, 0, 0, 0, 0];//None selected by default
+  //Set default category classes
+    $rootScope.fClass1 = 'selected';
+    $rootScope.fClass2 = 'selected';
+    $rootScope.fClass3 = 'selected';
+    $rootScope.fClass4 = 'selected';
+    $rootScope.fClass5 = 'selected';
+    
   // Called to navigate to the main app
   $scope.startApp = function() {
     //Check location  
@@ -104,6 +114,7 @@ angular.module('SeeAroundMe.controllers', [])
             if(isLocInArea){//Location is within specified area
                 //Fine, lets go to the app
                 $rootScope.isLocationOutside = false;
+                localStorage.setItem('cats', JSON.stringify($rootScope.categories));
                 $state.go('home');
             }
             else{//Location is outside the specified area
@@ -168,8 +179,73 @@ angular.module('SeeAroundMe.controllers', [])
 
   // Called each time the slide changes -- index is 0 based
   $scope.slideChanged = function(index) {
+      var cats = $rootScope.categories;
+      if(index == 2 && cats[0] == 0 && cats[1] == 0 && cats[2] == 0 && cats[3] == 0 && cats[4] == 0){
+        $ionicPopup.alert({
+             title: 'See Around Me Alert',
+             subTitle: 'No Category Selected',
+             template: 'Please select at least one category before going ahead.'
+        }).then(function(){
+            $scope.previous();
+        });              
+      }
+      
     $scope.slideIndex = index;
   };
+    
+  $scope.setCategory = function(f){
+        switch(f){
+            case 1:
+                if($rootScope.fClass1 == 'selected'){
+                    $rootScope.fClass1 = 'fbg1';
+                    $rootScope.categories[f - 1] = f;
+                }
+                else{
+                    $rootScope.fClass1 = 'selected';
+                    $rootScope.categories[f - 1] = 0;
+                }
+                break;
+            case 2:
+                if($rootScope.fClass2 == 'selected'){
+                    $rootScope.fClass2 = 'fbg2';
+                    $rootScope.categories[f - 1] = f;
+                }
+                else{
+                    $rootScope.fClass2 = 'selected';
+                    $rootScope.categories[f - 1] = 0;
+                }
+                break;
+            case 3:
+                if($rootScope.fClass3 == 'selected'){
+                    $rootScope.fClass3 = 'fbg3';
+                    $rootScope.categories[f - 1] = f;
+                }
+                else{
+                    $rootScope.fClass3 = 'selected';
+                    $rootScope.categories[f - 1] = 0;
+                }
+                break;
+            case 4:
+                if($rootScope.fClass4 == 'selected'){
+                    $rootScope.fClass4 = 'fbg4';
+                    $rootScope.categories[f - 1] = f;
+                }
+                else{
+                    $rootScope.fClass4 = 'selected';
+                    $rootScope.categories[f - 1] = 0;
+                }
+                break;
+            case 5:
+                if($rootScope.fClass5 == 'selected'){
+                    $rootScope.fClass5 = 'fbg5';
+                    $rootScope.categories[f - 1] = f;
+                }
+                else{
+                    $rootScope.fClass5 = 'selected';
+                    $rootScope.categories[f - 1] = 0;
+                }
+        }            
+    };    
 })
 
 .controller('HomeCtrl', function($scope, $rootScope, $timeout, $state, $ionicLoading, MapService, AppService) {
@@ -226,7 +302,7 @@ angular.module('SeeAroundMe.controllers', [])
                             };
 
                             AppService.submitEmail(data).then(function(res){
-                                console.log('Status: ' + res.status);
+                                //console.log('Status: ' + res.status);
                                 //if(res.status == 200){
                                     //AppService.showErrorAlert('Email Submitted', 'The email has been submitted successfully. Thanks!');
                                 //}
@@ -401,7 +477,7 @@ angular.module('SeeAroundMe.controllers', [])
                                     };
 
                                     AppService.submitEmail(data).then(function(res){
-                                        console.log('Status: ' + res.status);
+                                        //console.log('Status: ' + res.status);
                                         //if(res.status == 200){
                                             //AppService.showErrorAlert('Email Submitted', 'The email has been submitted successfully. Thanks!');
                                         //}
@@ -571,7 +647,7 @@ angular.module('SeeAroundMe.controllers', [])
                 };
 
                 AppService.submitEmail(data).then(function(res){
-                    console.log('Status: ' + res.status);
+                    //console.log('Status: ' + res.status);
                     //if(res.status == 200){
                         //AppService.showErrorAlert('Email Submitted', 'The email has been submitted successfully. Thanks!');
                     //}
@@ -633,7 +709,7 @@ angular.module('SeeAroundMe.controllers', [])
                             };
 
                             AppService.submitEmail(data).then(function(res){
-                                console.log('Status: ' + res.status);
+                                //console.log('Status: ' + res.status);
                                 //if(res.status == 200){
                                     //AppService.showErrorAlert('Email Submitted', 'The email has been submitted successfully. Thanks!');
                                 //}
@@ -1090,7 +1166,7 @@ angular.module('SeeAroundMe.controllers', [])
     };        
 })
 
-.controller('CommentsCtrl', function($scope, $ionicLoading, $ionicPopup, AppService, ModalService, MapService, $state, $ionicScrollDelegate, $rootScope) {
+.controller('CommentsCtrl', function($scope, $ionicLoading, $ionicPopup, AppService, ModalService, MapService, $state, $ionicScrollDelegate, $rootScope, $ionicHistory) {
   $ionicLoading.show({
     template: 'Fetching Comments..'
   });
@@ -1267,6 +1343,10 @@ angular.module('SeeAroundMe.controllers', [])
             $scope.$broadcast('scroll.infiniteScrollComplete');            
         });      
   }; 
+    
+    $scope.goBack = function(){
+        $ionicHistory.goBack();
+    };        
     
   $scope.tagTermClick = function(e) {
       
@@ -1543,11 +1623,11 @@ angular.module('SeeAroundMe.controllers', [])
 })
 
 .controller('PostListCtrl', function($scope, $rootScope, $state, $ionicGesture, $ionicPopup, $ionicPopover, $compile, $timeout, $ionicLoading, $cordovaGeolocation, $ionicScrollDelegate, $sanitize, $sce, AppService, MapService, ModalService){
-    
+    //console.log('PostListCtrl called ...');
     $rootScope.postMode = 'new';//Other mode is edit
     $rootScope.inputRadius = 1.6;
     $rootScope.isFiltered = false;
-
+    $rootScope.categories = JSON.parse(localStorage.getItem('cats')) || [1, 2, 3, 4, 5];
   $scope.formData = {};
   var userData = JSON.parse(localStorage.getItem('sam_user_data')) || {};
   $rootScope.User = userData;
@@ -1557,9 +1637,6 @@ angular.module('SeeAroundMe.controllers', [])
   var authToken = userData.token || '';
   AppService.setUserId(userId);
     
-  //Global categories filters
-  $rootScope.categories = [ 1, 2, 3, 4, 5];
-
   // the regex that matches urls in text
   var urlRegEx = new RegExp(
       "((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
@@ -1708,10 +1785,18 @@ angular.module('SeeAroundMe.controllers', [])
   });
 
   var getPosts  = function (){
-      $timeout(function(){
-          $scope.nearbyPosts = $rootScope.currentPosts || [];
+        $scope.nearbyPosts = null;
+        $scope.nearbyPosts = [];
+          if($rootScope.currentPosts){
+            $rootScope.currentPosts.forEach(function(post){
+                $scope.nearbyPosts.push(post);
+            }); 
+          } 
+      
+      //$timeout(function(){
+          //$scope.nearbyPosts = $rootScope.currentPosts || [];
           refreshPosts();
-      },0);
+      //},0);
   };
     
   var refreshPosts = function(){
@@ -1732,10 +1817,11 @@ angular.module('SeeAroundMe.controllers', [])
       
         AppService.getMorePosts()
             .success(function (response) {
-            
+                    
                     if(response.result && response.result.length > 0){
+                            //console.log(JSON.stringify(response.result));
                           response.result.map(function(post){
-
+                                
                                 if(post.link_url){
                                     post.news = post.news.replace(urlRegEx, "");
                                 }                  
@@ -1905,6 +1991,8 @@ angular.module('SeeAroundMe.controllers', [])
     
     $scope.$on('popover.hidden', function() {
         $scope.isFilterVisible = false;
+        //To refresh the posts
+        $scope.loadMore();
     });    
     
     //Below is the select popover code
@@ -1988,6 +2076,7 @@ angular.module('SeeAroundMe.controllers', [])
               //console.log(data.result);
               $scope.toggleSearch();
               var links = [];
+              AppService.clearListFilters();
         });        
     };
     
@@ -2232,7 +2321,15 @@ angular.module('SeeAroundMe.controllers', [])
                     function(res){
                         //console.log('Post Success ...');
                         //console.log(JSON.stringify(res));
-                        $scope.newPostId = res.data.post_id;
+                        
+                        if($scope.imgUri && $scope.imgUri != ""){
+                            
+                            $scope.newPostId = JSON.parse(res.response).post_id;
+                            //console.log('$scope.newPostId: ' + $scope.newPostId);
+                        }
+                        else
+                            $scope.newPostId = res.data.post_id;
+                            
                         $ionicLoading.hide();
                         $rootScope.postText = '';
                         $rootScope.imgUri = "";
@@ -2306,7 +2403,7 @@ angular.module('SeeAroundMe.controllers', [])
                            );
                         var newPost = null;
                         response.result.map(function(post){
-                            console.log(JSON.stringify(post));
+                            //console.log(JSON.stringify(post));
                             if(post.link_url){
                                 post.news = post.news.replace(urlRegEx, "");
                             }
@@ -2318,7 +2415,7 @@ angular.module('SeeAroundMe.controllers', [])
                         });
                         
                         console.log('$scope.newPostId: ' + $scope.newPostId);
-                        console.log(JSON.stringify(newPost));
+                        //console.log(JSON.stringify(newPost));
                         
                         //To use on list view
                         $rootScope.currentPosts = response.result;   
@@ -2337,8 +2434,8 @@ angular.module('SeeAroundMe.controllers', [])
                              
                             AppService.setCurrentComments(newPost)
                             .then(function(){
-                                $state.go('app.postcomments');
                                 $ionicLoading.hide();
+                                $state.go('app.postcomments');                                
                             });
                          }
                          else{
@@ -2580,8 +2677,8 @@ angular.module('SeeAroundMe.controllers', [])
 
             AppService.savePost(data, $scope.imgUri).then(
                     function(res){
-                        console.log('Post Success ...');
-                        console.log(JSON.stringify(res));
+                        //console.log('Post Success ...');
+                        //console.log(JSON.stringify(res));
                         $ionicLoading.hide();
                         $rootScope.postText = '';
                         $scope.formData.postText = '';
@@ -3320,7 +3417,11 @@ angular.module('SeeAroundMe.controllers', [])
     };
     
     $scope.$on('popover.hidden', function() {
-        $scope.isFilterVisible = false;
+        if($scope.isFilterVisible){
+            $scope.isFilterVisible = false;
+            MapService.setPageNum(1);
+            MapService.refreshMap();
+        }        
     });
     
     //Below is the select popover code
@@ -3334,7 +3435,7 @@ angular.module('SeeAroundMe.controllers', [])
         $scope.searchTerm = "";    
         $scope.selected = {label: 'Filter', value:''};     
         $rootScope.searchData = null;
-        
+        MapService.setPageNum(0);
         MapService.refreshMap();
         $scope.toggleSearch();
         
@@ -3354,9 +3455,10 @@ angular.module('SeeAroundMe.controllers', [])
     
     $scope.searchPosts = function(){  
         $rootScope.searchData = {searchTerm: $scope.searchTerm, filter: $scope.selected.value};
-        AppService.setSearchData($rootScope.searchData);
+        MapService.setPageNum(0);
         MapService.refreshMap();
         $scope.toggleSearch();
+        AppService.clearMapFilters();
         //Wait for a second before re-adding the idle event listener so that idle event on keyboard down goes waste
           setTimeout(function(){
               google.maps.event.addListener(($rootScope.map), 'idle',
@@ -3370,7 +3472,7 @@ angular.module('SeeAroundMe.controllers', [])
                 });          
           }, 1000);
     };
-    
+    /*
     $scope.options = [{
         label:'Most interesting',
         value: ''
@@ -3386,13 +3488,13 @@ angular.module('SeeAroundMe.controllers', [])
     },{
         label:'Following',
         value: 2
-    }];
+    }];*/
     
     $scope.selected = {label: 'Filter', value:''};     
     $scope.showSelect = function($event){
        $scope.selectPopover.show($event);
     };
-    
+    /*
     $scope.setOption = function(option){
         $scope.selected = option;
         $scope.selectPopover.hide();
@@ -3409,7 +3511,7 @@ angular.module('SeeAroundMe.controllers', [])
                    }
                 });          
           }, 500);        
-    };
+    };*/
     
     $scope.toggleSearch = function(){
         

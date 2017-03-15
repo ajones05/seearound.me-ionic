@@ -10226,16 +10226,66 @@ div.custom_btn {
     color: #fff !important;
     text-align: center; }
 
-.intro .item-image {
+.intro .intro-desc, .intro .intro-list, .intro .intro-map {
   width: 100vw;
-  height: 100vh; }
-  .intro .item-image img {
-    width: 100vw;
-    height: 100vh; }
+  height: 100vh;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat; }
+
+.intro .intro-list {
+  background-image: url(../img/intro_list.png); }
+
+.intro .intro-map {
+  background-image: url(../img/intro_map.png); }
+
+.intro .intro-desc {
+  background-image: url(../img/intro_desc.png); }
 
 .intro .link {
   color: cornflowerblue;
   text-decoration: none; }
+
+.intro .cats {
+  width: 100% !important;
+  height: 100% !important; }
+  .intro .cats span {
+    position: absolute;
+    right: 10px;
+    max-width: 35vw;
+    min-width: 35vw;
+    width: 35vw;
+    bottom: 10px;
+    text-align: left; }
+  .intro .cats p {
+    color: #000;
+    font-family: "Lato" !important;
+    font-size: 1em; }
+  .intro .cats label {
+    color: #000;
+    font-family: "Lato" !important;
+    font-size: 1.5em; }
+  .intro .cats .head {
+    color: #000;
+    font-family: "Lato" !important;
+    font-size: 1.3em; }
+  .intro .cats .item {
+    height: 14vh !important; }
+  .intro .cats .selected {
+    background: #fff !important; }
+  .intro .cats .fbg1 {
+    background: #ff7063 !important; }
+  .intro .cats .fbg2 {
+    background: #909090 !important; }
+  .intro .cats .fbg3 {
+    background: #b795ff !important; }
+  .intro .cats .fbg4 {
+    background: #7bcebb !important; }
+  .intro .cats .fbg5 {
+    background: #78b6f0 !important; }
+  .intro .cats .fbg1, .intro .cats .fbg2, .intro .cats .fbg3, .intro .cats .fbg4, .intro .cats .fbg5, .intro .cats .selected {
+    height: 14vh !important;
+    padding-left: 44px; }
 
 .intro .slider-pager {
   bottom: 26px !important; }

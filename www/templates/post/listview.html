@@ -1,4 +1,4 @@
-<ion-view hide-nav-bar="true" cache-view="false" hide-back-button="true" class="postlistview">
+<ion-view hide-nav-bar="true" hide-back-button="true" class="postlistview">
     <div class="bar bar-header bar-positive">
         <div class="row" style="padding-top:10px;width:100%;">
             <button menu-toggle="left" class="button button-icon" style="padding-bottom:0;padding-left:0;padding-top:4px;width:40px;margin-right:10px;">
@@ -41,7 +41,7 @@
             </div>
         </div>
         <div class="col-20">            
-          <button class="button button-block button-positive" ng-show="!isFiltered" ng-click="searchPosts()">Go</button>
+          <button class="button button-block button-positive" ng-disabled="searchTerm.length == 0" ng-show="!isFiltered" ng-click="searchPosts()">Go</button>
           <button class="button button-block button-positive" ng-show="isFiltered" ng-click="clearSearch()">Cancel</button>
         </div>
     </div>          
