@@ -61,7 +61,7 @@
         }        
     } 
     
-    .intro-desc, .intro-list, .intro-map {
+    .intro-desc, .intro-list, .intro-map, .intro-cats {
         width: 100vw;
         height: 100vh;        
         background-position: center;
@@ -72,10 +72,14 @@
     .intro-list {
         background-image: url(../img/intro_list.png);
     }
-    
+        
     .intro-map {
         background-image: url(../img/intro_map.png);
     }
+    
+    .intro-cats {
+        background-image: url(../img/intro_cats.png);
+    }    
     
     .intro-desc {
         background-image: url(../img/intro_desc.png);
@@ -98,24 +102,20 @@
             width: 35vw;
             bottom: 10px;
             text-align: left;
-        }
-        
-        p {
-            color: #000;
-            font-family: "Lato" !important;
-            font-size: 1em            
+            font-size: .9em;
         }
         
         label {
             color: #000;
             font-family: "Lato" !important;
-            font-size: 1.5em;
+            font-size: 1.3em;
         }
         
         .head {
             color: #000;
             font-family: "Lato" !important;
             font-size: 1.3em;
+            font-weight: bold;
         }        
         
         .item {
@@ -148,7 +148,7 @@
 
         .fbg1, .fbg2, .fbg3, .fbg4, .fbg5, .selected {
             height: 14vh !important;
-            padding-left:44px;
+            padding-left:30px;
         }         
     }
         

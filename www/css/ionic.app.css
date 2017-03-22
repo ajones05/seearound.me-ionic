@@ -9667,7 +9667,7 @@ h1, h2, h3, h4, h5, h6,
     margin: auto; }
 
 .menu .list .item {
-  height: 40px !important;
+  height: 46px !important;
   background: #fff;
   font-family: 'Lato';
   color: #000;
@@ -9675,7 +9675,8 @@ h1, h2, h3, h4, h5, h6,
   font-size: 1rem; }
   .menu .list .item i {
     color: #345EC2;
-    font-size: 1.2em; }
+    font-size: 1.2em;
+    margin-top: 4px; }
 
 .menu .list .item-complex .item-content {
   padding-left: 40px !important;
@@ -10226,7 +10227,7 @@ div.custom_btn {
     color: #fff !important;
     text-align: center; }
 
-.intro .intro-desc, .intro .intro-list, .intro .intro-map {
+.intro .intro-desc, .intro .intro-list, .intro .intro-map, .intro .intro-cats {
   width: 100vw;
   height: 100vh;
   background-position: center;
@@ -10238,6 +10239,9 @@ div.custom_btn {
 
 .intro .intro-map {
   background-image: url(../img/intro_map.png); }
+
+.intro .intro-cats {
+  background-image: url(../img/intro_cats.png); }
 
 .intro .intro-desc {
   background-image: url(../img/intro_desc.png); }
@@ -10256,19 +10260,17 @@ div.custom_btn {
     min-width: 35vw;
     width: 35vw;
     bottom: 10px;
-    text-align: left; }
-  .intro .cats p {
-    color: #000;
-    font-family: "Lato" !important;
-    font-size: 1em; }
+    text-align: left;
+    font-size: .9em; }
   .intro .cats label {
     color: #000;
     font-family: "Lato" !important;
-    font-size: 1.5em; }
+    font-size: 1.3em; }
   .intro .cats .head {
     color: #000;
     font-family: "Lato" !important;
-    font-size: 1.3em; }
+    font-size: 1.3em;
+    font-weight: bold; }
   .intro .cats .item {
     height: 14vh !important; }
   .intro .cats .selected {
@@ -10285,7 +10287,7 @@ div.custom_btn {
     background: #78b6f0 !important; }
   .intro .cats .fbg1, .intro .cats .fbg2, .intro .cats .fbg3, .intro .cats .fbg4, .intro .cats .fbg5, .intro .cats .selected {
     height: 14vh !important;
-    padding-left: 44px; }
+    padding-left: 30px; }
 
 .intro .slider-pager {
   bottom: 26px !important; }

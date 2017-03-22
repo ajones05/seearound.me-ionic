@@ -150,7 +150,11 @@ angular.module('SeeAroundMe.directives', [])
                     okText: 'Yes'
                }).then(function(res) {
                  if(res) {
-                        $rootScope.currentPosts.splice($rootScope.currentPosts.indexOf(post), 1);
+                        var index = $rootScope.currentPosts.indexOf(post);
+                        $rootScope.currentPosts.splice(index, 1);
+                        //For updating list view
+                        $rootScope.$broadcast('postdeleted', {index: index});
+                     
                         AppService.deletePost(post).then(function(){
                             console.log('Post deleted successfully');
                             if($scope.from == 'map'){

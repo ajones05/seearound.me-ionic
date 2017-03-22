@@ -1176,18 +1176,19 @@ angular.module('SeeAroundMe.services', [])
                     "category_id" : cats,
                     "start" : pageNum
                 };
-                console.log('========================== Params =========================');
-                console.log(JSON.stringify(data));
-                console.log('========================================================');
+                //console.log('========================== Params =========================');
+                //console.log(JSON.stringify(data));
+                //console.log('========================================================');
                 AppService.getMyPosts(data)
                 .success(function (response) {
-                    console.log('========================== Response =========================');
-                    console.log(JSON.stringify(response));
-                    console.log('=============================================================');
+                    //console.log('========================== Response =========================');
+                    //console.log(JSON.stringify(response));
+                    //console.log('=============================================================');
+                    $rootScope.isFiltered = false;
                     onSuccess(response);
                 })
                 .error(function (err) {
-                    //console.warn(JSON.stringify(err));
+                    console.warn(JSON.stringify(err));
                 });                
             }
             else {            

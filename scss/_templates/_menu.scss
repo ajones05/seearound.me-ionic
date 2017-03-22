@@ -14,7 +14,7 @@
   .list{
 
     .item{
-      height: 40px !important;
+      height: 46px !important;
       background: #fff;
       font-family: 'Lato';
       color: #000;
@@ -23,6 +23,7 @@
         i {
             color: $positive;
             font-size: 1.2em;
+            margin-top: 4px;
         }
     }
 
