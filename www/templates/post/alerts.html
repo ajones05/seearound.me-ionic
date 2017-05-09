@@ -1,5 +1,6 @@
 <ion-popover-view class="alerts">
   <ion-content>
+    <p ng-if="alerts.length == 0">This is where you'll see notifications when people comment or upvote your posts, or send you a message.</p>
     <ion-list class="list">
       <ion-item ng-repeat="alert in alerts" class="alert" ng-class="{'gray': alert.is_read == 1}">
         <div class="row" ng-click="alertActions(alert)">

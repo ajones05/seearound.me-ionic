@@ -85,8 +85,10 @@
         <div class="row user" on-swipe-down="hideModal()">
           <div class="col col-90"> 
               <!-- hashtagify term-click="tagTermClick($event)" -->
-              <p class="desc"  ng-bind-html="post.news | linky | hrefToJS | hashtag"></p>
-          </div>
+            <p class="desc" ng-hide="post.truncatedNews" ng-bind-html="post.news | linky | hrefToJS | hashtag"></p>
+            <p class="desc" ng-show="post.truncatedNews" ng-bind-html="post.truncatedNews | linky | hrefToJS | hashtag"></p>
+            <a ng-click="goToComments(post)">See more ...</a>
+        </div>
         <div ng-click="showMapForPost(post)" class="col col-10" style="width:20px;margin-top:5px;">
             <img width="20" ng-src="img/pin{{post.category_id}}.png" />
         </div>

@@ -895,7 +895,7 @@ angular.module('SeeAroundMe.services', [])
     return service;
 })
 
-.factory('MapService', function($http, $q, $rootScope, $ionicPopup, $cordovaGeolocation, AppService, ModalService) {
+.factory('MapService', function($http, $q, $rootScope, $ionicPopup, $ionicLoading, $cordovaGeolocation, AppService, ModalService) {
     var pageNum = 0;
     
     var service = {
@@ -1026,6 +1026,8 @@ angular.module('SeeAroundMe.services', [])
         },
         
         showPosts: function(center) {
+            
+            $ionicLoading.show({ template: 'Loading posts ...'});
             //Update current center
             $rootScope.currentCenter = center;
             
@@ -1118,9 +1120,11 @@ angular.module('SeeAroundMe.services', [])
                         }
                         
                         $rootScope.$broadcast('refreshdone');
+                        $ionicLoading.hide();
                      }
                     else{
                         $rootScope.currentPosts = [];
+                        $ionicLoading.hide();
                         if(!$rootScope.block){
                             $rootScope.block = true;// To show the alert only once
                             AppService.showErrorAlert('No Posts!', 'There are no posts in this area, but you can be the first to post!');
@@ -1135,6 +1139,7 @@ angular.module('SeeAroundMe.services', [])
                  else{
                      //console.log('Failed to get nearby posts ...');
                      $rootScope.currentPosts = [];
+                     $ionicLoading.hide();
                  }                
             };
             
@@ -1156,14 +1161,17 @@ angular.module('SeeAroundMe.services', [])
                     "start" : 0
                 };
                 
-                //console.log(JSON.stringify(data));
+                if($rootScope.searchData.user_id)
+                    data.user_id = $rootScope.searchData.user_id;
+                
+                console.log(JSON.stringify(data));
                 AppService.getMyPosts(data)
                 .success(function (response) {
                     $rootScope.isFiltered = true;
                     onSuccess(response);
                 })
                 .error(function (err) {
-                    //console.warn(JSON.stringify(err));
+                    console.warn(JSON.stringify(err));
                 });
             }
             else if(cats.length > 0){

@@ -189,7 +189,7 @@ angular.module('SeeAroundMe.directives', [])
             $scope.sharePost = function(post){
                 $scope.hideMenuModal();
                 //var sanitizedText = $sanitize(text);
-                var link = 'http://www.seearound.me/post/' + post.id;
+                var link = 'https://www.seearound.me/post/' + post.id;
                 window.plugins.socialsharing.share( null, null, null,link);                
             };
             
