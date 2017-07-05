@@ -1,34 +1,107 @@
-<ion-popover-view class="filters">
-    <div class="list">
-      <div class="item item-icon-left" ng-class="fClass1" ng-click="filterPosts(1)">
-          <i class="icon">
-           <img width="24" ng-src="img/pin1.png"/>
-          </i>
-        Food
-      </div>
-      <div class="item item-icon-left" ng-class="fClass2" ng-click="filterPosts(2)">
-          <i class="icon">
-           <img width="24" ng-src="img/pin2.png"/>
-          </i>          
-        Safety
-      </div>
-      <div class="item item-icon-left" ng-class="fClass3" ng-click="filterPosts(3)">
-          <i class="icon">
-           <img width="24" ng-src="img/pin3.png"/>
-          </i>          
-        Events
-      </div>
-      <div class="item item-icon-left" ng-class="fClass4" ng-click="filterPosts(4)">
-          <i class="icon">
-           <img width="24" ng-src="img/pin4.png"/>
-          </i>          
-        Development
-      </div>
-      <div class="item item-icon-left" ng-class="fClass5" ng-click="filterPosts(5)">
-          <i class="icon">
-           <img width="24" ng-src="img/pin5.png"/>
-          </i>          
-        Other
-      </div>        
+<ion-view hide-nav-bar="true" hide-back-button="true" class="filters">
+    <div class="bar bar-header bar-positive">
+          <button ng-click="goBack()" class="button button-clear" style="margin-right:10px;">
+            Cancel
+          </button>        
+          <label class="title">
+              Filters
+          </label>
+          <button ng-click="applyCats()" class="button button-clear">
+            Apply
+          </button>        
     </div>
-</ion-popover-view>
+    <ion-content padding="false" class="has-header" has-header="true">
+        <div class="list">
+            <div class="item">
+                <label style="color:#ff6666;font-size:1.2em;">
+                    Select Visible Categories:
+                </label>
+            </div>
+          <div class="item item-icon-left item-toggle fbg1">
+              <i class="icon">
+               <img width="40" ng-src="img/pin1.svg"/>
+              </i>
+            Food
+                <label class="toggle toggle-positive">
+                <input type="checkbox" ng-checked="cats[0]" ng-model="cats[0]">
+                  <div class="track">
+                    <div class="handle"></div>
+                  </div>
+                </label>              
+          </div>
+          <div class="item item-icon-left item-toggle fbg2">
+              <i class="icon">
+               <img width="40" ng-src="img/pin2.svg"/>
+              </i>          
+            Safety
+                <label class="toggle toggle-positive">
+                <input type="checkbox" ng-checked="cats[1]" ng-model="cats[1]">
+                  <div class="track">
+                    <div class="handle"></div>
+                  </div>
+                </label>                            
+          </div>
+          <div class="item item-icon-left item-toggle fbg3">
+              <i class="icon">
+               <img width="40" ng-src="img/pin3.svg"/>
+              </i>          
+            Events
+                <label class="toggle toggle-positive">
+                <input type="checkbox" ng-checked="cats[2]" ng-model="cats[2]">
+                  <div class="track">
+                    <div class="handle"></div>
+                  </div>
+                </label>                            
+          </div>
+          <div class="item item-icon-left item-toggle fbg4">
+              <i class="icon">
+               <img width="40" ng-src="img/pin4.svg"/>
+              </i>          
+            Development
+                <label class="toggle toggle-positive">
+                <input type="checkbox" ng-checked="cats[3]" ng-model="cats[3]">
+                  <div class="track">
+                    <div class="handle"></div>
+                  </div>
+                </label>                            
+          </div>
+          <div class="item item-icon-left item-toggle fbg5" >
+              <i class="icon">
+               <img width="40" ng-src="img/pin5.svg"/>
+              </i>          
+            Other
+                <label class="toggle toggle-positive">
+                <input type="checkbox" ng-checked="cats[4]" ng-model="cats[4]">
+                  <div class="track">
+                    <div class="handle"></div>
+                  </div>
+                </label>                            
+          </div>        
+            <div class="item">
+                <label style="font-size:1.2em;">
+                    Sort posts by:
+                </label>
+            </div>
+          <div class="item item-icon-right smaller" ng-click="setFilter(0)">
+            Default (Recent &amp; Popular)
+              <i class="icon ion-checkmark" ng-show="filter==0" style="font-size:1em;"></i>
+          </div>    
+          <div class="item item-icon-right smaller" ng-click="setFilter(1)">
+            Most Recent
+              <i class="icon ion-checkmark" ng-show="filter==1" style="font-size:1em;"></i>
+          </div>    
+          <div class="item item-icon-right smaller" ng-click="setFilter(2)">
+            Most Popular
+              <i class="icon ion-checkmark" ng-show="filter==2" style="font-size:1em;"></i>
+          </div>    
+          <div class="item item-icon-right smaller" ng-click="setFilter(3)">
+            Just My Posts
+              <i class="icon ion-checkmark" ng-show="filter==3" style="font-size:1em;"></i>
+          </div>    
+          <div class="item item-icon-right smaller" ng-click="setFilter(4)">
+            People I Follow
+              <i class="icon ion-checkmark" ng-show="filter==4" style="font-size:1em;"></i>
+          </div>                
+        </div>        
+    </ion-content>
+</ion-view>

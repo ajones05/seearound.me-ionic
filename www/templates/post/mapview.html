@@ -1,5 +1,31 @@
 <ion-view hide-nav-bar="true" hide-back-button="true" class="mapview">
-<div ng-hide="isFromProfileView" class="bar bar-header bar-positive">
+    <div ng-hide="isFromProfileView" class="bar bar-header bar-positive">
+          <button ng-hide="searchMode" ui-sref="app.filters" class="button button-clear" style="margin-right:10px;">
+            Filter
+          </button> 
+          <div class="row item-input-wrapper" style="background:#fff;height:32px;">
+              <i class="icon ion-ios-search" style="font-size:1.4em;color:#666;"></i>
+              <form style="width:90%;" name="searchForm" ng-submit="searchPosts()">                
+                <input type="search" 
+                       name="searchTerm" 
+                       ng-model="searchTerm" 
+                       placeholder="Keyword Search..."
+                       ng-focus="searchMode=true;"
+                       style="width:100%;height:100%;background:#fff;">
+              </form>
+            <a ng-show="isFiltered" style="width:10%;" ng-click="clearSearch()">
+                   <i class="icon ion-ios-close placeholder-icon" style="font-size:1.4em;color:#666;"></i>
+            </a>              
+          </div>        
+        <div class="text-center" style="width:60px;">                      
+          <button ng-show="searchMode" class="button button-clear" ng-click="searchMode=false;">
+            Cancel
+          </button>
+          <button ng-hide="searchMode" class="button button-clear" ng-click="hideModal()" ui-sref="app.postlistview">
+            List
+            </button> 
+        </div>     
+    <!--
         <div class="row" style="padding-top:10px;width:100%;">
             <button menu-toggle="left" ng-click="hideModal();" class="button button-icon icon-left" style="padding-left:0;padding-bottom:0;padding-top:4px;width:40px;margin-right:10px;">
               <img src="img/menu_off.png" height="20"/>
@@ -24,6 +50,7 @@
                 <p class="icon-label">List View</p>
             </button>
         </div>
+-->
     </div>    
     <div ng-show="isFromProfileView" class="bar bar-header">
         <div class="row" style="padding-top:10px">
@@ -32,38 +59,23 @@
             </button>            
         </div>
     </div>
-    
-  <div class="row bar bar-subheader" style="background:#eee;" ng-show="showSearch">
-    <div class="col" style="margin-left:-5px;">
-      <div class="row" style="border:2px solid #ddd;height:100%;background:#fff;">
-        <i class="icon ion-ios-search" style="font-size:1.4em;padding-right:10px;margin:0;"></i>
-        <input type="text" name="searchTerm" ng-model="searchTerm" 
-               ng-focus="onSearchFocus()"               
-               placeholder="Search ..." 
-               style="width:100%;height:100%;background:#fff;">
-      </div>
-    </div>
-      <!--
-    <div style="margin-right:5px;width:100px;">    
-      <div class="item item-icon-right" style="border:2px solid #ddd;" ng-click="toggleSelect($event)">
-        <label class="post-select">
-          Filter
-          <i style="margin-right:-10px;font-size:1.5em;" class="icon ion-ios-arrow-down"></i>
-        </label>             
-      </div>
-    </div>
-    -->
-        <div class="col-20" style="margin-right:5px;">            
-          <button class="button button-block button-positive" ng-disabled="searchTerm.length == 0" ng-click="searchPosts()">Go</button>
-        </div>        
-        <div class="col-20">            
-          <button class="button button-block button-positive" ng-click="clearSearch()">Cancel</button>
-        </div>
-  </div>          
   <ion-content>
+      <div ng-show="searchMode" class="list has-header">
+          <div class="item item-header item-icon-left">
+              <i class="icon ion-ios-clock-outline"></i>
+              RECENT SEARCHES
+          </div>
+          <a class="item item-light" ng-repeat="search in recentSearches" ng-click="setRecentSearch(search)" style="border:0;height:40px;">
+            {{search.text}}
+          </a>
+      </div>
     <div id="map" data-tap-disabled="true"></div>
-
+      <a ng-click="resetMap()" 
+         class="button button-reset button-icon icon ion-navigate">
+          Nearby
+      </a>
   </ion-content>
+    <!--
   <div class="bar bar-footer bar-light">
     <div class="title">        
       <div class="range">
@@ -74,4 +86,5 @@
       </div>
     </div>
   </div>
+-->
 </ion-view>

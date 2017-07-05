@@ -5,6 +5,7 @@ angular.module('SeeAroundMe', [
     'SeeAroundMe.directives', 
     'SeeAroundMe.filters', 
     'ngCordova',
+    //'ngCordovaMocks',
     'google.places', 
     'ngSanitize'
 ])
@@ -60,7 +61,7 @@ angular.module('SeeAroundMe', [
     if(isAuthenticated){ 
         var userData = JSON.parse(data);
         AppService.setAuthToken(userData.token);
-        $state.go('app.postlistview');
+        $state.go('app.postmapview');
         //Login event causes map initialization
        //$timeout(function(){
               //$rootScope.$broadcast('login',{});
@@ -97,14 +98,189 @@ angular.module('SeeAroundMe', [
 
     $ionicConfigProvider.backButton.previousTitleText(false).text('');
     
+    $ionicConfigProvider.tabs.position('bottom');
+    
     $stateProvider
 
     .state('app', {
       url: "/app",
       abstract: true,
-      templateUrl: "templates/menu.html",
+      templateUrl: "templates/tabs.html",
       controller: 'AppCtrl'
     })
+    
+    .state('app.postmapview', {
+        url: "/post/map",
+        views: {
+          'tab-stories': {
+            templateUrl: "templates/post/mapview.html",
+            controller: 'MapCtrl'
+          }
+        }
+    })  
+    
+    .state('app.postlistview', {
+        url: "/post/list",
+        views: {
+          'tab-stories': {
+            templateUrl: "templates/post/listview.html",
+            controller: 'PostListCtrl'
+          }
+        }
+    })
+    
+    .state('app.filters', {
+        url: "/post/filters",
+        views: {
+          'tab-stories': {
+            templateUrl: "templates/post/filters.html",
+            controller: 'FiltersCtrl'
+          }
+        }
+    })  
+    
+    
+    .state('app.mapforpost', {
+      url: "/post/list/map",
+      views: {
+        'tab-stories' : {
+          templateUrl: "templates/post/mapforpost.html"
+        }
+      }
+    })    
+    
+    .state('app.newpostview', {
+           url: "/post/newpost/:latitude/:longitude/:address/:from/:street_number/:street_name/:city/:state/:country/:zip",
+          views: {
+            'tab-share': {
+               templateUrl: "templates/post/add-post.html",
+               controller: 'NewPostCtrl'
+            }
+          }        
+    })
+    
+    .state('app.editpostview', {
+           url: "/post/newpost/:latitude/:longitude/:address/:from/:street_number/:street_name/:city/:state/:country/:zip/:Address/:image/:id/:news/:category_id",
+          views: {
+            'tab-share': {
+               templateUrl: "templates/post/edit-post.html",
+               controller: 'EditPostCtrl'
+            }
+          }                
+    }) 
+    
+    .state('app.chooselocation', {
+           url: "/post/chooselocation",
+          views: {
+            'tab-share': {
+               templateUrl: "templates/post/chooselocation.html",
+               controller: 'ChooseLocCtrl'
+            }
+          }                        
+    })            
+    
+    .state('app.notifications', {
+        url: "/post/notifications",
+        views: {
+          'tab-notis': {
+            templateUrl: "templates/post/notifications.html",
+            controller: 'NotisCtrl'
+          }
+        }
+    })  
+    
+    .state('app.more', {
+        url: "/post/more",
+        views: {
+          'tab-more': {
+            templateUrl: "templates/more.html",
+            controller: 'MoreCtrl'
+          }
+        }
+    })  
+    
+    .state('app.userprofile', {
+        url: "/user/profile",
+        views: {
+          'tab-more': {
+            templateUrl: "templates/user/profile.html",
+            controller: 'ProfileCtrl'
+          }
+        }
+    })
+    
+    .state('app.editprofile', {
+      url: "/user/edit",
+      views:{
+        'tab-more':{
+          templateUrl: "templates/user/edit_profile.html",
+          controller: 'EditProfileCtrl'
+        }
+      }
+    })
+
+    .state('app.userfollowing', {
+        url: "/user/following",
+        views: {
+          'tab-more': {
+            templateUrl: "templates/user/following.html",
+            controller: 'FollowingCtrl'
+          }
+        }
+    })
+
+    .state('app.usermessages', {
+        url: "/user/messages",
+        views: {
+          'tab-more': {
+            templateUrl: "templates/user/messages.html",
+            controller: "MessagesCtrl"
+          }
+        }
+    })
+
+    .state('app.userchat', {
+      url: "/user/chat/:from",
+      views: {
+        'tab-more':{
+          templateUrl: "templates/user/chat.html",
+          controller: "ChatCtrl"
+        }
+      }
+    }) 
+    
+    .state('app.terms', {
+      url: "/terms",
+      views:{
+        'tab-more':{
+          templateUrl: "templates/terms.html"
+        }
+      }
+    })
+    
+    .state('app.privacy', {
+      url: "/privacy",
+      views:{
+        'tab-more':{
+          templateUrl: "templates/privacy.html"
+        }
+      }
+    })   
+    
+    .state('app.about', {
+      url: "/about",
+      views:{
+        'tab-more':{
+          templateUrl: "templates/about.html"
+        }
+      }
+    }) 
+    
+    .state('postcomments', {
+      url: "/post/comments",
+      templateUrl: "templates/post/comments.html",
+      controller: 'CommentsCtrl'
+    })    
     
     .state('intro', {
         url: "/intro",
@@ -143,114 +319,6 @@ angular.module('SeeAroundMe', [
           controller: 'LocationCtrl'
         })*/
 
-    .state('app.postlistview', {
-        url: "/post/list",
-        views: {
-          'menuContent': {
-            templateUrl: "templates/post/listview.html",
-            controller: 'PostListCtrl'
-          }
-        }
-    })
-
-    .state('app.postcomments', {
-      url: "/post/comments",
-      views: {
-        'menuContent': {
-          templateUrl: "templates/post/comments.html",
-          controller: 'CommentsCtrl'
-        }
-      }
-
-    })
-
-    .state('app.postmapview', {
-        url: "/post/map",
-        views: {
-          'menuContent': {
-            templateUrl: "templates/post/mapview.html",
-            controller: 'MapCtrl'
-          }
-        }
-    })
-    
-    .state('newpostview', {
-           url: "/post/newpost/:latitude/:longitude/:address/:from/:street_number/:street_name/:city/:state/:country/:zip",
-           templateUrl: "templates/post/add-post.html",
-           controller: 'NewPostCtrl'
-    })
-    
-    .state('editpostview', {
-           url: "/post/newpost/:latitude/:longitude/:address/:from/:street_number/:street_name/:city/:state/:country/:zip/:Address/:image/:id/:news/:category_id",
-           templateUrl: "templates/post/edit-post.html",
-           controller: 'EditPostCtrl'
-    })    
-    
-    .state('chooselocation', {
-           url: "/post/chooselocation",
-           templateUrl: "templates/post/chooselocation.html",
-           controller: 'ChooseLocCtrl'
-    })        
-        
-    .state('app.userprofile', {
-        url: "/user/profile",
-        views: {
-          'menuContent': {
-            templateUrl: "templates/user/profile.html",
-            controller: 'ProfileCtrl'
-          }
-        }
-    })
-    
-    .state('app.editprofile', {
-      url: "/user/edit",
-      views:{
-        'menuContent':{
-          templateUrl: "templates/user/edit_profile.html",
-          controller: 'EditProfileCtrl'
-        }
-      }
-    })
-
-    .state('app.userfollowing', {
-        url: "/user/following",
-        views: {
-          'menuContent': {
-            templateUrl: "templates/user/following.html",
-            controller: 'FollowingCtrl'
-          }
-        }
-    })
-
-    .state('app.usermessages', {
-        url: "/user/messages",
-        views: {
-          'menuContent': {
-            templateUrl: "templates/user/messages.html",
-            controller: "MessagesCtrl"
-          }
-        }
-    })
-
-    .state('app.userchat', {
-      url: "/user/chat/:from",
-      views: {
-        'menuContent':{
-          templateUrl: "templates/user/chat.html",
-          controller: "ChatCtrl"
-        }
-      }
-    })
-
-    .state('app.mapforpost', {
-      url: "/post/list/map",
-      views: {
-        'menuContent' : {
-          templateUrl: "templates/post/mapforpost.html",
-        }
-      }
-    })
-    
     .state('terms', {
       //url: "/terms",
       templateUrl: "templates/terms.html"
@@ -259,33 +327,6 @@ angular.module('SeeAroundMe', [
     .state('privacy', {
       //url: "/privacy",
       templateUrl: "templates/privacy.html"
-    })   
-    
-    .state('app.terms', {
-      url: "/terms",
-      views:{
-        'menuContent':{
-          templateUrl: "templates/terms.html"
-        }
-      }
-    })
-    
-    .state('app.privacy', {
-      url: "/privacy",
-      views:{
-        'menuContent':{
-          templateUrl: "templates/privacy.html"
-        }
-      }
-    })   
-    
-    .state('app.about', {
-      url: "/about",
-      views:{
-        'menuContent':{
-          templateUrl: "templates/about.html"
-        }
-      }
     });
     
     // $urlRouterProvider.otherwise('/app/home');

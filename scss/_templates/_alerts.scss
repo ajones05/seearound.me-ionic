@@ -1,21 +1,14 @@
 // post/alerts.html
 .alerts{
     font-family: 'Lato';
-    width:90%;
-    height:80%;
-    border-radius: 0 !important;
-    border-bottom: 1px solid #666;
-    position: absolute !important;
-    left:5% !important;
     
     .header-item{
         font-family: 'Lato-Bold'
     }
     
-      .gray{
+    .gray{
         background: lightgray !important;
-      }
-
+    }
     
     .alert:last-child{
         border-bottom: 1px solid #666;

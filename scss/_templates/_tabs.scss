@@ -1,0 +1,30 @@
+.tabicons {
+    .tabs .tab-item{
+        padding-top: 6px;
+        .icon.stories, .icon.share, .icon.notis, .icon.more {
+              background-repeat: no-repeat;
+              background-position: 50%;
+              height: 60%;
+              background-size:contain;            
+        }
+        
+        .icon.stories {
+            background-image: url('../img/map.svg');
+        }
+
+        .icon.share {
+            background-image: url('../img/share.svg');
+        }
+
+        .icon.notis {
+            background-image: url('../img/notis.svg');
+        }
+
+        .icon.more {
+            height: 48% !important;
+            margin-top: 2%;
+            margin-bottom: 3%;
+            background-image: url('../img/more.svg');
+        }        
+    }    
+}

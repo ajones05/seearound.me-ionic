@@ -1,61 +1,37 @@
 .filters {
-    width:160px !important;
-    height: 246px !important;
-    padding:0 !important;
-    z-index: 100001 !important;
-    
-    border-radius:0 !important;
-    background-color: #fff !important;
-    background: #fff !important; 
-    overflow: hidden !important;   
-    
-    position: absolute !important;
-    //top: calc(100% - 325px) !important;
-    left: 0 !important; 
-    bottom: 45px !important;
-}
 
-.search-filters {
-    position: absolute !important;
-    //top: calc(100% - 325px) !important;
-    top: 120px !important; //96px for ios
-    border-radius:0 !important;
-    width:160px !important;
-    height:246px !important;
-    padding:0 !important;
-    background-color: #fff !important;
-    background: #fff !important; 
-    overflow: hidden !important;   
-}
-
-.filters, .search-filters {
-    
-    .selected {
-        background:#fff !important;
-    }
-    
     .fbg1 {
-        background:#ff7063 !important;
+        background: -webkit-linear-gradient(left, #ff6666 0%,#fff 100%); 
+        background: linear-gradient(to right, #ff6666 0%,#fff 100%);        
     }
     
     .fbg2 {
-        background:#909090 !important;
+        background: -webkit-linear-gradient(left, #999999 0%,#fff 100%); 
+        background: linear-gradient(to right, #999999 0%,#fff 100%);                
     }
     
     .fbg3 {
-        background:#b795ff !important;
+        background: -webkit-linear-gradient(left, #cc99ff 0%,#fff 100%); 
+        background: linear-gradient(to right, #cc99ff 0%,#fff 100%);                
     }
     
     .fbg4 {
-        background:#7bcebb !important;
+        background: -webkit-linear-gradient(left, #66cccc 0%,#fff 100%); 
+        background: linear-gradient(to right, #66cccc 0%,#fff 100%);                
     }
     
     .fbg5 {
-        background:#78b6f0 !important;
-    }    
-
-    .fbg1, .fbg2, .fbg3, .fbg4, .fbg5, .selected {
-        height:50px;
-        padding-left:44px;
-    } 
+        background: -webkit-linear-gradient(left, #ffcc66 0%,#fff 100%); 
+        background: linear-gradient(to right, #ffcc66 0%,#fff 100%);                
+    }  
+    
+    .fbg1, .fbg2, .fbg3, .fbg4, .fbg5 {
+        height: 50px;
+        border:1px solid #000 !important;
+    }
+    
+    .smaller {
+        height: 40px !important;
+        padding: 8px;
+    }
 }

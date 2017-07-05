@@ -727,7 +727,7 @@ angular.module('SeeAroundMe.services', [])
                         
                         AppService.setCurrentComments(post)
                         .then(function(){
-                          $state.go('app.postcomments');
+                          $state.go('postcomments');
                         });                              
                     }
                     else{//Post was not found
@@ -753,7 +753,7 @@ angular.module('SeeAroundMe.services', [])
                                 
                                 AppService.setCurrentComments(result.data.post)
                                 .then(function(){
-                                  $state.go('app.postcomments');
+                                  $state.go('postcomments');
                                 });  
                             }                            
                         });
@@ -929,16 +929,18 @@ angular.module('SeeAroundMe.services', [])
 
             var map = new google.maps.Map(document.getElementById("post_map"), mapOptions);
         
-            var marker = new google.maps.Marker({
+            var marker = new SVGMarker({
                 position: latLng,
                 map: map,
-                icon: {
-                    url:'img/pin' + post.category_id + '.png',
-                    scaledSize: new google.maps.Size(26, 36)
-                },
+                opacity: .85,
                 // animation: google.maps.Animation.BOUNCE,
-                title: "My Location"
-            });         
+                title: "My Location",                
+                icon: {
+                    url:'img/pin' + post.category_id +'.svg',
+                    size: new google.maps.Size(60, 100),
+                    anchor: new google.maps.Point(30, 100)
+                }
+            });                   
         },
         
         getPlace: function(lat, lng){
@@ -1030,7 +1032,7 @@ angular.module('SeeAroundMe.services', [])
             $ionicLoading.show({ template: 'Loading posts ...'});
             //Update current center
             $rootScope.currentCenter = center;
-            
+            /*
             var bounds = new google.maps.LatLngBounds();
             
             bounds.extend(center);
@@ -1054,7 +1056,7 @@ angular.module('SeeAroundMe.services', [])
             else{
                 // Add the circle for this city to the map.
                 $rootScope.cityCircle = new google.maps.Polygon(populationOptions);                
-            }
+            }*/
             
             var ud = localStorage.getItem('sam_user_data');
             //console.log(ud);
@@ -1065,8 +1067,8 @@ angular.module('SeeAroundMe.services', [])
             //console.log('userId: ' + userId);
             
             function onSuccess(response){
-                
-                //console.log(JSON.stringify(response));
+                console.log('onSuccess called ...');
+                console.log(JSON.stringify(response));
                 if(response.status == 'SUCCESS'){
                     //console.log('Got nearby posts ..............................');                    
                     if(response.result){
@@ -1081,21 +1083,24 @@ angular.module('SeeAroundMe.services', [])
                             if(!post.category_id)
                                 post.category_id = 5;
                             
-                            var marker = new google.maps.Marker({
+                            var marker = new SVGMarker({
                                 position: new google.maps.LatLng(post.latitude, post.longitude),
                                 map: $rootScope.map,
                                 // title: post.title,
                                 opacity: .85,
                                 icon: {
-                                    url:'img/pin' + post.category_id +'.png',
-                                    scaledSize: new google.maps.Size(22, 30)
+                                    url:'img/pin' + post.category_id +'.svg',
+                                    size: new google.maps.Size(60, 100),
+                                    //origin: new google.maps.Point(0, 0),
+                                    anchor: new google.maps.Point(30, 100)//,
+                                    //scaledSize: new google.maps.Size(50, 50)                                
                                 }
                             });
                             
                             if(post.link_url)
                                 post.news = post.news.replace(urlRegEx, "");
                             
-                            marker.post = post;
+                            marker.setPost(post);
                             
                             $rootScope.markers.push(marker);
                             
@@ -1108,7 +1113,7 @@ angular.module('SeeAroundMe.services', [])
                         });
                         //To use on list view
                         $rootScope.currentPosts = response.result;
-                        //console.log('data set in rootscope: ', $rootScope.currentPosts);
+                        console.log('data set in rootscope: ', $rootScope.currentPosts);
                      
                         //google.maps.event.trigger($rootScope.map,'resize');                         
                          // Automatically center the map fitting all markers on the screen
@@ -1137,7 +1142,7 @@ angular.module('SeeAroundMe.services', [])
                      
                 }
                  else{
-                     //console.log('Failed to get nearby posts ...');
+                     console.log('Failed to get nearby posts ...');
                      $rootScope.currentPosts = [];
                      $ionicLoading.hide();
                  }                
@@ -1177,19 +1182,19 @@ angular.module('SeeAroundMe.services', [])
             else if(cats.length > 0){
                 
                 var data = {
-                    "latitude" : center.lat(),// 37.8088139,
-                    "longitude" : center.lng(),//-122.2635002,
+                    "latitude" :  37.8088139,//center.lat()
+                    "longitude" : -122.2635002,//center.lng()
                     "radious" : $rootScope.inputRadius,
                     "token" : authToken,
                     "category_id" : cats,
                     "start" : pageNum
                 };
-                //console.log('========================== Params =========================');
-                //console.log(JSON.stringify(data));
-                //console.log('========================================================');
+                console.log('========================== Params =========================');
+                console.log(JSON.stringify(data));
+                console.log('========================================================');
                 AppService.getMyPosts(data)
                 .success(function (response) {
-                    //console.log('========================== Response =========================');
+                    console.log('========================== Response =========================');
                     //console.log(JSON.stringify(response));
                     //console.log('=============================================================');
                     $rootScope.isFiltered = false;
@@ -1208,7 +1213,7 @@ angular.module('SeeAroundMe.services', [])
                     "start" : 0
                 };
                             
-                //console.log(JSON.stringify(data));
+                console.log(JSON.stringify(data));
                 AppService.getNearbyPosts(data)
                 .success(function (response) {
                     $rootScope.isFiltered = false;
@@ -1314,6 +1319,7 @@ angular.module('SeeAroundMe.services', [])
                 disableDefaultUI: true,
                 zoomControl: false,
                 gestureHandling: 'greedy',//default is auto
+                clickableIcons: false
                 //zoomControlOptions: {
                   //style: google.maps.ZoomControlStyle.SMALL
                 //}
@@ -1332,8 +1338,10 @@ angular.module('SeeAroundMe.services', [])
 
             google.maps.event.addListener((map), 'click', 
                 function(event) { 
-                //console.log('map clicked'); 
-                $rootScope.$broadcast('hidemapmodal');
+                if(!$rootScope.isMarker)
+                    $rootScope.$broadcast('hidemapmodal');
+                
+                $rootScope.isMarker = false;
             });
 
             google.maps.event.addListener((map), 'dragstart', 
