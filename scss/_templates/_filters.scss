@@ -1,37 +1,47 @@
 .filters {
 
+    .item-toggle .toggle {
+        top: 6px !important;
+    }
+    
     .fbg1 {
-        background: -webkit-linear-gradient(left, #ff6666 0%,#fff 100%); 
-        background: linear-gradient(to right, #ff6666 0%,#fff 100%);        
+        background: -webkit-linear-gradient(left, #ff7265 0%,#fff 100%); 
+        background: linear-gradient(to right, #ff7265 0%,#fff 100%);        
     }
     
     .fbg2 {
-        background: -webkit-linear-gradient(left, #999999 0%,#fff 100%); 
-        background: linear-gradient(to right, #999999 0%,#fff 100%);                
+        background: -webkit-linear-gradient(left, #929292 0%,#fff 100%); 
+        background: linear-gradient(to right, #929292 0%,#fff 100%);                
     }
     
     .fbg3 {
-        background: -webkit-linear-gradient(left, #cc99ff 0%,#fff 100%); 
-        background: linear-gradient(to right, #cc99ff 0%,#fff 100%);                
+        background: -webkit-linear-gradient(left, #b896ff 0%,#fff 100%); 
+        background: linear-gradient(to right, #b896ff 0%,#fff 100%);                
     }
     
     .fbg4 {
-        background: -webkit-linear-gradient(left, #66cccc 0%,#fff 100%); 
-        background: linear-gradient(to right, #66cccc 0%,#fff 100%);                
+        background: -webkit-linear-gradient(left, #7ccebc 0%,#fff 100%); 
+        background: linear-gradient(to right, #7ccebc 0%,#fff 100%);                
     }
     
     .fbg5 {
-        background: -webkit-linear-gradient(left, #ffcc66 0%,#fff 100%); 
-        background: linear-gradient(to right, #ffcc66 0%,#fff 100%);                
+        background: -webkit-linear-gradient(left, #f6c756 0%,#fff 100%); 
+        background: linear-gradient(to right, #f6c756 0%,#fff 100%);                
     }  
     
     .fbg1, .fbg2, .fbg3, .fbg4, .fbg5 {
-        height: 50px;
-        border:1px solid #000 !important;
+        height: 46px;
+        padding-left: 44px !important;
+        padding-top: 10px !important;
+        border:1px solid rgba(50,50,50,.5) !important;
     }
     
     .smaller {
         height: 40px !important;
         padding: 8px;
     }
+    
+    .selected {
+        background-color: #daebff !important;
+    }    
 }

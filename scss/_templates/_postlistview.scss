@@ -8,6 +8,18 @@
     
     font-family: 'Lato';
     
+    input {
+        font-family: 'Lato' !important;
+        font-size: 1em !important;
+        line-height: 1em !important;
+        padding:0 !important;
+        border-radius: 0 !important; 
+    }
+    
+    input::-webkit-input-placeholder {
+      color: #666 !important;
+    }    
+    
     .alert-badge {
           font-family: 'Lato-Italic';
           font-size: .6rem;
@@ -80,6 +92,7 @@
 
   .row{
     padding: 4px !important;
+    padding-left: 10px !important;
   }
 
 /*    

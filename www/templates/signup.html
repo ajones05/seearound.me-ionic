@@ -1,12 +1,12 @@
 <ion-view hide-nav-bar="true" class="login">
-    <div class="bar bar-header bar-light nav-title-slide-ios7 transparent-nav" style="background: none; border-bottom: none;">
-        <button class="button button-icon" style="color:#fff;" ui-sref="home">
-            <i class="icon ion-ios-arrow-left text-light"></i>
+    <div class="bar bar-header bar-light" style="border:0;">
+        <button class="button button-icon" ui-sref="home">
+            <i class="icon ion-ios-arrow-left"></i>
         </button>
-        <h1 class="title" style="color:#fff;">Register with e-mail</h1>
+        <h1 class="title">Register with e-mail</h1>
     </div>
-  <ion-content has-header="true" class="login-bg">
-      <div class="vbox login-bg padding">
+  <ion-content has-header="true">
+      <div class="vbox padding">
           <div class="spacer40"></div>
         <div class="text-center" style="height:60px;width:100%;">
             <div class="image-round" ng-click="toggleCamBar()">
@@ -14,11 +14,11 @@
                 <img ng-show="!imgUri" ng-src="img/photo_plus.png"/>
             </div>
         </div>
-        <div class="spacer10" ng-hide="showCamBar"></div>
-        <div class="button-bar" width="100%" style="background:transparent;max-height:40px;" ng-show="showCamBar">
-            <a class="button button-dark" ng-click="openMedia('camera')" style="font-weight:bold;">Camera</a>
-            <a class="button button-dark" ng-click="openMedia('gallery')" style="font-weight:bold;">Gallery</a>
-            <a class="button button-dark" ng-click="clearImage()" style="font-weight:bold;">Clear</a>
+        <div class="spacer10"></div>
+        <div class="button-bar cam-bar" width="100%" ng-show="showCamBar">
+            <a class="button button-clear" ng-click="openMedia('camera')" style="font-weight:bold;color:#666;">Camera</a>
+            <a class="button button-clear" ng-click="openMedia('gallery')" style="font-weight:bold;color:#666;">Gallery</a>
+            <a class="button button-clear" ng-click="clearImage()" style="font-weight:bold;color:#666;">Clear</a>
         </div>
         <div class="spacer20" ng-show="showCamBar"></div>
           <form>

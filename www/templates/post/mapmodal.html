@@ -8,7 +8,8 @@
       <div class="row user" ng-click="showFullView(post)">
         <div class="col"> 
             <!-- p class="desc">{{post.news}}</p -->
-            <p class="desc" ng-bind-html="post.news | linky | hrefToJS | hashtag"></p>
+            <label style="color:#000;"><b>{{post.postNum}}.&nbsp;</b></label>
+            <label class="desc" ng-bind-html="post.news | linky | hrefToJS | hashtag"></label>
         </div>
       </div>
       <img ng-src="{{post.thumb}}" class="post-iamge" ng-if="post.thumb" alt=""/>
@@ -80,17 +81,17 @@
       </div>
       
     <ion-content scroll="true" style="margin-top:64px;">
-
       <div class="post_item" ng-class="viewMode">
         <div class="row user" on-swipe-down="hideModal()">
           <div class="col col-90"> 
               <!-- hashtagify term-click="tagTermClick($event)" -->
-            <p class="desc" ng-hide="post.truncatedNews" ng-bind-html="post.news | linky | hrefToJS | hashtag"></p>
-            <p class="desc" ng-show="post.truncatedNews" ng-bind-html="post.truncatedNews | linky | hrefToJS | hashtag"></p>
-            <a ng-click="goToComments(post)">See more ...</a>
+              <label style="color:#000;"><b>{{post.postNum}}.&nbsp;</b></label>
+            <label class="desc" ng-hide="post.truncatedNews" ng-bind-html="post.news | linky | hrefToJS | hashtag"></label>
+            <label class="desc" ng-show="post.truncatedNews" ng-bind-html="post.truncatedNews | linky | hrefToJS | hashtag"></label>
+            <a ng-show="post.truncatedNews" ng-click="goToComments(post)">See more ...</a>
         </div>
-        <div ng-click="showMapForPost(post)" class="col col-10" style="width:20px;margin-top:5px;">
-            <img width="20" ng-src="img/pin{{post.category_id}}.png" />
+        <div ng-click="showMapForPost(post)" class="col col-10" style="width:24px;margin-top:5px;">
+            <img width="24" ng-src="img/pin{{post.category_id}}.svg" />
         </div>
         </div>
         <img ng-src="{{post.thumb}}" class="post-iamge" on-swipe-down="hideModal()" ng-click="showImage(post.image)" ng-if="post.thumb" alt=""/>

@@ -85,7 +85,11 @@ a.hashtag {
 
 .bar-positive {
     background: $baseColor !important;
-    background-color: $baseColor !important;    
+    background-color: $baseColor !important; 
+    color: #fff !important;
+    font-family: 'Lato' !important;
+    font-size: 1em !important;
+    line-height: 1em !important;
 }
 
 //Font overrides
@@ -99,14 +103,12 @@ a.hashtag {
     font-family: 'Lato';
     font-weight: bold;
     font-size: $headingTextSize;
-    color: #fff !important;
 }
 
 @mixin centered-medium-text{
     text-align: center;
     font-family: 'Lato';
     font-size: .55em;
-    color: #fff !important;
 }
 
 @mixin centered-small-text{
@@ -114,7 +116,6 @@ a.hashtag {
     font-family: 'Lato';
     //font-style: italic;
     font-size: $smallTextSize;
-    color: #fff !important;
 }
 
 @mixin vbox-layout{

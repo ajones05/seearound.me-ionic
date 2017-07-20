@@ -21,8 +21,8 @@
             <p class="desc" ng-bind-html="post.news | linky | hrefToJS | hashtag"></p>
             <!-- p class="desc" ng-if="post.link_url">{{post.news}}</p -->
         </div>
-        <div ng-click="showMapForPost(post)" class="col col-10" style="width:20px;">
-            <img width="20" ng-src="img/pin{{post.category_id}}.png" />
+        <div ng-click="showMapForPost(post)" class="col col-10" style="width:24px;">
+            <img width="24" ng-src="img/pin{{post.category_id}}.svg" />
         </div>
       </div>
       <img ng-if="post.thumb" class="post-iamge" ng-src="{{post.thumb}}" ng-click="showImage(post.image)" alt="">

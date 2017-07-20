@@ -1,81 +1,5 @@
-<ion-view view-title="Intro" class="intro">
-    <ion-slide-box on-slide-changed="slideChanged(index)">
-      <ion-slide>
-        <div class="intro-desc">
-        </div>
-      </ion-slide>
-      <ion-slide>
-        <div class="intro-cats">
-        </div>          
-          <!--
-        <div class="cats">
-            <div class="list">
-              <div class="item row selected">
-                  <img height="60" width="60" ng-src="img/icon.png"/>
-                  <img style="margin-top:26px;" height="24" width="160" ng-src="img/seearoundme.png"/>
-              </div>                
-              <div class="item selected text-center" style="padding-left:0;">
-                  <label class="head">Pick the categories you want to see:</label>
-                  <p>(You can change the filter later)</p>
-              </div>                                
-              <div class="item item-icon-left" ng-class="fClass1" ng-click="setCategory(1)">
-                  <i class="icon">
-                   <img width="30" ng-src="img/pin1.png"/>
-                  </i>
-                  <div class="row">
-                      <label style="padding-left:20px;" class="col col-60">Food</label>
-                      <span>New restaurants<br/>Food trucks<br/>Freebies</span>
-                  </div>
-              </div>
-              <div class="item item-icon-left" ng-class="fClass2" ng-click="setCategory(2)">
-                  <i class="icon">
-                   <img width="30" ng-src="img/pin2.png"/>
-                  </i>     
-                  <div class="row">
-                        <label style="padding-left:20px;" class="col col-60">Safety</label>
-                        <span>Crime<br/>Fire<br/>Biohazard</span>
-                  </div>
-              </div>
-              <div class="item item-icon-left" ng-class="fClass3" ng-click="setCategory(3)">
-                  <i class="icon">
-                   <img width="30" ng-src="img/pin3.png"/>
-                  </i> 
-                  <div class="row">
-                    <label style="padding-left:20px;" class="col col-60">Events</label>
-                      <span>Festivals<br/>Protests<br/>Yard sales</span>
-                  </div>
-              </div>
-              <div class="item item-icon-left" ng-class="fClass4" ng-click="setCategory(4)">
-                  <i class="icon">
-                   <img width="30" ng-src="img/pin4.png"/>
-                  </i>          
-                  <div class="row">
-                    <label style="padding-left:20px;" class="col col-60">Development</label>
-                      <span>New condos<br/>Demolition<br/>Permitting</span>
-                  </div>
-              </div>
-              <div class="item item-icon-left" ng-class="fClass5" ng-click="setCategory(5)">
-                  <i class="icon">
-                   <img width="30" ng-src="img/pin5.png"/>
-                  </i>     
-                  <div class="row">
-                    <label style="padding-left:20px;" class="col col-60">Other</label>
-                      <span>TV show fliming<br/>Street art<br/>etc.</span>
-                  </div>
-              </div>        
-            </div>
-        </div>    
-        -->
-      </ion-slide>
-      <ion-slide>
-        <div class="intro-map">
-        </div>
-      </ion-slide>                
-      <ion-slide>
-        <div class="intro-list">
-        </div>
-      </ion-slide>
-      <ion-slide>
+<ion-view class="intro">
+      <ion-content has-header="false" scroll="false">
         <div class="intro-loc text-center">
             <div class="row">
                 <button class="button button-outline col col-center" ng-click="startApp()">
@@ -83,6 +7,5 @@
                 </button>
             </div>
         </div>
-      </ion-slide>        
-    </ion-slide-box>
+      </ion-content>            
 </ion-view>

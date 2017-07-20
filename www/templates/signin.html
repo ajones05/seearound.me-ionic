@@ -1,21 +1,17 @@
 <ion-view hide-nav-bar="true" class="login">
-    <div class="bar bar-header bar-light nav-title-slide-ios7 transparent-nav" style="background: none; border-bottom: none;">
-        <button class="button button-icon" style="color:#fff;" ui-sref="home">
-            <i class="icon ion-ios-arrow-left text-light"></i>
+    <div class="bar bar-header bar-light" style="border:0;">
+        <button class="button button-icon" ui-sref="home">
+            <i class="icon ion-ios-arrow-left"></i>
         </button>
-        <h1 class="title" style="color:#fff;">Log in</h1>
+        <h1 class="title">Log in</h1>
     </div>
-  <ion-content has-header="true" class="login-bg">
-      <div class="vbox login-bg">
+  <ion-content has-header="true">
+      <div class="vbox">
           <div class="spacer100"></div>
           <div class="text-center">
-            <a class="button button-outline icon-left ion-social-facebook" ng-click="loginWithFB()">
-              Facebook
-            </a>
+            <img width="50%" src="img/btn-fb.png" ng-click="loginWithFB()" alt=""/>
           </div>
           <div class="spacer40"></div>
-          <div class="line"></div>
-          <div class="spacer20"></div>
           <p>Or with e-mail</p>
           <form ng-submit="doLogin()" name="login" class="padding">
               <div class="list">

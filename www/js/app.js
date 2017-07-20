@@ -128,18 +128,7 @@ angular.module('SeeAroundMe', [
           }
         }
     })
-    
-    .state('app.filters', {
-        url: "/post/filters",
-        views: {
-          'tab-stories': {
-            templateUrl: "templates/post/filters.html",
-            controller: 'FiltersCtrl'
-          }
-        }
-    })  
-    
-    
+            
     .state('app.mapforpost', {
       url: "/post/list/map",
       views: {
@@ -275,6 +264,13 @@ angular.module('SeeAroundMe', [
         }
       }
     }) 
+    
+    
+    .state('filters', {
+        url: "/post/filters",
+        templateUrl: "templates/post/filters.html",
+        controller: 'FiltersCtrl'
+    })  
     
     .state('postcomments', {
       url: "/post/comments",

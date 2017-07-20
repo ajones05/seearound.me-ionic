@@ -1,47 +1,46 @@
 //login.html
 
 .login {
-    background-color: #000;
-    .login-bg {
-        width: 100vw;
-        height: 100vh;
-        background-image: url(../img/auth-bg.png);
-        background-color: #000;
-        background-position: center;
-        background-size: cover;
-        background-repeat: no-repeat; 
-        
-        p {
-              font-size: 14px;
-              font-family: "Lato";
-              color: #fff;
-              text-align: center;
-        }
-        
-        input {
             
-              font-size: 15px;
-              font-family: "Lato" !important;
-              color: #7d7d7d;
-              font-style: italic;
-              background-color: #fff !important;
-        }         
+    p {
+          font-size: 14px;
+          font-family: "Lato";
+          color: #666;
+          text-align: center;
+    }
 
-        .button-outline { 
-            padding-top: 6px !important;
-            padding-bottom: 6px !important;
-            padding-left: 16px !important;
-            padding-right: 16px !important;
-            height: 60px !important;
-            width: 130px !important;
-            border-radius: 22px !important;
-            border:2px solid #fff !important;
-            font-size: 18px !important;
-            font-family: "Lato" !important;
-            color: #fff !important;
-        }                
+    input {
+
+          font-size: 15px;
+          font-family: "Lato" !important;
+          color: #7d7d7d;
+          font-style: italic;
+          background-color: #fff !important;
     } 
     
+    .cam-bar {
+        background:#ccffff;
+        height: 50px;
+        max-height:50px;
+        border:1px solid #666;
+        border-radius: 20px !important;
+    }
+
+    .button-outline { 
+        padding-top: 6px !important;
+        padding-bottom: 6px !important;
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+        height: 60px !important;
+        width: 250px !important;
+        border-radius: 22px !important;
+        border:2px solid #666 !important;
+        font-size: 18px !important;
+        font-family: "Lato" !important;
+        color: #666 !important;
+        background-color: #ccffff !important;
+    }                
+        
     .image-round{
         position: relative;
         margin-top:0;
@@ -52,7 +51,6 @@
         overflow: hidden;
         width: 60px;
         height: 60px; 
-        background: transparent;
     }
     
     .image-round img {  
@@ -69,13 +67,13 @@
     }    
     
     .line {
-        border-bottom: 1px solid #fff;
+        border-bottom: 1px solid #666;
         height: 1px;
         width: 100vw;
     }
     
     .link{
-        color: cornflowerblue;
+        color: #0099ff;
         text-decoration: none;
     }
 

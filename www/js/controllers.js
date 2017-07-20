@@ -1644,6 +1644,7 @@ angular.module('SeeAroundMe.controllers', [])
     });
     
     //Filters
+    $rootScope.filter = 0;
     
     $scope.setFilter = function(f){
         $rootScope.filter = f;
@@ -1786,6 +1787,7 @@ angular.module('SeeAroundMe.controllers', [])
         return $sce.trustAsHtml(html);
     };
         
+    /******************* Scrolling Customization **********************************/
   $scope.isSwiping = false; 
   $scope.isShowMorePostsTapped = false;
   $scope.onListSwipe = function(){
@@ -1806,6 +1808,8 @@ angular.module('SeeAroundMe.controllers', [])
           $scope.isSwiping = false;        
     }, element);
     
+    /******************************************************************************/
+    
   $scope.$on('$ionicView.enter', function(e) {
       //console.log('List view entered ...');
         $scope.hasMore = true;
@@ -1824,7 +1828,10 @@ angular.module('SeeAroundMe.controllers', [])
         else if($rootScope.page == 'edit'){
             $ionicScrollDelegate.scrollTop(true);
             $rootScope.page = 'list';
-        }      
+        }
+      
+        //Load recent searches
+       $scope.getRecentSearches();
   });
 
   var refreshPosts = function(){
@@ -2080,7 +2087,22 @@ angular.module('SeeAroundMe.controllers', [])
         $scope.turnOnSearch();
     };
     
-    $scope.recentSearches = [{text: 'Restaurants'},{text: 'Housing'},{text: 'Music'}];
+    $scope.recentSearches = [];
+    
+    $scope.getRecentSearches = function(){
+        AppService.getRecentSearches().success(function (response) {
+                    
+                if(response.result && response.result.length > 0){
+                    for(var i=0; i < response.result.length; i++){
+                        $scope.recentSearches.push({ text: response.result[i] });
+                    }
+                }
+
+            })
+            .error(function (err) {
+                console.warn(JSON.stringify(err));
+        });
+    };
     
     $scope.setRecentSearch = function(search){
         $scope.searchMode = false;
@@ -2096,8 +2118,8 @@ angular.module('SeeAroundMe.controllers', [])
     $scope.turnOffSearch = function(){
         
             $scope.searchMode = false;
-    };        
-        
+    }; 
+            
     //Default
     $scope.textColor = 'gray';
     // set post button to blue when typing
@@ -3002,6 +3024,11 @@ angular.module('SeeAroundMe.controllers', [])
         }        
     };
     
+    $scope.resetSearch = function(){
+        $scope.searchPosts();
+        $rootScope.isMapMoved = false;
+    };
+    
    function fetchPosts(){
     
     var posOptions = {timeout: 30000, maximumAge:0, enableHighAccuracy: false};
@@ -3374,7 +3401,7 @@ angular.module('SeeAroundMe.controllers', [])
     $rootScope.$on("refreshdone", function(event, data){  
         console.log('refreshdone called ...');
             $scope.currentPosts = $rootScope.currentPosts;
-        console.log('Length: ' + $rootScope.markers.length);
+        //console.log('Length: ' + $rootScope.markers.length);
           for (var i = 0; i < $rootScope.markers.length; i++) {
             google.maps.event.addListener($rootScope.markers[i], 'click', function(e) {
                     $rootScope.isMarker = true;
@@ -3451,7 +3478,22 @@ angular.module('SeeAroundMe.controllers', [])
         $scope.turnOnSearch();
     };
     
-    $scope.recentSearches = [{text: 'Restaurants'},{text: 'Housing'},{text: 'Music'}];
+    $scope.recentSearches = [];
+    
+    $scope.getRecentSearches = function(){
+        AppService.getRecentSearches().success(function (response) {
+                    
+                if(response.result && response.result.length > 0){
+                    for(var i=0; i < response.result.length; i++){
+                        $scope.recentSearches.push({ text: response.result[i] });
+                    }
+                }
+
+            })
+            .error(function (err) {
+                console.warn(JSON.stringify(err));
+        });
+    };    
     
     $scope.setRecentSearch = function(search){
         $scope.searchMode = false;
@@ -3510,25 +3552,15 @@ angular.module('SeeAroundMe.controllers', [])
                        
         if($rootScope.map){
             console.log('refresh map ...');
-            //var markersAdded = true;            
-            
-            //Add idel event listener
-            /*google.maps.event.addListener(($rootScope.map), 'idle',            
-            function(event) {
-               //console.log('map idle event fired ....');
-               var c = this.getCenter();
-               if(c && !markersAdded){
-                    $rootScope.currentCenter = c;
-                    MapService.centerMap(c);
-               }
-                
-               markersAdded = false;
-            });  */
             
             //Causes the map to redraw
             google.maps.event.trigger($rootScope.map, 'resize');
             
-            MapService.refreshMap();              
+            MapService.refreshMap(); 
+            
+            $timeout(function(){
+                     $scope.getRecentSearches();
+            },3000);
         }
     });
 
@@ -3539,13 +3571,6 @@ angular.module('SeeAroundMe.controllers', [])
             //Clear user posts filters
             //$rootScope.searchData = null;
         }
-        
-        //Must remove idle listener as it can cause trouble when fired on other views
-        //google.maps.event.clearListeners($rootScope.map, 'idle');
-        //Show all markers when user has seen filtered ones
-        //$rootScope.markers.forEach(function(marker){
-              //marker.setMap($rootScope.map);
-        //});
     });
     
   $scope.showMapForPost = function(post){
@@ -3606,4 +3631,8 @@ angular.module('SeeAroundMe.controllers', [])
           });
       }
   };
+    
+    $timeout(function(){
+             $scope.getRecentSearches();
+    },5000);    
 });

@@ -13,13 +13,13 @@
     <ion-content padding="false" class="has-header" has-header="true">
         <div class="list">
             <div class="item">
-                <label style="color:#ff6666;font-size:1.2em;">
+                <label style="font-size:1.2em;">
                     Select Visible Categories:
                 </label>
             </div>
           <div class="item item-icon-left item-toggle fbg1">
               <i class="icon">
-               <img width="40" ng-src="img/pin1.svg"/>
+               <img width="24" ng-src="img/pin1.svg"/>
               </i>
             Food
                 <label class="toggle toggle-positive">
@@ -31,7 +31,7 @@
           </div>
           <div class="item item-icon-left item-toggle fbg2">
               <i class="icon">
-               <img width="40" ng-src="img/pin2.svg"/>
+               <img width="24" ng-src="img/pin2.svg"/>
               </i>          
             Safety
                 <label class="toggle toggle-positive">
@@ -43,7 +43,7 @@
           </div>
           <div class="item item-icon-left item-toggle fbg3">
               <i class="icon">
-               <img width="40" ng-src="img/pin3.svg"/>
+               <img width="24" ng-src="img/pin3.svg"/>
               </i>          
             Events
                 <label class="toggle toggle-positive">
@@ -55,7 +55,7 @@
           </div>
           <div class="item item-icon-left item-toggle fbg4">
               <i class="icon">
-               <img width="40" ng-src="img/pin4.svg"/>
+               <img width="24" ng-src="img/pin4.svg"/>
               </i>          
             Development
                 <label class="toggle toggle-positive">
@@ -67,7 +67,7 @@
           </div>
           <div class="item item-icon-left item-toggle fbg5" >
               <i class="icon">
-               <img width="40" ng-src="img/pin5.svg"/>
+               <img width="24" ng-src="img/pin5.svg"/>
               </i>          
             Other
                 <label class="toggle toggle-positive">
@@ -82,23 +82,23 @@
                     Sort posts by:
                 </label>
             </div>
-          <div class="item item-icon-right smaller" ng-click="setFilter(0)">
+          <div class="item item-icon-right smaller" ng-class="{'selected' : filter==0}" ng-click="setFilter(0)">
             Default (Recent &amp; Popular)
               <i class="icon ion-checkmark" ng-show="filter==0" style="font-size:1em;"></i>
           </div>    
-          <div class="item item-icon-right smaller" ng-click="setFilter(1)">
+          <div class="item item-icon-right smaller" ng-class="{'selected' : filter==1}" ng-click="setFilter(1)">
             Most Recent
               <i class="icon ion-checkmark" ng-show="filter==1" style="font-size:1em;"></i>
           </div>    
-          <div class="item item-icon-right smaller" ng-click="setFilter(2)">
+          <div class="item item-icon-right smaller" ng-class="{'selected' : filter==2}" ng-click="setFilter(2)">
             Most Popular
               <i class="icon ion-checkmark" ng-show="filter==2" style="font-size:1em;"></i>
           </div>    
-          <div class="item item-icon-right smaller" ng-click="setFilter(3)">
+          <div class="item item-icon-right smaller" ng-class="{'selected' : filter==3}" ng-click="setFilter(3)">
             Just My Posts
               <i class="icon ion-checkmark" ng-show="filter==3" style="font-size:1em;"></i>
           </div>    
-          <div class="item item-icon-right smaller" ng-click="setFilter(4)">
+          <div class="item item-icon-right smaller" ng-class="{'selected' : filter==4}" ng-click="setFilter(4)">
             People I Follow
               <i class="icon ion-checkmark" ng-show="filter==4" style="font-size:1em;"></i>
           </div>                

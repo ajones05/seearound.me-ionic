@@ -1,52 +1,25 @@
 <ion-view hide-nav-bar="true" hide-back-button="true" class="postlistview">
     <div class="bar bar-header bar-positive">
-          <button ui-sref="app.filters" class="button button-clear" style="margin-right:10px;">
+          <button ui-sref="filters" class="button button-clear" style="margin-right:10px;">
             Filter
           </button>        
           <div class="row item-input-wrapper" style="background:#fff;height:32px;">
-              <i class="icon ion-ios-search" style="font-size:1.4em;color:#666;"></i>
-              <form style="width:90%;" name="searchForm" ng-submit="searchPosts()">                
+              <i class="icon ion-search" style="font-size:1.4em;color:#666;padding-left:4px;"></i>
+              <form style="width:90%;padding-left:8px;padding-top:4px;color:#666;" name="searchForm" ng-submit="searchPosts()">                
                 <input type="search" 
                        name="searchTerm" 
                        ng-model="searchTerm" 
                        placeholder="Keyword Search..."
                        ng-focus="searchMode=true;"
                        style="width:100%;height:100%;background:#fff;">
-              </form>
-            <a ng-show="isFiltered" style="width:10%;" ng-click="clearSearch()">
+              </form>            
+              <a ng-show="isFiltered" style="width:10%;" ng-click="clearSearch()">
                    <i class="icon ion-ios-close placeholder-icon" style="font-size:1.4em;color:#666;"></i>
             </a>              
           </div>        
           <button class="button button-clear" ui-sref="app.postmapview">
             Map
           </button>
-
-        <!--
-        <div class="row" style="padding-top:10px;width:100%;">
-            <button menu-toggle="left" class="button button-icon" style="padding-bottom:0;padding-left:0;padding-top:4px;width:40px;margin-right:10px;">
-                <img src="img/menu_off.png" height="20"/>
-                <p class="icon-label">Menu</p>
-            </button>
-            <button class="col button button-icon" ng-click="goToNewPost()" style="padding-top:4px;padding-bottom:0;margin-right:6px;">
-                <img src="img/newpost_off.png" height="22"/>
-                <p style="margin-left:-4px;" class="icon-label">Post</p>
-            </button>
-            <button class="col button button-icon" ng-click="showAlerts($event)" style="padding-top:4px;padding-bottom:0;">
-                <img src="img/alerts_off.png" height="22"/>
-                <span ng-if="unreadAlerts > 0" class="alert-badge">{{unreadAlerts}}</span>
-                <p class="icon-label">Alerts</p>
-            </button>
-            <button class="col button button-icon" ng-click="toggleSearch()" style="padding-top:4px;padding-bottom:0;margin-right:-4px;">
-                <img ng-show="!isFiltered" src="img/search_off.png" height="22"/>
-                <img ng-show="isFiltered" src="img/search_on.png" height="22"/>
-                <p class="icon-label">Search</p>
-            </button>
-            <button class="button button-icon" ui-sref="app.postmapview" style="width:64px;padding-right:0;padding-top:4px;padding-bottom:0;margin-right:-6px;">
-              <img src="img/map_off.png" height="22"/>
-                <p class="icon-label">Map View</p>
-            </button>
-        </div>
-        -->
     </div>
   <ion-content padding="false" class="has-header" id="eventPlaceholder">
       <div ng-show="searchMode" class="list">
@@ -57,17 +30,20 @@
           <a class="item item-light" ng-repeat="search in recentSearches" ng-click="setRecentSearch(search)" style="border:0;height:40px;">
             {{search.text}}
           </a>
-      </div>      
-    <ion-refresher on-refresh="doRefresh()"></ion-refresher> 
+      </div>          
+      
+      <ion-refresher on-refresh="doRefresh()"></ion-refresher>       
+    <div class="list">
     <div class="post_item" ng-hide="post.hideCat" ng-repeat='post in nearbyPosts track by $index'>
       <div class="row user">
         <div class="col col-90"> 
-            <p class="desc" ng-hide="post.truncatedNews" ng-bind-html="post.news | linky | hrefToJS | hashtag"></p>
-            <p class="desc" ng-show="post.truncatedNews" ng-bind-html="post.truncatedNews | linky | hrefToJS | hashtag"></p>
+            <label style="color:#000;"><b>{{$index + 1}}.&nbsp;</b></label>
+            <label class="desc" ng-hide="post.truncatedNews" ng-bind-html="post.news | linky | hrefToJS | hashtag"></label>
+            <label class="desc" ng-show="post.truncatedNews" ng-bind-html="post.truncatedNews | linky | hrefToJS | hashtag"></label>
             <a ng-show="post.truncatedNews" ng-click="goToComments(post)">See more ...</a>
         </div>
-        <div ng-click="showMapForPost(post)" class="col col-10" style="width:40px;padding-top:2%">
-            <img width="40" ng-src="img/pin{{post.category_id}}.svg" />
+        <div ng-click="showMapForPost(post)" class="col col-10" style="width:24px;padding-top:2%">
+            <img width="24" ng-src="img/pin{{post.category_id}}.svg" />
         </div>
       </div>
       <img ng-if="post.thumb" class="post-iamge" ng-src={{post.thumb}} ng-click="showImage(post.image)" alt="">
@@ -91,6 +67,7 @@
         <span class="text-comm" ng-if="post.comment_count == 0" ng-click="goToComments(post)">
             Comment
         </span>
+          
         <div class="post-by">
             <div class="row text-gray">
                 <div class="date">
@@ -101,7 +78,8 @@
         </div>
         <post-actions post="post" from="list"></post-actions>
       </div>
-    </div>      
+    </div>  
+      </div>
       <ion-infinite-scroll ng-if="hasMore" distance="1%" on-infinite="loadMore()">
     </ion-infinite-scroll>
   </ion-content>

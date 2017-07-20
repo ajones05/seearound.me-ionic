@@ -391,7 +391,18 @@ angular.module('SeeAroundMe.services', [])
                         $rootScope.categories[f-1] = 0;
                     }
             }            
-        },        
+        },
+        
+        getRecentSearches: function(){
+            
+            var url = API_URL + '/search-log';
+            
+            var data = {
+                "token": authToken
+            };
+            
+            return $http.post(url, data); 
+        },
         
         getMorePosts: function(){
             
@@ -937,8 +948,8 @@ angular.module('SeeAroundMe.services', [])
                 title: "My Location",                
                 icon: {
                     url:'img/pin' + post.category_id +'.svg',
-                    size: new google.maps.Size(60, 100),
-                    anchor: new google.maps.Point(30, 100)
+                    size: new google.maps.Size(28, 45),
+                    anchor: new google.maps.Point(4, 45)
                 }
             });                   
         },
@@ -1077,11 +1088,12 @@ angular.module('SeeAroundMe.services', [])
                       var urlRegEx = new RegExp(
                               "((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))"
                            );
-
-                        response.result.forEach(function (post) {
-                            
+                        
+                        response.result.forEach(function (post, index) {
                             if(!post.category_id)
                                 post.category_id = 5;
+                            
+                            post.postNum = index + 1;
                             
                             var marker = new SVGMarker({
                                 position: new google.maps.LatLng(post.latitude, post.longitude),
@@ -1090,25 +1102,31 @@ angular.module('SeeAroundMe.services', [])
                                 opacity: .85,
                                 icon: {
                                     url:'img/pin' + post.category_id +'.svg',
-                                    size: new google.maps.Size(60, 100),
+                                    size: new google.maps.Size(28, 45),
+                                    text: {
+                                        content: index + 1,
+                                        font: 'Helvetica, sans-serif',
+                                        color: '#fff',
+                                        size: '1.3em',
+                                        weight: '600',
+                                        position: [28,14]
+                                    },
                                     //origin: new google.maps.Point(0, 0),
-                                    anchor: new google.maps.Point(30, 100)//,
-                                    //scaledSize: new google.maps.Size(50, 50)                                
+                                    anchor: new google.maps.Point(14, 45)
                                 }
                             });
                             
-                            if(post.link_url)
-                                post.news = post.news.replace(urlRegEx, "");
-                            
-                            marker.setPost(post);
-                            
-                            $rootScope.markers.push(marker);
                             
                             //Show only non filtered-out posts
                             //If the global categories list does not contain this post's category_id,
                             //it means the post was filtered out on map view
                             if(!$rootScope.categories.includes(post.category_id))
                                 marker.setMap(null);//Hide the marker
+                            
+                            if(post.link_url)
+                                post.news = post.news.replace(urlRegEx, "");                            
+                            marker.setPost(post);
+                            $rootScope.markers.push(marker);
 
                         });
                         //To use on list view
@@ -1276,6 +1294,8 @@ angular.module('SeeAroundMe.services', [])
 
                 //We'll maintain an array of markers to manage them later in the app
                 $rootScope.markers = [];
+                
+                $rootScope.isMapMoved = false;
 
                 //this.showMyLocation();
                 
@@ -1348,6 +1368,14 @@ angular.module('SeeAroundMe.services', [])
                 function(event) { 
                 //console.log('map dragged'); 
                 $rootScope.$broadcast('hidemapmodal');
+            });
+            
+            $rootScope.isMapMoved = false;
+            google.maps.event.addListener((map), 'dragend', 
+                function(event) { 
+                console.log('map dragend event fired ...'); 
+                $rootScope.isMapMoved = true;
+                $rootScope.currentCenter = this.getCenter();
             });
             
             var me = this;

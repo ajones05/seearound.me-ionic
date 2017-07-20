@@ -1,11 +1,11 @@
 <ion-view hide-nav-bar="true" hide-back-button="true" class="mapview">
     <div ng-hide="isFromProfileView" class="bar bar-header bar-positive">
-          <button ng-hide="searchMode" ui-sref="app.filters" class="button button-clear" style="margin-right:10px;">
+          <button ng-hide="searchMode" ui-sref="filters" class="button button-clear" style="margin-right:10px;">
             Filter
           </button> 
           <div class="row item-input-wrapper" style="background:#fff;height:32px;">
-              <i class="icon ion-ios-search" style="font-size:1.4em;color:#666;"></i>
-              <form style="width:90%;" name="searchForm" ng-submit="searchPosts()">                
+              <i class="icon ion-search" style="font-size:1.4em;color:#666;padding-left:4px;"></i>
+              <form style="width:90%;padding-left:8px;padding-top:4px;color:#666;" name="searchForm" ng-submit="searchPosts()">                
                 <input type="search" 
                        name="searchTerm" 
                        ng-model="searchTerm" 
@@ -70,21 +70,26 @@
           </a>
       </div>
     <div id="map" data-tap-disabled="true"></div>
-      <a ng-click="resetMap()" 
-         class="button button-reset button-icon icon ion-navigate">
+  <div ng-show="isMapMoved" class="bar bar-footer bar-stable" style="height:60px;">
+      <a ng-click="resetSearch()" style="width:80%;" class="button button-light button-map">
+          Redo Search In This Area
+      </a>
+      
+      <a ng-click="resetMap()" style="width:54px;padding:0;" class="button button-reset button-icon">
+          <img src="img/nav.png" height="20" class="icon"/>
           Nearby
       </a>
-  </ion-content>
-    <!--
-  <div class="bar bar-footer bar-light">
-    <div class="title">        
-      <div class="range">
-        <a ng-click="toggleFilter($event)" class="button button-clear" style="width:60px;margin-left:-10px;">Filter
-          </a>
-      <input type="range" name="volume" min="0.25" max="2.0" step="0.1" value="circleRadius" ng-model="circleRadius" on-release="onRadiusChange()">
-        <a ng-click="resetMap()" style="width:50px;font-size:.8em;" class="button button-clear button-icon icon ion-navigate"></a>
-      </div>
-    </div>
   </div>
--->
+      
+  <div ng-hide="isMapMoved" style="background:transparent;border:0 !important;height:60px;margin-bottom:6px;" class="bar bar-footer row">
+      <div class="col col-80"></div>
+      <div class="col col-20">
+      <a ng-click="resetMap()" style="width:54px;padding:0;" class="button button-reset button-icon">
+          <img src="img/nav.png" height="18" class="icon"/>
+          Nearby
+          </a>
+      </div>
+  </div>
+      
+  </ion-content>    
 </ion-view>

@@ -1,30 +1,56 @@
 .tabicons {
+    
+    .tabs {
+        border-top: 1px solid #ccc !important;
+    }
+    
     .tabs .tab-item{
         padding-top: 6px;
-        .icon.stories, .icon.share, .icon.notis, .icon.more {
+        .icon.stories-on, .icon.share-on, .icon.notis-on, .icon.more-on, .icon.stories-off, .icon.share-off, .icon.notis-off, .icon.more-off {
               background-repeat: no-repeat;
               background-position: 50%;
               height: 60%;
               background-size:contain;            
         }
         
-        .icon.stories {
-            background-image: url('../img/map.svg');
+        .icon.stories-on {
+            background-image: url('../img/map-on.svg');
+        }
+        
+        .icon.stories-off {
+            background-image: url('../img/map-off.svg');
+        }
+        
+
+        .icon.share-on {
+            background-image: url('../img/share-on.svg');
         }
 
-        .icon.share {
-            background-image: url('../img/share.svg');
+        .icon.share-off {
+            background-image: url('../img/share-off.svg');
         }
-
-        .icon.notis {
-            background-image: url('../img/notis.svg');
+        
+        .icon.notis-on {
+            background-image: url('../img/notis-on.svg');
         }
+        
+        .icon.notis-off {
+            background-image: url('../img/notis-off.svg');
+        }        
 
-        .icon.more {
+        .icon.more-on {
             height: 48% !important;
             margin-top: 2%;
             margin-bottom: 3%;
-            background-image: url('../img/more.svg');
+            background-image: url('../img/more-on.svg');
+        }  
+        
+        .icon.more-off {
+            height: 48% !important;
+            margin-top: 2%;
+            margin-bottom: 3%;
+            background-image: url('../img/more-off.svg');
         }        
+        
     }    
 }
