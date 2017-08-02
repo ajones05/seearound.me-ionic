@@ -33,7 +33,7 @@
       </div>          
       
       <ion-refresher on-refresh="doRefresh()"></ion-refresher>       
-    <div class="list">
+    <div ng-hide="searchMode" class="list">
     <div class="post_item" ng-hide="post.hideCat" ng-repeat='post in nearbyPosts track by $index'>
       <div class="row user">
         <div class="col col-90"> 

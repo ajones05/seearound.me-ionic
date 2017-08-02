@@ -1,11 +1,15 @@
 <ion-view cache-view="false" class="addpost">
-  <ion-header-bar class="bar-positive">
-    <h1 class="title">Share Story</h1>
-    <div class="buttons">
+  <ion-header-bar class="bar-positive">      
+      <button class="button button-icon button-clear button-left" ui-sref="app.postmapview">
+          <i class="icon icon-left ion-ios-arrow-back"></i>
+          Stories
+      </button>
+      
+        <h1 class="title">Share Story</h1>
+      
       <button class="button button-clear" ng-click="postNews()">
           <p ng-class="textColor">Post</p>
       </button>
-    </div>
   </ion-header-bar>
   <ion-header-bar class="bar bar-subheader" style="padding:0;">
     <div class="row" style="background:#e7f2fe;height:150px;padding:20px;">
@@ -35,6 +39,6 @@
     </div>
  </ion-header-bar>
   <ion-content has-header="true" style="margin-top:100px;">
-        <textarea ng-change="checkInput()" ng-focus="hideCamBar()" placeholder="Write something.." ng-model="formData.postText" class="commentbox"></textarea>
+        <textarea rows="5" ng-change="checkInput()" ng-focus="hideCamBar()" placeholder="Write something.." ng-model="formData.postText" class="commentbox"></textarea>
   </ion-content>
 </ion-view>

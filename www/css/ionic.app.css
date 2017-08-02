@@ -9080,6 +9080,9 @@ a.hashtag {
   .share-page .share button {
     margin-top: 2rem; }
 
+ion-tabs.tabs-color-active-dark .tab-item {
+  color: #666 !important; }
+
 .post-actions {
   width: 30px;
   height: 100%;
@@ -9298,6 +9301,7 @@ h1, h2, h3, h4, h5, h6,
   padding: 5%;
   width: 100%;
   font-family: 'Lato';
+  font-size: 1em;
   color: rgba(0, 0, 0, 0.8); }
 
 .addpost .bar.bar-footer {

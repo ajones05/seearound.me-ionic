@@ -906,7 +906,7 @@ angular.module('SeeAroundMe.services', [])
     return service;
 })
 
-.factory('MapService', function($http, $q, $rootScope, $ionicPopup, $ionicLoading, $cordovaGeolocation, AppService, ModalService) {
+.factory('MapService', function($http, $q, $timeout, $rootScope, $ionicPopup, $ionicLoading, $cordovaGeolocation, AppService, ModalService) {
     var pageNum = 0;
     
     var service = {
@@ -1177,7 +1177,9 @@ angular.module('SeeAroundMe.services', [])
                 var data = {
                     "latitude" : center.lat(),// 37.8088139,
                     "longitude" : center.lng(),//-122.2635002,
-                    "radious" : $rootScope.inputRadius,
+                    "ne": $rootScope.ne,
+                    "sw": $rootScope.sw,
+                    //"radious" : $rootScope.inputRadius,
                     "token" : authToken,
                     "searchText": $rootScope.searchData.searchTerm,
                     "filter": $rootScope.searchData.filter,
@@ -1200,9 +1202,11 @@ angular.module('SeeAroundMe.services', [])
             else if(cats.length > 0){
                 
                 var data = {
-                    "latitude" :  37.8088139,//center.lat()
-                    "longitude" : -122.2635002,//center.lng()
-                    "radious" : $rootScope.inputRadius,
+                    "latitude" : center.lat(),// 37.8088139,
+                    "longitude" : center.lng(),//-122.2635002,
+                    "ne": $rootScope.ne,
+                    "sw": $rootScope.sw,                    
+                    //"radious" : $rootScope.inputRadius,
                     "token" : authToken,
                     "category_id" : cats,
                     "start" : pageNum
@@ -1226,7 +1230,9 @@ angular.module('SeeAroundMe.services', [])
                 var data = {
                     "latitude" : center.lat(),// 37.8088139,
                     "longitude" : center.lng(),//-122.2635002,
-                    "radious" : $rootScope.inputRadius,
+                    "ne": $rootScope.ne,
+                    "sw": $rootScope.sw,                    
+                    //"radious" : $rootScope.inputRadius,
                     "token" : authToken,
                     "start" : 0
                 };
@@ -1371,15 +1377,25 @@ angular.module('SeeAroundMe.services', [])
             });
             
             $rootScope.isMapMoved = false;
-            google.maps.event.addListener((map), 'dragend', 
-                function(event) { 
-                console.log('map dragend event fired ...'); 
-                $rootScope.isMapMoved = true;
-                $rootScope.currentCenter = this.getCenter();
+            var isFirst = true;
+            google.maps.event.addListener((map), 'idle', function(){
+                   var bounds = this.getBounds();
+                   var ne = bounds.getNorthEast();
+                   var sw = bounds.getSouthWest();
+                   $rootScope.ne = ne.lat() + ',' + ne.lng();
+                   $rootScope.sw = sw.lat() + ',' + sw.lng();
+                
+                   $rootScope.currentCenter = this.getCenter();
+                    if(!isFirst){
+                            $timeout(function(){
+                                    $rootScope.isMapMoved = true;
+                            });
+                    }
+                    else{
+                       isFirst = false;
+                    }
             });
-            
-            var me = this;
-         
+                     
             $rootScope.map = map;
 
             //Now add circle and post locations on the map

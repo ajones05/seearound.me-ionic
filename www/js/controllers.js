@@ -1615,7 +1615,7 @@ angular.module('SeeAroundMe.controllers', [])
                   $scope.unreadAlerts = unreadCount;
               }
               else{
-                  $scope.alerts = [{message: 'No alerts'}];
+                  $scope.alerts = [];
              }
             
               $ionicLoading.hide(); 
@@ -2044,15 +2044,22 @@ angular.module('SeeAroundMe.controllers', [])
                duration: 20000 //Dismiss after 20 seconds
         });
         
-        $rootScope.searchData = {searchTerm: $scope.searchTerm, filter: $rootScope.filter};
+        if($rootScope.filter == 0)
+            var filter = '';
+        else
+            var filter = $rootScope.filter;
+        
+        $rootScope.searchData = {searchTerm: $scope.searchTerm, filter: filter};
         
         var searchData = {
             "latitude" :  $rootScope.currentCenter.lat(),//37.8088139,
             "longitude" : $rootScope.currentCenter.lng(), //-122.2635002,
-            "radious" : $rootScope.inputRadius,
+            "ne": $rootScope.ne,
+            "sw": $rootScope.sw,
+            //"radious" : $rootScope.inputRadius,
             "token" : authToken,
             "searchText": $scope.searchTerm,
-            "filter": $rootScope.filter,
+            "filter": filter,
             "fromPage" : 0
         };
         
@@ -2300,6 +2307,12 @@ angular.module('SeeAroundMe.controllers', [])
         
         if($scope.textColor == 'gray' || $scope.addLocation == "        Add location")
             return;
+        
+        if($scope.catId == 0){
+            AppService.showErrorAlert('See Around Me Alert', 'Please select a post category.');
+            
+            return;
+        }
         
         $ionicLoading.show({
                template: '<ion-spinner class="spinner-calm"></ion-spinner><br/>Posting ...',
@@ -2677,6 +2690,12 @@ angular.module('SeeAroundMe.controllers', [])
         if($scope.textColor == 'gray' || $scope.addLocation == "        Add location")
             return;
         
+        if($scope.catId == 0){
+            AppService.showErrorAlert('See Around Me Alert', 'Please select a post category.');
+            
+            return;
+        }
+        
         function savePost(){
             //console.log('savePost called ...');
             //console.log(JSON.stringify($stateParams));
@@ -3025,12 +3044,13 @@ angular.module('SeeAroundMe.controllers', [])
     };
     
     $scope.resetSearch = function(){
-        $scope.searchPosts();
+        $rootScope.searchData = null;
+        MapService.refreshMap();
         $rootScope.isMapMoved = false;
     };
     
    function fetchPosts(){
-    
+    $ionicLoading.show({ template: 'Loading posts ...'});
     var posOptions = {timeout: 30000, maximumAge:0, enableHighAccuracy: false};
     $cordovaGeolocation.getCurrentPosition(posOptions)
         .then(function (position) {
@@ -3068,7 +3088,8 @@ angular.module('SeeAroundMe.controllers', [])
               var data = {
                     "latitude" : center.lat(),// 37.8088139,
                     "longitude" : center.lng(),//-122.2635002,
-                    "radious" : $rootScope.inputRadius,
+                    "ne":'',
+                    "sw":'',
                     "token" : authToken,
                     "start" : 0
                 };
@@ -3086,15 +3107,18 @@ angular.module('SeeAroundMe.controllers', [])
                             MapService.initMap();
                         }
                         else{
+                            $ionicLoading.hide();
                             AppService.showErrorAlert('No Internet Connection', 'There seems to be a network problem. Please check your internet connection and try again.');        
                         }                
                     }
                 })
                 .error(function (err) {
+                    $ionicLoading.hide();
                     //console.warn(JSON.stringify(err));
                 });
 
         }, function(err) {
+            $ionicLoading.hide();
             // error
             //console.error('Failed to get current position. Error: ' + JSON.stringify(err));
             $ionicPopup.alert({
@@ -3502,7 +3526,12 @@ angular.module('SeeAroundMe.controllers', [])
     };
     
     $scope.searchPosts = function(){  
-        $rootScope.searchData = {searchTerm: $scope.searchTerm, filter: $rootScope.filter};
+        if($rootScope.filter == 0)
+            var filter = '';
+        else
+            var filter = $rootScope.filter;
+
+        $rootScope.searchData = {searchTerm: $scope.searchTerm, filter: filter};
         MapService.setPageNum(0);
         MapService.refreshMap();
         AppService.clearMapFilters();
@@ -3556,11 +3585,25 @@ angular.module('SeeAroundMe.controllers', [])
             //Causes the map to redraw
             google.maps.event.trigger($rootScope.map, 'resize');
             
-            MapService.refreshMap(); 
+            google.maps.event.addListener($rootScope.map, 'idle', function(){
+                var bounds = this.getBounds();
+                var ne = bounds.getNorthEast();
+                var sw = bounds.getSouthWest();
+                $rootScope.ne = ne.lat() + ',' + ne.lng();
+                $rootScope.sw = sw.lat() + ',' + sw.lng();
+                                          
+                $rootScope.currentCenter = this.getCenter();
+                
+                $timeout(function(){
+                        $rootScope.isMapMoved = true;
+                });                
+            });
+            
+            MapService.refreshMap();
             
             $timeout(function(){
-                     $scope.getRecentSearches();
-            },3000);
+                $scope.getRecentSearches();
+            }, 3000);
         }
     });
 
@@ -3571,6 +3614,9 @@ angular.module('SeeAroundMe.controllers', [])
             //Clear user posts filters
             //$rootScope.searchData = null;
         }
+        
+        //Must remove idle listener as it can cause trouble
+        google.maps.event.clearListeners($rootScope.map, 'idle');
     });
     
   $scope.showMapForPost = function(post){
