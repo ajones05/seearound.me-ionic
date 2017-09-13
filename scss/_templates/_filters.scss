@@ -5,28 +5,28 @@
     }
     
     .fbg1 {
-        background: -webkit-linear-gradient(left, #ff7265 0%,#fff 100%); 
-        background: linear-gradient(to right, #ff7265 0%,#fff 100%);        
+        background: -webkit-linear-gradient(left, #ebbd64 0%,#df936b 100%); 
+        background: linear-gradient(to right, #ebbd64 0%,#df936b 100%);        
     }
     
     .fbg2 {
-        background: -webkit-linear-gradient(left, #929292 0%,#fff 100%); 
-        background: linear-gradient(to right, #929292 0%,#fff 100%);                
+        background: -webkit-linear-gradient(left, #f77b7b 0%,#d4656a 100%); 
+        background: linear-gradient(to right, #f77b7b 0%,#d4656a 100%);                
     }
     
     .fbg3 {
-        background: -webkit-linear-gradient(left, #b896ff 0%,#fff 100%); 
-        background: linear-gradient(to right, #b896ff 0%,#fff 100%);                
+        background: -webkit-linear-gradient(left, #98a7f6 0%,#9595c7 100%); 
+        background: linear-gradient(to right, #98a7f6 0%,#9595c7 100%);                
     }
     
     .fbg4 {
-        background: -webkit-linear-gradient(left, #7ccebc 0%,#fff 100%); 
-        background: linear-gradient(to right, #7ccebc 0%,#fff 100%);                
+        background: -webkit-linear-gradient(left, #83ddc9 0%,#7bd4c0 100%); 
+        background: linear-gradient(to right, #83ddc9 0%,#7bd4c0 100%);                
     }
     
     .fbg5 {
-        background: -webkit-linear-gradient(left, #f6c756 0%,#fff 100%); 
-        background: linear-gradient(to right, #f6c756 0%,#fff 100%);                
+        background: -webkit-linear-gradient(left, #ca7dd8 0%,#d187df 100%); 
+        background: linear-gradient(to right, #ca7dd8 0%,#d187df 100%);                
     }  
     
     .fbg1, .fbg2, .fbg3, .fbg4, .fbg5 {
@@ -34,6 +34,7 @@
         padding-left: 44px !important;
         padding-top: 10px !important;
         border:1px solid rgba(50,50,50,.5) !important;
+        color: #fff !important;
     }
     
     .smaller {
@@ -41,7 +42,62 @@
         padding: 8px;
     }
     
+    .select-fld {
+        width: 220px;
+        height: 46px;
+        margin:auto !important;
+        border: 1px solid #666;
+        border-radius: 6px;
+        i {
+            color: #000 !important;
+            font-size: 1.5em !important;
+            margin:6px !important;       
+        }
+        
+        label {
+            font-size: 1em !important;
+        }
+    }
+    
     .selected {
-        background-color: #daebff !important;
+        background-color: #daebff;
+        background: #daebff;
+        border-bottom-left-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;        
+    }    
+}
+
+.filter-popover {
+    position: absolute !important;
+    margin-top: 0;
+    width:220px;
+    height: auto;
+    background-color: #fff !important;
+    background: #fff !important;
+    border-left: 1px solid #666;
+    border-right: 1px solid #666;
+    border-bottom: 1px solid #666;
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    overflow: hidden !important;
+    
+    .select-list{
+        background-color: #fff !important;
+        background: #fff !important;        
+        padding:0;
+    }
+    
+    .list-item {
+        background-color: #fff !important;
+        background: #fff !important;
+        border-bottom: 1px solid #666;
+        color: #000;
+        height:50px;
+        width:100%;
+        padding:10px;
+        padding-left:20px;
+        font-size: 1em;
     }    
 }

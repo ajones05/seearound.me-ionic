@@ -12,9 +12,31 @@
     </div>
     <ion-content padding="false" class="has-header" has-header="true">
         <div class="list">
-            <div class="item">
+            <div class="item" style="border:0;">
                 <label style="font-size:1.2em;">
-                    Select Visible Categories:
+                    Sort posts by:
+                </label>
+            </div>
+            <div class="item text-center" style="border:0;height:52px;padding:0;" ng-click="showSortBy()">
+                <div id="fld1" class="row select-fld" ng-class="{'selected': isSelectedOne}">
+                    <label class="col col-80">{{selectedPostText}}</label>
+                        <i class="icon ion-ios-arrow-down"></i>
+                </div>
+            </div>                        
+            <div class="item" style="border:0;">
+                <label style="font-size:1.2em;">
+                    See posts from:
+                </label>
+            </div>   
+            <div class="item text-center" style="border:0;height:52px;padding:0;" ng-click="showPostsFrom()">
+                <div id="fld2" class="row select-fld" ng-class="{'selected': isSelectedTwo}">
+                    <label class="col col-80">{{selectedMyText}}</label>
+                        <i class="icon ion-ios-arrow-down"></i>
+                </div>
+            </div>                        
+            <div class="item" style="border:0;">
+                <label style="font-size:1.2em;">
+                    Visible Categories:
                 </label>
             </div>
           <div class="item item-icon-left item-toggle fbg1">
@@ -77,6 +99,7 @@
                   </div>
                 </label>                            
           </div>        
+            <!--
             <div class="item">
                 <label style="font-size:1.2em;">
                     Sort posts by:
@@ -101,7 +124,7 @@
           <div class="item item-icon-right smaller" ng-class="{'selected' : filter==4}" ng-click="setFilter(4)">
             People I Follow
               <i class="icon ion-checkmark" ng-show="filter==4" style="font-size:1em;"></i>
-          </div>                
+          </div>     -->           
         </div>        
     </ion-content>
 </ion-view>

@@ -12,7 +12,7 @@
     margin: 1%;
     margin-top: 10px;
   }
-    
+        
     .image-square{
         position: relative;
         border: 1px solid #666;
@@ -35,6 +35,20 @@
         right: 0;  
         margin: auto;
     }
+    
+    .button-square {
+        height: calc(100vw/3) !important;
+        min-height: calc(100vw/3);
+        display: block;
+        border: 1px solid #ccc;
+        font-size: 0.8em;
+        line-height: 0.8em;
+        padding: 10px;
+        
+        img {
+            margin: 10px;
+        }
+    }    
     
     .location{
         position: absolute;

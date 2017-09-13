@@ -425,7 +425,7 @@ angular.module('SeeAroundMe.services', [])
             
             if($rootScope.searchData){
                 data.searchText = $rootScope.searchData.searchTerm;
-                data.filter = $rootScope.searchData.filter;  
+                data.filter = $rootScope.filter;  
                 var url = API_URL + '/myposts';
             }
             else if(cats.length > 0){
@@ -504,6 +504,15 @@ angular.module('SeeAroundMe.services', [])
               var params = {
                 token: authToken,
                 id: post.id
+              };
+              return $http.post(url, params);            
+        }, 
+        
+        markRead: function(post){
+              var url = API_URL + '/post-read';
+              var params = {
+                token: authToken,
+                post_id: post.id
               };
               return $http.post(url, params);            
         },        
@@ -1043,31 +1052,6 @@ angular.module('SeeAroundMe.services', [])
             $ionicLoading.show({ template: 'Loading posts ...'});
             //Update current center
             $rootScope.currentCenter = center;
-            /*
-            var bounds = new google.maps.LatLngBounds();
-            
-            bounds.extend(center);
-
-            // options for the polygon        
-            var populationOptions = {
-                  strokeColor: '#000000',
-                  strokeOpacity: 0.1,
-                  strokeWeight: 1,
-                  fillColor: '#000000',
-                  fillOpacity: 0.35,
-                  map: $rootScope.map,
-                  paths: [this.outerbounds, this.drawCircle(center,$rootScope.inputRadius,-1, bounds)]
-            };
-            
-            if($rootScope.cityCircle){//Circle already exists
-                //Remove the old circle before adding new one
-                $rootScope.cityCircle.setMap(null);
-                $rootScope.cityCircle = new google.maps.Polygon(populationOptions);
-            }
-            else{
-                // Add the circle for this city to the map.
-                $rootScope.cityCircle = new google.maps.Polygon(populationOptions);                
-            }*/
             
             var ud = localStorage.getItem('sam_user_data');
             //console.log(ud);
@@ -1095,14 +1079,22 @@ angular.module('SeeAroundMe.services', [])
                             
                             post.postNum = index + 1;
                             
+                            if(post.isRead == '1' || post.isRead == 1){
+                                var pinUrl = 'img/rpin' + post.category_id +'.svg';
+                            }
+                            else{
+                                var pinUrl = 'img/pin' + post.category_id +'.svg';
+                            }
+                            
                             var marker = new SVGMarker({
                                 position: new google.maps.LatLng(post.latitude, post.longitude),
                                 map: $rootScope.map,
                                 // title: post.title,
                                 opacity: .85,
                                 icon: {
-                                    url:'img/pin' + post.category_id +'.svg',
+                                    url: pinUrl,
                                     size: new google.maps.Size(28, 45),
+                                    /*
                                     text: {
                                         content: index + 1,
                                         font: 'Helvetica, sans-serif',
@@ -1110,12 +1102,13 @@ angular.module('SeeAroundMe.services', [])
                                         size: '1.3em',
                                         weight: '600',
                                         position: [28,14]
-                                    },
+                                    },*/
                                     //origin: new google.maps.Point(0, 0),
                                     anchor: new google.maps.Point(14, 45)
                                 }
                             });
                             
+                            marker.replaceIcon(pinUrl);
                             
                             //Show only non filtered-out posts
                             //If the global categories list does not contain this post's category_id,
@@ -1131,7 +1124,7 @@ angular.module('SeeAroundMe.services', [])
                         });
                         //To use on list view
                         $rootScope.currentPosts = response.result;
-                        console.log('data set in rootscope: ', $rootScope.currentPosts);
+                        //console.log('data set in rootscope: ', $rootScope.currentPosts);
                      
                         //google.maps.event.trigger($rootScope.map,'resize');                         
                          // Automatically center the map fitting all markers on the screen
@@ -1182,7 +1175,7 @@ angular.module('SeeAroundMe.services', [])
                     //"radious" : $rootScope.inputRadius,
                     "token" : authToken,
                     "searchText": $rootScope.searchData.searchTerm,
-                    "filter": $rootScope.searchData.filter,
+                    "filter": $rootScope.filter,
                     "start" : 0
                 };
                 
@@ -1207,6 +1200,7 @@ angular.module('SeeAroundMe.services', [])
                     "ne": $rootScope.ne,
                     "sw": $rootScope.sw,                    
                     //"radious" : $rootScope.inputRadius,
+                    "filter": $rootScope.filter,
                     "token" : authToken,
                     "category_id" : cats,
                     "start" : pageNum
@@ -1231,7 +1225,8 @@ angular.module('SeeAroundMe.services', [])
                     "latitude" : center.lat(),// 37.8088139,
                     "longitude" : center.lng(),//-122.2635002,
                     "ne": $rootScope.ne,
-                    "sw": $rootScope.sw,                    
+                    "sw": $rootScope.sw,        
+                    "filter": $rootScope.filter,
                     //"radious" : $rootScope.inputRadius,
                     "token" : authToken,
                     "start" : 0
@@ -1345,10 +1340,227 @@ angular.module('SeeAroundMe.services', [])
                 disableDefaultUI: true,
                 zoomControl: false,
                 gestureHandling: 'greedy',//default is auto
-                clickableIcons: false
+                clickableIcons: false,
                 //zoomControlOptions: {
                   //style: google.maps.ZoomControlStyle.SMALL
-                //}
+                //},
+                styles: [
+                      {
+                        "elementType": "labels.icon",
+                        "stylers": [
+                          {
+                            "visibility": "off"
+                          }
+                        ]
+                      },
+                      {
+                        "featureType": "administrative.neighborhood",
+                        "elementType": "geometry.fill",
+                        "stylers": [
+                          {
+                            "lightness": 30
+                          }
+                        ]
+                      },
+                      {
+                        "featureType": "administrative.neighborhood",
+                        "elementType": "geometry.stroke",
+                        "stylers": [
+                          {
+                            "lightness": 35
+                          }
+                        ]
+                      },
+                      {
+                        "featureType": "administrative.neighborhood",
+                        "elementType": "labels.icon",
+                        "stylers": [
+                          {
+                            "visibility": "off"
+                          }
+                        ]
+                      },
+                      {
+                        "featureType": "landscape",
+                        "elementType": "labels.icon",
+                        "stylers": [
+                          {
+                            "visibility": "off"
+                          }
+                        ]
+                      },
+                      {
+                        "featureType": "landscape.man_made",
+                        "elementType": "geometry",
+                        "stylers": [
+                          {
+                            "lightness": 30
+                          }
+                        ]
+                      },
+                      {
+                        "featureType": "landscape.man_made",
+                        "elementType": "geometry.fill",
+                        "stylers": [
+                          {
+                            "lightness": 25
+                          }
+                        ]
+                      },
+                      {
+                        "featureType": "landscape.man_made",
+                        "elementType": "geometry.stroke",
+                        "stylers": [
+                          {
+                            "lightness": -5
+                          }
+                        ]
+                      },
+                      {
+                        "featureType": "landscape.man_made",
+                        "elementType": "labels",
+                        "stylers": [
+                          {
+                            "weight": 0.5
+                          }
+                        ]
+                      },
+                      {
+                        "featureType": "landscape.natural",
+                        "elementType": "labels",
+                        "stylers": [
+                          {
+                            "weight": 0.5
+                          }
+                        ]
+                      },
+                      {
+                        "featureType": "poi",
+                        "elementType": "labels.icon",
+                        "stylers": [
+                          {
+                            "visibility": "off"
+                          }
+                        ]
+                      },
+                      {
+                        "featureType": "poi",
+                        "elementType": "labels.text",
+                        "stylers": [
+                          {
+                            "visibility": "off"
+                          }
+                        ]
+                      },
+                      {
+                        "featureType": "poi.business",
+                        "stylers": [
+                          {
+                            "visibility": "off"
+                          }
+                        ]
+                      },
+                      {
+                        "featureType": "poi.park",
+                        "elementType": "geometry.fill",
+                        "stylers": [
+                          {
+                            "color": "#bbe88c"
+                          }
+                        ]
+                      },
+                      {
+                        "featureType": "road",
+                        "elementType": "labels",
+                        "stylers": [
+                          {
+                            "weight": 0.5
+                          }
+                        ]
+                      },
+                      {
+                        "featureType": "road",
+                        "elementType": "labels.icon",
+                        "stylers": [
+                          {
+                            "visibility": "off"
+                          }
+                        ]
+                      },
+                      {
+                        "featureType": "road.highway",
+                        "elementType": "geometry.fill",
+                        "stylers": [
+                          {
+                            "lightness": 25
+                          }
+                        ]
+                      },
+                      {
+                        "featureType": "road.highway",
+                        "elementType": "geometry.stroke",
+                        "stylers": [
+                          {
+                            "color": "#f1c358"
+                          }
+                        ]
+                      },
+                      {
+                        "featureType": "road.local",
+                        "stylers": [
+                          {
+                            "weight": 1
+                          }
+                        ]
+                      },
+                      {
+                        "featureType": "road.local",
+                        "elementType": "labels",
+                        "stylers": [
+                          {
+                            "weight": 0.5
+                          }
+                        ]
+                      },
+                      {
+                        "featureType": "road.local",
+                        "elementType": "labels.icon",
+                        "stylers": [
+                          {
+                            "visibility": "off"
+                          }
+                        ]
+                      },
+                      {
+                        "featureType": "transit",
+                        "stylers": [
+                          {
+                            "visibility": "off"
+                          }
+                        ]
+                      },
+                      {
+                        "featureType": "transit",
+                        "elementType": "labels.icon",
+                        "stylers": [
+                          {
+                            "visibility": "off"
+                          }
+                        ]
+                      },
+                      {
+                        "featureType": "water",
+                        "elementType": "geometry.fill",
+                        "stylers": [
+                          {
+                            "color": "#9cc9ff"
+                          },
+                          {
+                            "lightness": 10
+                          }
+                        ]
+                      }
+                    ]
             };
 
             // console.log(mapOptions);
@@ -1368,6 +1580,10 @@ angular.module('SeeAroundMe.services', [])
                     $rootScope.$broadcast('hidemapmodal');
                 
                 $rootScope.isMarker = false;
+                //Hide keyboard if it is open
+                if(cordova.plugins.Keyboard.isVisible){
+                    cordova.plugins.Keyboard.close();
+                }
             });
 
             google.maps.event.addListener((map), 'dragstart', 
@@ -1378,6 +1594,7 @@ angular.module('SeeAroundMe.services', [])
             
             $rootScope.isMapMoved = false;
             var isFirst = true;
+            var me = this;
             google.maps.event.addListener((map), 'idle', function(){
                    var bounds = this.getBounds();
                    var ne = bounds.getNorthEast();
@@ -1393,6 +1610,7 @@ angular.module('SeeAroundMe.services', [])
                     }
                     else{
                        isFirst = false;
+                        me.refreshMap();
                     }
             });
                      

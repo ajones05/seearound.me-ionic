@@ -1,6 +1,16 @@
-<ion-modal-view  ng-style="viewStyle" on-swipe-up="showFullView(post)">
+<ion-modal-view  ng-style="viewStyle" style="background:transparent;" on-swipe-up="showFullView(post)">
     
-  <ion-pane ng-show="!showMapModalBar" class="mapmodal" style="width:100%;border-top:1px solid #666;" on-swipe-down="hideModal()">
+    <div ng-show="!showMapModalBar" class="bar bar-header row" style="background:transparent;border:0;">
+        <div class="left col col-20" ng-click="hideModal()">
+            <i class="icon ion-close-round" style="font-size:1.7em;color:#000;"></i>
+        </div>
+        <div class="col"></div>
+        <div class="right col col-10" ng-click="showFullView(post)">
+            <i class="icon ion-chevron-up" style="font-size:2em;color:#000;"></i>
+        </div>
+    </div>
+    
+  <ion-pane ng-show="!showMapModalBar" class="mapmodal" style="width:100%;border-top:1px solid #666;margin-top:56px;" on-swipe-down="hideModal()">
 
     <!--div class="row" ng-click="hideModal()"></div -->
 
@@ -8,7 +18,7 @@
       <div class="row user" ng-click="showFullView(post)">
         <div class="col"> 
             <!-- p class="desc">{{post.news}}</p -->
-            <label style="color:#000;"><b>{{post.postNum}}.&nbsp;</b></label>
+            <!--label style="color:#000;"><b>{{post.postNum}}.&nbsp;</b></label -->
             <label class="desc" ng-bind-html="post.news | linky | hrefToJS | hashtag"></label>
         </div>
       </div>
@@ -24,11 +34,9 @@
         </div>        
       <div class="share row">
         <post-like-box></post-like-box>
-        <span class="text-comm" ng-if="post.comment_count > 0" ng-click="goToComments(post)">
-            {{post.comment_count}} Comments
-        </span>
-        <span class="text-comm" ng-if="post.comment_count == 0" ng-click="goToComments(post)">
-            Comment
+        <span class="row arrows" ng-if="post.comment_count > 0" ng-click="goToComments(post)">
+            <img width="20" ng-src="img/comments.svg" alt=""/>
+            <p>{{post.comment_count}}</p>
         </span>
         <div class="post-by">
             <div class="row text-gray">
@@ -68,15 +76,19 @@
     </div>
   </ion-pane>
   <ion-view ng-show="showMapModalBar" class="mapmodal">
-      <div class="bar bar-header bar-positive modal_header row" style="opacity:1;">
-          <div class="left col col-20" ng-click="hideModal()">
-              <i class="icon ion-close"></i>
+      <div class="bar bar-header bar-positive modal_header" style="opacity:1;">
+          <div class="left" ng-click="hideModal()">
+              <i class="icon ion-chevron-down" style="font-size:2em;"></i>
           </div>
-          <div class="col col-50"></div>
-          <div class="right col col-30">
-              <i ng-click="move('up', post)" class="icon ion-chevron-up" style="height:40px;"></i>
+          <div class="col"></div>
+          <div class="right">
+              <button class="button button-clear button-icon" ng-click="move('up', post)">
+              <i class="icon ion-chevron-left" style="height:50px;"></i>
+              </button>
               &nbsp;&nbsp;
-              <i ng-click="move('down', post)" class="icon ion-chevron-down" style="height:40px;"></i>
+              <button class="button button-clear button-icon" ng-click="move('down', post)">
+              <i class="icon ion-chevron-right" style="height:50px;"></i>
+              </button>
           </div>
       </div>
       
@@ -85,7 +97,7 @@
         <div class="row user" on-swipe-down="hideModal()">
           <div class="col col-90"> 
               <!-- hashtagify term-click="tagTermClick($event)" -->
-              <label style="color:#000;"><b>{{post.postNum}}.&nbsp;</b></label>
+              <!--label style="color:#000;"><b>{{post.postNum}}.&nbsp;</b></label -->
             <label class="desc" ng-hide="post.truncatedNews" ng-bind-html="post.news | linky | hrefToJS | hashtag"></label>
             <label class="desc" ng-show="post.truncatedNews" ng-bind-html="post.truncatedNews | linky | hrefToJS | hashtag"></label>
             <a ng-show="post.truncatedNews" ng-click="goToComments(post)">See more ...</a>
@@ -106,11 +118,9 @@
         </div>
       <div class="share row">
         <post-like-box></post-like-box>
-        <span class="text-comm" ng-if="post.comment_count > 0" ng-click="goToComments(post)">
-            {{post.comment_count}} Comments
-        </span>
-        <span class="text-comm" ng-if="post.comment_count == 0" ng-click="goToComments(post)">
-            Comment
+        <span class="row arrows" ng-if="post.comment_count > 0" ng-click="goToComments(post)">
+            <img width="20" ng-src="img/comments.svg" alt=""/>
+            <p>{{post.comment_count}}</p>
         </span>
         <div class="post-by">
             <div class="row text-gray">

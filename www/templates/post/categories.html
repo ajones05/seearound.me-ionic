@@ -1,34 +1,30 @@
-<ion-popover-view class="cats">
-    <div class="list">
-      <div class="item item-icon-left" style="background:#ff7063;height:50px;padding-left:44px;" ng-click="setCategory(1)">
-          <i class="icon">
-           <img width="30" ng-src="img/pin1.svg"/>
-          </i>
-        Food
-      </div>
-      <div class="item item-icon-left" style="background:#909090;height:50px;padding-left:44px;" ng-click="setCategory(2)">
-          <i class="icon">
-           <img width="30" ng-src="img/pin2.svg"/>
-          </i>          
-        Safety
-      </div>
-      <div class="item item-icon-left" style="background:#b795ff;height:50px;padding-left:44px;" ng-click="setCategory(3)">
-          <i class="icon">
-           <img width="30" ng-src="img/pin3.svg"/>
-          </i>          
-        Events
-      </div>
-      <div class="item item-icon-left" style="background:#7bcebb;height:50px;padding-left:44px;" ng-click="setCategory(4)">
-          <i class="icon">
-           <img width="30" ng-src="img/pin4.svg"/>
-          </i>          
-        Development
-      </div>
-      <div class="item item-icon-left" style="background:#f6c654;height:50px;padding-left:44px;" ng-click="setCategory(5)">
-          <i class="icon">
-           <img width="30" ng-src="img/pin5.svg"/>
-          </i>          
-        Other
-      </div>        
+<ion-modal-view class="addpost" style="background:rgba(0,0,0,.8);">
+    
+    <div style="padding:0;background:none;margin-top:150px;">
+        <div class="row" style="width:100vw;padding:0;background:none;margin:0;">
+            <a class="button button-icon button-square col" style="background:#e9b654;" ng-click="setCategory(1)">
+                <img src="img/pin1.svg" class="icon" height="40px"/>
+                <p>Food</p>
+            </a>
+            <a class="button button-icon button-square col" style="background:#f77775;" ng-click="setCategory(2)">
+                <img src="img/pin2.svg" class="icon" height="40px"/>
+                <p>Safety</p>
+            </a>
+            <a class="button button-icon button-square col" style="background:#96a5f4;" ng-click="setCategory(3)">
+                <img src="img/pin3.svg" class="icon" height="40px"/>
+                <p>Event</p>
+            </a>
+        </div>
+        <div class="row text-center" style="width:100vw;padding-left:16vw;padding-right:16vw;padding-top:0;margin:0;">
+            <a class="button button-icon button-square col" style="background:#80dac6;" ng-click="setCategory(4)">
+                <img src="img/pin4.svg" class="icon" height="40px"/>
+                <p>Development</p>
+            </a>
+            <a class="button button-icon button-square col" style="background:#cb7ed9;" ng-click="setCategory(5)">
+                <img src="img/pin5.svg" class="icon" height="40px"/>
+                <p>Other</p>
+            </a>
+        </div>
     </div>
-</ion-popover-view>
+    
+</ion-modal-view>

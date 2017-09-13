@@ -5,8 +5,9 @@
           </button> 
           <div class="row item-input-wrapper" style="background:#fff;height:32px;">
               <i class="icon ion-search" style="font-size:1.4em;color:#666;padding-left:4px;"></i>
-              <form style="width:90%;padding-left:8px;padding-top:4px;color:#666;" name="searchForm" ng-submit="searchPosts()">                
-                <input type="search" 
+              <form style="width:90%;padding-left:8px;padding-top:4px;color:#666;" name="searchForm" ng-submit="setRecentSearch()">                
+                <input id="mapSearch"
+                       type="search" 
                        name="searchTerm" 
                        ng-model="searchTerm" 
                        placeholder="Keyword Search..."
@@ -60,7 +61,7 @@
         </div>
     </div>
   <ion-content>
-      <div ng-show="searchMode" class="list has-header">
+      <div ng-show="searchMode" class="list" style="position:absolute;top:70;left:0;right:0;">
           <div class="item item-header item-icon-left">
               <i class="icon ion-ios-clock-outline"></i>
               RECENT SEARCHES
@@ -69,8 +70,19 @@
             {{search.text}}
           </a>
       </div>
-    <div id="map" data-tap-disabled="true"></div>
-  <div ng-show="isMapMoved" class="bar bar-footer bar-stable" style="height:60px;">
+<div class="button-bar" style="width:160px;position:absolute;top:20px;right:20px;border:1px solid #666;border-radius:6px;overflow:hidden;z-index:100;">
+      <a class="button" 
+         ng-class="{'button-stable':selectedButton == 15, 'button-light':selectedButton != 15}"
+         ng-click="showNumPosts(15)">15</a>
+      <a class="button" 
+         ng-class="{'button-stable':selectedButton == 30, 'button-light':selectedButton != 30}"
+         ng-click="showNumPosts(30)">30</a>
+      <a class="button" 
+         ng-class="{'button-stable':selectedButton == 45, 'button-light':selectedButton != 45}"
+         ng-click="showNumPosts(45)">45</a>
+    </div>    
+<div id="map" data-tap-disabled="true" style="margin-top:64px;"></div>
+  <div ng-show="isMapMoved" class="bar bar-footer bar-stable" style="height:60px;margin-bottom:64px;">
       <a ng-click="resetSearch()" style="width:80%;" class="button button-light button-map">
           Redo Search In This Area
       </a>
@@ -81,7 +93,7 @@
       </a>
   </div>
       
-  <div ng-hide="isMapMoved" style="background:transparent;border:0 !important;height:60px;margin-bottom:6px;" class="bar bar-footer row">
+  <div ng-hide="isMapMoved" style="background:transparent;border:0 !important;height:60px;margin-bottom:70px;" class="bar bar-footer row">
       <div class="col col-80"></div>
       <div class="col col-20">
       <a ng-click="resetMap()" style="width:54px;padding:0;" class="button button-reset button-icon">

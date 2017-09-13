@@ -5,8 +5,9 @@
           </button>        
           <div class="row item-input-wrapper" style="background:#fff;height:32px;">
               <i class="icon ion-search" style="font-size:1.4em;color:#666;padding-left:4px;"></i>
-              <form style="width:90%;padding-left:8px;padding-top:4px;color:#666;" name="searchForm" ng-submit="searchPosts()">                
-                <input type="search" 
+              <form style="width:90%;padding-left:8px;padding-top:4px;color:#666;" name="searchForm" ng-submit="setRecentSearch()">                
+                <input id="listSearch" 
+                       type="search" 
                        name="searchTerm" 
                        ng-model="searchTerm" 
                        placeholder="Keyword Search..."
@@ -16,10 +17,15 @@
               <a ng-show="isFiltered" style="width:10%;" ng-click="clearSearch()">
                    <i class="icon ion-ios-close placeholder-icon" style="font-size:1.4em;color:#666;"></i>
             </a>              
-          </div>        
+          </div>  
+        <div class="text-center" style="width:60px;">                      
+          <button ng-show="searchMode" class="button button-clear" ng-click="searchMode=false;">
+            Cancel
+          </button>
           <button class="button button-clear" ui-sref="app.postmapview">
             Map
           </button>
+        </div>             
     </div>
   <ion-content padding="false" class="has-header" id="eventPlaceholder">
       <div ng-show="searchMode" class="list">
@@ -32,12 +38,12 @@
           </a>
       </div>          
       
-      <ion-refresher on-refresh="doRefresh()"></ion-refresher>       
+      <ion-refresher ng-hide="searchMode" on-refresh="doRefresh()"></ion-refresher>       
     <div ng-hide="searchMode" class="list">
-    <div class="post_item" ng-hide="post.hideCat" ng-repeat='post in nearbyPosts track by $index'>
+    <div class="post_item" ng-hide="post.hideCat" ng-click="markRead(post)" ng-repeat='post in nearbyPosts track by $index'>
       <div class="row user">
         <div class="col col-90"> 
-            <label style="color:#000;"><b>{{$index + 1}}.&nbsp;</b></label>
+            <!-- label style="color:#000;"><b>{{$index + 1}}.&nbsp;</b></label -->
             <label class="desc" ng-hide="post.truncatedNews" ng-bind-html="post.news | linky | hrefToJS | hashtag"></label>
             <label class="desc" ng-show="post.truncatedNews" ng-bind-html="post.truncatedNews | linky | hrefToJS | hashtag"></label>
             <a ng-show="post.truncatedNews" ng-click="goToComments(post)">See more ...</a>
@@ -58,14 +64,9 @@
         </div>
       <div class="share row">
         <post-like-box></post-like-box>
-        <span class="text-comm" ng-if="post.comment_count > 1" ng-click="goToComments(post)">
-            {{post.comment_count}} comments
-        </span>
-        <span class="text-comm" ng-if="post.comment_count == 1" ng-click="goToComments(post)">
-            1 comment
-        </span>          
-        <span class="text-comm" ng-if="post.comment_count == 0" ng-click="goToComments(post)">
-            Comment
+        <span class="row arrows" ng-if="post.comment_count > 0" ng-click="goToComments(post)">
+            <img width="20" ng-src="img/comments.svg" alt=""/>
+            <p>{{post.comment_count}}</p>
         </span>
           
         <div class="post-by">
@@ -80,7 +81,7 @@
       </div>
     </div>  
       </div>
-      <ion-infinite-scroll ng-if="hasMore" distance="1%" on-infinite="loadMore()">
+      <ion-infinite-scroll ng-hide="searchMode" ng-if="hasMore" distance="1%" on-infinite="loadMore()">
     </ion-infinite-scroll>
   </ion-content>
 </ion-view>

@@ -3,7 +3,6 @@
     .intro-loc {
         width: 100vw;
         height: 100vh;
-
         background-image: url(../img/intro_location.png);
         background-position: center;
         background-size: cover;
@@ -24,6 +23,7 @@
             font-family: "Lato" !important;
             color: #fff !important;
             text-align: center;
+            background-color:rgba(255, 255, 255, 0.15);
         }        
     }
     

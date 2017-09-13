@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 19.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 114 88" style="enable-background:new 0 0 114 88;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:url(#path-2-2_1_);}
+	.st1{fill:url(#path-5-2_1_);}
+</style>
+<title>Share page - camera icon</title>
+<g id="Page-1">
+	<g id="camera-icon">
+		<g>
+			<path id="path-2" d="M19.1,18C25,17.6,30.5,14.6,34,9.7l4.6-6.4l0,0C40.1,1.2,42.5,0,45.1,0h25.8c2.6,0,5,1.2,6.5,3.3L82,9.7l0,0
+				c3.5,4.8,9,7.9,14.9,8.3H108c3.3,0,6,2.7,6,6v58c0,3.3-2.7,6-6,6H6c-3.3,0-6-2.7-6-6V24c0-3.3,2.7-6,6-6H19.1z M57,75
+				c13.8,0,25-11.2,25-25S70.8,25,57,25S32,36.2,32,50l0,0C32,63.8,43.2,75,57,75z M91.5,36c3,0,5.5-2.5,5.5-5.5S94.5,25,91.5,25
+				S86,27.5,86,30.5S88.5,36,91.5,36z"/>
+		</g>
+		
+			<linearGradient id="path-2-2_1_" gradientUnits="userSpaceOnUse" x1="-13.3772" y1="1.0214" x2="-13.3772" y2="2.0214" gradientTransform="matrix(114 0 0 88 1582 -90)">
+			<stop  offset="0" style="stop-color:#005ACD"/>
+			<stop  offset="1" style="stop-color:#007EFF"/>
+		</linearGradient>
+		<path id="path-2-2" class="st0" d="M19.1,18C25,17.6,30.5,14.6,34,9.7l4.6-6.4l0,0C40.1,1.2,42.5,0,45.1,0h25.8
+			c2.6,0,5,1.2,6.5,3.3L82,9.7l0,0c3.5,4.8,9,7.9,14.9,8.3H108c3.3,0,6,2.7,6,6v58c0,3.3-2.7,6-6,6H6c-3.3,0-6-2.7-6-6V24
+			c0-3.3,2.7-6,6-6H19.1z M57,75c13.8,0,25-11.2,25-25S70.8,25,57,25S32,36.2,32,50l0,0C32,63.8,43.2,75,57,75z M91.5,36
+			c3,0,5.5-2.5,5.5-5.5S94.5,25,91.5,25S86,27.5,86,30.5S88.5,36,91.5,36z"/>
+		<g id="Path">
+			<g>
+				<circle id="path-5" cx="57" cy="50" r="19"/>
+			</g>
+			
+				<linearGradient id="path-5-2_1_" gradientUnits="userSpaceOnUse" x1="-13.3288" y1="2.3754" x2="-12.9288" y2="3.3754" gradientTransform="matrix(38 0 0 38 556 -59)">
+				<stop  offset="0" style="stop-color:#005ACD"/>
+				<stop  offset="1" style="stop-color:#007EFF"/>
+			</linearGradient>
+			<circle id="path-5-2" class="st1" cx="57" cy="50" r="19"/>
+		</g>
+	</g>
+</g>
+</svg>
